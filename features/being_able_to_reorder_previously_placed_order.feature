@@ -1,4 +1,4 @@
-@managing_orders @todo
+@reordering @todo
 Feature: Being able to reorder previously placed order
     In order to be able to place the same order as I did earlier
     As a Customer
@@ -16,6 +16,6 @@ Feature: Being able to reorder previously placed order
       And for the billing address of "Mazikeen Lilim" in the "Pacific Coast Hwy", "90806" "Los Angeles", "United States"
       And I chose "Free" shipping method with "Cash on Delivery" payment
 
-  Scenario: Reorder button is visible next to order
+  Scenario: Seeing reorder button next to the previously placed order
       When I browse my orders
       Then I should see reorder button next to the order "#00000666"

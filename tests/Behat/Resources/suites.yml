@@ -2,13 +2,13 @@ default:
     suites:
         reorders:
             contexts_services:
+                - sylius_customer_reorder.behat.context.setup.reorder
 
                 - sylius.behat.context.setup.channel
                 - sylius.behat.context.setup.product
                 - sylius.behat.context.setup.shipping
                 - sylius.behat.context.setup.payment
                 - sylius.behat.context.setup.order
-                - sylius.behat.context.setup.reorder
                 - sylius.behat.context.setup.shop_security
                 - sylius.behat.context.setup.promotion
 
@@ -25,5 +25,6 @@ default:
                 - sylius.behat.context.ui.shop.checkout.complete
                 - sylius.behat.context.hook.doctrine_orm
                 - sylius.behat.context.ui.shop.account
+                - sylius.behat.context.ui.shop.cart
         filters:
-            tags: "@managing_orders"
+            tags: "@reordering"

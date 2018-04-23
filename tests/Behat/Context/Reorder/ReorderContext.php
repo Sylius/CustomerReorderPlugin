@@ -1,12 +1,4 @@
 <?php
-/*
- * This file is part of the Sylius package.
- *
- * (c) Paweł Jędrzejewski
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -50,7 +42,7 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should have the address section filled with address "[^"]+", "[^"]+", "[^"]+" "[^"]+" in the "[^"]+"(?:|, "[^"]+")$
+     * @Then I should have shipping address filled with address "[^"]+", "[^"]+", "[^"]+" "[^"]+" in the "[^"]+"(?:|, "[^"]+")$
      */
     public function iShouldHaveTheAddressSectionFilledWithAddress(AddressInterface $address): void
     {
@@ -72,5 +64,28 @@ final class ReorderContext implements Context
     {
 
     }
+    
+    /**
+     * @When I proceed to the addressing step
+     */
+    public function iProceedToTheAddressingStep(): void
+    {
+        
+    }
 
+    /**
+     * @When I proceed to the shipping step
+     */
+    public function iProceedToTheShippingStep(): void
+    {
+
+    }
+
+    /**
+     * @When I proceed to the payment step
+     */
+    public function iProceedToThePaymentStep(): void
+    {
+
+    }
 }

@@ -2,7 +2,7 @@
 
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="sylius.behat.context.setup.reorder" class="Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder\ReorderContext" public="false">
+        <service id="sylius_customer_reorder.behat.context.setup.reorder" class="Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder\ReorderContext" public="false">
             <tag name="fob.context_service" />
         </service>
     </services>

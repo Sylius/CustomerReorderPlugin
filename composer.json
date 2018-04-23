@@ -1,7 +1,7 @@
 {
-    "name": "sylius/plugin-skeleton",
+    "name": "sylius/customer-reorder-plugin",
     "type": "sylius-plugin",
-    "description": "Acme example plugin for Sylius.",
+    "description": "Sylius plugin that enables order reordering for a customer",
     "license": "MIT",
     "require": {
         "php": "^7.1",

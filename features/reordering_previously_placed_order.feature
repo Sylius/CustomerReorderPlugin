@@ -21,13 +21,13 @@ Feature: Reordering previously placed order
     Scenario: Reordering previously placed order
       Given I browse my orders
       When I click reorder button next to the order "#00000666"
-#          Then I should be on the checkout summary step
+      Then I should be on the checkout summary step
 
     Scenario: Reordering previously placed order when one of items is out of stock
       Given the product "Angel T-Shirt" is out of stock
       Given I browse my orders
       When I click reorder button next to the order "#00000666"
-#          Then I should be on the checkout summary step
+      Then I should be on the checkout summary step
       And I should be notified that product "Angel T-Shirt" is out of stock
 
     Scenario: Reordering previously placed order when promotion is no longer available
@@ -39,17 +39,17 @@ Feature: Reordering previously placed order
     Scenario: Having address section filled with address information taken from previously placed order
         Given I browse my orders
         When I click reorder button next to the order "#00000666"
-#          Then I should be on the checkout summary step
+        Then I should be on the checkout summary step
         And I should have the address section filled with address "Lucifer Morningstar", "Seaside Fwy", "90802" "Los Angeles" in the "United States"
 
     Scenario: Having shipping method not filled with shipping information taken from previously placed order
         Given I browse my orders
         When I click reorder button next to the order "#00000666"
-#          Then I should be on the checkout summary step
+        Then I should be on the checkout summary step
         And I should not have the shipping method section filled with information taken from order "#00000666"
 
     Scenario: Having payment method not filled with payment information taken from previously placed order
         Given I browse my orders
         When I click reorder button next to the order "#00000666"
-#            Then I should be on the checkout summary step
+        Then I should be on the checkout summary step
         And I should not have the payment method section filled with information taken from order "#00000666"

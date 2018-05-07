@@ -28,6 +28,8 @@ install:
     - composer install --no-interaction --prefer-dist
     - (cd tests/Application && yarn install)
     - npm install gulp gulp-concat gulp-chug gulp-debug gulp-if gulp-livereload gulp-order gulp-sass
+    - npm install gulp-sourcemaps gulp-uglify gulp-uglifycss jquery lightbox2
+    - npm install merge-stream semantic-ui-css yargs
 
 before_script:
     - (cd tests/Application && bin/console doctrine:database:create --env=test -vvv)

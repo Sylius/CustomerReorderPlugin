@@ -5,16 +5,25 @@ declare(strict_types=1);
 namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
 
 use Behat\Behat\Context\Context;
+use Behat\Mink\Session;
 use Sylius\Component\Core\Model\AddressInterface;
 
 final class ReorderContext implements Context
 {
+    /** @var Session */
+    private $session;
+
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+    }
+
     /**
      * @Then I should see reorder button next to the order :orderNumber
      */
     public function iShouldSeeReorderButtonNextToTheOrder(string $orderNumber): void
     {
-
+//        $this->session->getPage()->find('')
     }
 
     /**

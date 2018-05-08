@@ -1,0 +1,16 @@
+sylius_grid:
+    grids:
+        sylius_shop_account_order:
+            actions:
+                item:
+                    reorder:
+                        type: reorder
+                        label: Reorder
+                        options:
+                            link:
+                                route: sylius_shop_account_order_show
+                                parameters:
+                                    number: resource.number
+    templates:
+        action:
+            reorder: "@SyliusShop/Account/Order/Grid/Action/pay.html.twig"

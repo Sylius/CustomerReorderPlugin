@@ -1,4 +1,8 @@
 sylius:
     resource: "../../../../vendor/sylius/sylius/app/config/routing.yml"
 
-# Put your own routes here
+sylius_reorder_plugin_reorder:
+    path: /order/{id}/reorder
+    methods: [POST]
+    defaults:
+        _controller: Sylius\CustomerReorderPlugin\Controller\CustomerReorderAction

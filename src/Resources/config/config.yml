@@ -8,9 +8,9 @@ sylius_grid:
                         label: Reorder
                         options:
                             link:
-                                route: sylius_shop_account_order_show
+                                route: sylius_reorder_plugin_reorder
                                 parameters:
-                                    number: resource.number
+                                    id: resource.id
     templates:
         action:
-            reorder: "@SyliusShop/Account/Order/Grid/Action/pay.html.twig"
+            reorder: "@SyliusCustomerReorderPlugin/reorder.html.twig"

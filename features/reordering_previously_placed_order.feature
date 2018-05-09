@@ -19,9 +19,12 @@ Feature: Reordering previously placed order
         And I chose "Free" shipping method with "Cash on Delivery" payment
 
     Scenario: Reordering previously placed order
-        Given I browse my orders
-        When I click reorder button next to the order "#00000666"
+        When I browse my orders
+        And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
+        And I should see "Angel T-Shirt" with quantity 1 in my cart
+        And my cart total should be "$39.00"
+        And my discount should be "-$20.00"
 
     Scenario: Reordering previously placed order when one of items is out of stock
         Given the product "Angel T-Shirt" is out of stock
@@ -40,16 +43,16 @@ Feature: Reordering previously placed order
         When I browse my orders
         And I click reorder button next to the order "#00000666"
         And I proceed to the addressing step
-        And I should have shipping address filled with address "Lucifer Morningstar", "Seaside Fwy", "90802" "Los Angeles" in the "United States"
+        Then I specify the shipping address as "Lucifer Morningstar", "Seaside Fwy", "90802", "Los Angeles" for "Jon Snow"
 
     Scenario: Having shipping method not filled with shipping information taken from previously placed order
         Given I browse my orders
         When I click reorder button next to the order "#00000666"
         And I proceed to the shipping step
-        Then I should not have the shipping method section filled with information taken from order "#00000666"
+        Then I should not have the shipping method section copied from order "#00000666"
 
     Scenario: Having payment method not filled with payment information taken from previously placed order
         Given I browse my orders
         When I click reorder button next to the order "#00000666"
         And I proceed to the payment step
-        Then I should not have the payment method section filled with information taken from order "#00000666"
+        Then I should not have the payment method section copied taken from order "#00000666"

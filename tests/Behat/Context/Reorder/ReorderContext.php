@@ -42,7 +42,7 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should have shipping address filled with address "[^"]+", "[^"]+", "[^"]+" "[^"]+" in the "[^"]+"(?:|, "[^"]+")$
+     * @Then /^I should have shipping address filled with (address "[^"]+", "[^"]+", "[^"]+", "[^"]+" for "[^"]+")$/
      */
     public function iShouldHaveTheAddressSectionFilledWithAddress(AddressInterface $address): void
     {
@@ -50,7 +50,7 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should not have the shipping method section filled with information taken from order :orderNumber
+     * @Then I should not have the shipping method section copied from order :orderNumber
      */
     public function iShouldNotHaveTheShippingMethodSectionFilledWithInformationTakenFromOrder(string $orderNumber): void
     {
@@ -58,7 +58,7 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should not have the payment method section filled with information taken from order :orderNumber
+     * @Then I should not have the payment method section copied from order :orderNumber
      */
     public function iShouldNotHaveThePaymentMethodSectionFilledWithInformationTakenFromOrder(string $orderNumber): void
     {

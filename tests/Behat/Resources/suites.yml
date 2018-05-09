@@ -28,3 +28,4 @@ default:
                 - sylius.behat.context.ui.shop.cart
         filters:
             tags: "@reordering"
+

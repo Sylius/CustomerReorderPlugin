@@ -3,7 +3,7 @@
 {% set path = options.link.url|default(path(options.link.route|default(grid.requestConfiguration.getRouteName('reorder')), options.link.parameters|default({'id': data.id}))) %}
 
 <form action="{{ path }}" method="POST">
-    <button class="button ui labeled icon green">
+    <button class="button ui labeled icon green" id="reorder">
         <i class="icon {{ action.options.icon|default('credit card alternative') }}" ></i>
         {{ action.label }}
     </button>

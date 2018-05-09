@@ -23,7 +23,19 @@ final class ReorderContext implements Context
      */
     public function iShouldSeeReorderButtonNextToTheOrder(string $orderNumber): void
     {
-//        $this->session->getPage()->find('')
+        $orders =  $this->session->getPage()->findAll('css', 'tr');
+
+        foreach ($orders as $order) {
+            if ($order->find('css', 'td:nth-child(0)')->getText() === $orderNumber
+                && $order->find('css', 'td:nth-child(5)')->getId() === 'reorder'
+            ) {
+                return;
+            }
+        }
+
+        throw new \Exception(sprintf(
+            'There is no website with hostname "%s" and version "%s"', $hostname, $version
+        ));
     }
 
     /**

@@ -16,7 +16,7 @@ final class AppKernel extends Kernel
             new \Sylius\Bundle\AdminBundle\SyliusAdminBundle(),
             new \Sylius\Bundle\ShopBundle\SyliusShopBundle(),
 
-            new \FOS\OAuthServerBundle\FOSOAuthServerBundle(), // Required by SyliusApiBundle
+            new \FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new \Sylius\Bundle\AdminApiBundle\SyliusAdminApiBundle(),
 
             new \Sylius\CustomerReorderPlugin\SyliusCustomerReorderPlugin(),

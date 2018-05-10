@@ -6,6 +6,7 @@ namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Session;
+use function GuzzleHttp\Psr7\str;
 use Sylius\Component\Core\Model\AddressInterface;
 
 final class ReorderContext implements Context
@@ -23,19 +24,26 @@ final class ReorderContext implements Context
      */
     public function iShouldSeeReorderButtonNextToTheOrder(string $orderNumber): void
     {
-        $orders =  $this->session->getPage()->findAll('css', 'tr');
+        $orderHistory = $this->session->getPage()->findAll('css', 'td');
 
-        foreach ($orders as $order) {
-            if ($order->find('css', 'td:nth-child(0)')->getText() === $orderNumber
-                && $order->find('css', 'td:nth-child(5)')->getId() === 'reorder'
-            ) {
-                return;
+        $isOrderPresent = false;
+        $isReorderButtonVisible = false;
+
+        foreach ($orderHistory as $orderData) {
+            if (strpos($orderData->getText(), $orderNumber) != false) {
+                $isOrderPresent = true;
+            }
+
+            if (strpos($orderData->getText(), 'Reorder') != false) {
+                $isReorderButtonVisible = true;
             }
         }
 
-        throw new \Exception(sprintf(
-            'There is no website with hostname "%s" and version "%s"', $hostname, $version
-        ));
+        if (!($isOrderPresent && $isReorderButtonVisible)) {
+            throw new \Exception(sprintf(
+                'There is no reorder button next to order %s', $orderNumber
+            ));
+        }
     }
 
     /**

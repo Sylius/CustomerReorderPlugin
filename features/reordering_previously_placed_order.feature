@@ -1,4 +1,4 @@
-@reordering @todo
+@todo
 Feature: Reordering previously placed order
     In order to reorder the same order as I placed before
     As a Customer

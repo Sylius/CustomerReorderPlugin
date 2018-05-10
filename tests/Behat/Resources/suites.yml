@@ -26,6 +26,3 @@ default:
                 - sylius.behat.context.hook.doctrine_orm
                 - sylius.behat.context.ui.shop.account
                 - sylius.behat.context.ui.shop.cart
-        filters:
-            tags: "@reordering"
-

@@ -6,7 +6,6 @@ namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Session;
-use function GuzzleHttp\Psr7\str;
 use Sylius\Component\Core\Model\AddressInterface;
 
 final class ReorderContext implements Context
@@ -39,10 +38,12 @@ final class ReorderContext implements Context
             }
         }
 
-        if (!($isOrderPresent && $isReorderButtonVisible)) {
-            throw new \Exception(sprintf(
-                'There is no reorder button next to order %s', $orderNumber
-            ));
+        if (!$isOrderPresent) {
+            throw new \Exception(sprintf('There is no order %s on the orders list', $orderNumber));
+        }
+
+        if(!$isReorderButtonVisible) {
+            throw new\Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
         }
     }
 

@@ -23,27 +23,16 @@ final class ReorderContext implements Context
      */
     public function iShouldSeeReorderButtonNextToTheOrder(string $orderNumber): void
     {
-        $orderHistory = $this->session->getPage()->findAll('css', 'td');
+        $orderData = $this->session->getPage()->find('css', sprintf('tr:contains("%s")', $orderNumber));
 
-        $isOrderPresent = false;
-        $isReorderButtonVisible = false;
-
-        foreach ($orderHistory as $orderData) {
-            if (strpos($orderData->getText(), $orderNumber) != false) {
-                $isOrderPresent = true;
-            }
-
-            if (strpos($orderData->getText(), 'Reorder') != false) {
-                $isReorderButtonVisible = true;
-            }
-        }
-
-        if (!$isOrderPresent) {
+        if (null === $orderData) {
             throw new \Exception(sprintf('There is no order %s on the orders list', $orderNumber));
         }
 
-        if(!$isReorderButtonVisible) {
-            throw new\Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
+        $actionButtonsText = $orderData->find('css', 'td:last-child')->getText();
+
+        if (!strpos($actionButtonsText, 'Reorder')) {
+            throw new \Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
         }
     }
 

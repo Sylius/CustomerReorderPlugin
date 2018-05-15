@@ -55,4 +55,4 @@ Feature: Reordering previously placed order
         Given I browse my orders
         When I click reorder button next to the order "#00000666"
         And I proceed to the payment step
-        Then I should not have the payment method section copied taken from order "#00000666"
+        Then I should not have the payment method section copied from order "#00000666"

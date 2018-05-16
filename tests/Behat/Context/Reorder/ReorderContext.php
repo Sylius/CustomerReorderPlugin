@@ -5,16 +5,35 @@ declare(strict_types=1);
 namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
 
 use Behat\Behat\Context\Context;
+use Behat\Mink\Session;
 use Sylius\Component\Core\Model\AddressInterface;
 
 final class ReorderContext implements Context
 {
+    /** @var Session */
+    private $session;
+
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+    }
+
     /**
      * @Then I should see reorder button next to the order :orderNumber
      */
     public function iShouldSeeReorderButtonNextToTheOrder(string $orderNumber): void
     {
+        $orderData = $this->session->getPage()->find('css', sprintf('tr:contains("%s")', $orderNumber));
 
+        if (null === $orderData) {
+            throw new \Exception(sprintf('There is no order %s on the orders list', $orderNumber));
+        }
+
+        $actionButtonsText = $orderData->find('css', 'td:last-child')->getText();
+
+        if (!strpos($actionButtonsText, 'Reorder')) {
+            throw new \Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
+        }
     }
 
     /**

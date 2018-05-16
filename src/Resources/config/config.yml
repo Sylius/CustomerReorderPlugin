@@ -1,0 +1,16 @@
+sylius_grid:
+    grids:
+        sylius_shop_account_order:
+            actions:
+                item:
+                    reorder:
+                        type: reorder
+                        label: Reorder
+                        options:
+                            link:
+                                route: sylius_reorder_plugin_reorder
+                                parameters:
+                                    id: resource.id
+    templates:
+        action:
+            reorder: "@SyliusCustomerReorderPlugin/reorder.html.twig"

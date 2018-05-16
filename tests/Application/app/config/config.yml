@@ -9,6 +9,7 @@ imports:
     - { resource: "@SyliusAdminApiBundle/Resources/config/app/config.yml" }
 
     - { resource: "../../../../vendor/sylius/sylius/app/config/security.yml" }
+    - { resource: "@SyliusCustomerReorderPlugin/Resources/config/config.yml" }
 
 framework:
     translator: { fallbacks: ["%locale%", "en"] }

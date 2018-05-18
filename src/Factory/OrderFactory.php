@@ -14,6 +14,8 @@ namespace Sylius\CustomerReorderPlugin\Factory;
 
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\OrderItem;
+use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Sylius\Component\Core\OrderCheckoutStates;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
@@ -27,12 +29,17 @@ final class OrderFactory implements OrderFactoryInterface
     /** @var OrderItemQuantityModifierInterface */
     private $orderItemQuantityModifier;
 
+    /** @var FactoryInterface */
+    private $orderItemFactory;
+
     public function __construct(
         FactoryInterface $decoratedFactory,
-        OrderItemQuantityModifierInterface $orderItemQuantityModifier
+        OrderItemQuantityModifierInterface $orderItemQuantityModifier,
+        FactoryInterface $orderItemFactory
     ) {
         $this->decoratedFactory = $decoratedFactory;
         $this->orderItemQuantityModifier = $orderItemQuantityModifier;
+        $this->orderItemFactory = $orderItemFactory;
     }
 
     public function createNew()
@@ -49,15 +56,24 @@ final class OrderFactory implements OrderFactoryInterface
 
         $reorder->setChannel($channel);
         $reorder->setCustomer($order->getCustomer());
-//        $reorder->setBillingAddress($order->getBillingAddress());
-//        $reorder->setShippingAddress($order->getShippingAddress());
         $reorder->setCurrencyCode($order->getCurrencyCode());
         $reorder->setCheckoutState(OrderCheckoutStates::STATE_CART);
         $reorder->setPaymentState(PaymentInterface::STATE_CART);
         $reorder->setNotes($order->getNotes());
-//        $reorder->setNumber($order->getNumber());
         $reorder->setLocaleCode($order->getLocaleCode());
 
+        $this->copyOrderItemsToReorder($order, $reorder);
+
         return $reorder;
+    }
+
+    private function copyOrderItemsToReorder(OrderInterface $order, OrderInterface $reorder): void
+    {
+        $orderItems = $order->getItems();
+
+        /** @var OrderItemInterface $orderItem */
+        foreach ($orderItems as $orderItem) {
+            $reorder->addItem(clone $orderItem);
+        }
     }
 }

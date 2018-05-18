@@ -24,8 +24,7 @@ Feature: Reordering previously placed order
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
         And I should see "Angel T-Shirt" with quantity 1 in my cart
-        And my cart total should be "$39.00"
-        And my discount should be "-$20.00"
+        And my cart total should be "$19.00"
 
     @todo
     Scenario: Reordering previously placed order when one of items is out of stock

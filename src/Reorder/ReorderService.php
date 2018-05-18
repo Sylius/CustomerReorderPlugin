@@ -7,6 +7,7 @@ namespace Sylius\CustomerReorderPlugin\Reorder;
 use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 
 final class ReorderService implements ReorderServiceInterface
@@ -17,10 +18,17 @@ final class ReorderService implements ReorderServiceInterface
     /** @var EntityManagerInterface */
     private $entityManager;
 
-    public function __construct(OrderFactoryInterface $orderFactory, EntityManagerInterface $entityManager)
-    {
+    /** @var OrderProcessorInterface */
+    private $orderProcessor;
+
+    public function __construct(
+        OrderFactoryInterface $orderFactory,
+        EntityManagerInterface $entityManager,
+        OrderProcessorInterface $orderProcessor
+    ) {
         $this->orderFactory = $orderFactory;
         $this->entityManager = $entityManager;
+        $this->orderProcessor = $orderProcessor;
     }
 
     public function reorder(OrderInterface $order, ChannelInterface $channel): OrderInterface

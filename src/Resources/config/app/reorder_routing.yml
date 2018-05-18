@@ -1,0 +1,5 @@
+sylius_reorder_plugin_reorder:
+    path: /order/{id}/reorder
+    methods: [POST]
+    defaults:
+        _controller: Sylius\CustomerReorderPlugin\Controller\CustomerReorderAction

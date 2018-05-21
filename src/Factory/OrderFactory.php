@@ -48,8 +48,6 @@ final class OrderFactory implements OrderFactoryInterface
         $reorder->setChannel($channel);
         $reorder->setCustomer($order->getCustomer());
         $reorder->setCurrencyCode($order->getCurrencyCode());
-        $reorder->setCheckoutState(OrderCheckoutStates::STATE_CART);
-        $reorder->setPaymentState(PaymentInterface::STATE_CART);
         $reorder->setNotes($order->getNotes());
         $reorder->setLocaleCode($order->getLocaleCode());
 
@@ -62,7 +60,6 @@ final class OrderFactory implements OrderFactoryInterface
     {
         $orderItems = $order->getItems();
 
-        /** @var OrderItemInterface $orderItem */
         foreach ($orderItems as $orderItem) {
             $reorder->addItem(clone $orderItem);
         }

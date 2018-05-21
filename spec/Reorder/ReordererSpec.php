@@ -10,10 +10,10 @@ use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
-use Sylius\CustomerReorderPlugin\Reorder\ReorderService;
-use Sylius\CustomerReorderPlugin\Reorder\ReorderServiceInterface;
+use Sylius\CustomerReorderPlugin\Reorder\Reorderer;
+use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
 
-final class ReorderServiceSpec extends ObjectBehavior
+final class ReordererSpec extends ObjectBehavior
 {
     function let(
         OrderFactoryInterface $orderFactory,
@@ -25,12 +25,12 @@ final class ReorderServiceSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldBeAnInstanceOf(ReorderService::class);
+        $this->shouldBeAnInstanceOf(Reorderer::class);
     }
 
     function it_implements()
     {
-        $this->shouldImplement(ReorderServiceInterface::class);
+        $this->shouldImplement(ReordererInterface::class);
     }
 
     function it_creates_and_persists_reorder_from_existing_order(

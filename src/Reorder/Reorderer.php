@@ -10,7 +10,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 
-final class ReorderService implements ReorderServiceInterface
+final class Reorderer implements ReordererInterface
 {
     /** @var OrderFactoryInterface */
     private $orderFactory;

@@ -10,7 +10,7 @@ use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Sylius\Component\Order\Context\CartContextInterface;
-use Sylius\CustomerReorderPlugin\Reorder\ReorderServiceInterface;
+use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +30,7 @@ final class CustomerReorderAction
     /** @var OrderRepositoryInterface */
     private $orderRepository;
 
-    /** @var ReorderServiceInterface */
+    /** @var ReordererInterface */
     private $reorderService;
 
     /** @var UrlGeneratorInterface */
@@ -41,7 +41,7 @@ final class CustomerReorderAction
         ChannelContextInterface $channelContext,
         CartContextInterface $cartContext,
         OrderRepositoryInterface $orderRepository,
-        ReorderServiceInterface $reorderService,
+        ReordererInterface $reorderService,
         UrlGeneratorInterface $urlGenerator
     ) {
         $this->cartSessionStorage = $cartSessionStorage;
@@ -54,7 +54,6 @@ final class CustomerReorderAction
 
     public function __invoke(Request $request): Response
     {
-        /** @var OrderInterface */
         $order = $this->orderRepository->find($request->attributes->get('id'));
         assert($order instanceof OrderInterface);
 

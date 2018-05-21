@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace spec\Sylius\CustomerReorderPlugin\Factory;
 
+use ArrayIterator;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
@@ -48,24 +50,24 @@ final class OrderFactorySpec extends ObjectBehavior
         OrderInterface $order,
         OrderInterface $reorder,
         ChannelInterface $channel,
-        CustomerInterface $customer
+        CustomerInterface $customer,
+        Collection $orderItems,
+        ArrayIterator $arrayIterator
     ) {
+        $orderItems->getIterator()->willReturn($arrayIterator);
+
         $decoratedFactory->createNew()->willReturn($reorder);
         $order->getCustomer()->willReturn($customer);
         $order->getCurrencyCode()->willReturn('USD');
-        $order->getCheckoutState()->willReturn(OrderCheckoutStates::STATE_CART);
         $order->getLocaleCode()->willReturn('en_US');
-        $order->getNotes()->willReturn('');
-        $order->getPaymentState()->willReturn(PaymentInterface::STATE_CART);
-        $order->getItems()->willReturn(new ArrayCollection());
+        $order->getNotes()->willReturn('test_notes');
+        $order->getItems()->willReturn($orderItems);
 
         $reorder->setChannel($channel)->shouldBeCalled();
         $reorder->setCustomer($customer)->shouldBeCalled();
         $reorder->setCurrencyCode('USD')->shouldBeCalled();
-        $reorder->setCheckoutState(OrderCheckoutStates::STATE_CART)->shouldBeCalled();
         $reorder->setLocaleCode('en_US')->shouldBeCalled();
-        $reorder->setNotes('')->shouldBeCalled();
-        $reorder->setPaymentState(PaymentInterface::STATE_CART)->shouldBeCalled();
+        $reorder->setNotes('test_notes')->shouldBeCalled();
 
         $this->createFromExistingOrder($order, $channel);
     }

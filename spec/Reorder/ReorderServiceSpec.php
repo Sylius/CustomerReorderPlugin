@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+namespace spec\Sylius\CustomerReorderPlugin\Reorder;
+
+use Doctrine\ORM\EntityManagerInterface;
+use PhpSpec\ObjectBehavior;
+use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Order\Processor\OrderProcessorInterface;
+use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
+use Sylius\CustomerReorderPlugin\Reorder\ReorderService;
+use Sylius\CustomerReorderPlugin\Reorder\ReorderServiceInterface;
+
+final class ReorderServiceSpec extends ObjectBehavior
+{
+    function let(
+        OrderFactoryInterface $orderFactory,
+        EntityManagerInterface $entityManager,
+        OrderProcessorInterface $orderProcessor
+    ) {
+        $this->beConstructedWith($orderFactory, $entityManager, $orderProcessor);
+    }
+
+    function it_is_initializable()
+    {
+        $this->shouldBeAnInstanceOf(ReorderService::class);
+    }
+
+    function it_implements()
+    {
+        $this->shouldImplement(ReorderServiceInterface::class);
+    }
+
+    function it_creates_and_persists_reorder_from_existing_order(
+        OrderFactoryInterface $orderFactory,
+        EntityManagerInterface $entityManager,
+        ChannelInterface $channel,
+        OrderInterface $order,
+        OrderInterface $reorder
+    ) {
+        $orderFactory->createFromExistingOrder($order, $channel)->willReturn($reorder);
+        $entityManager->persist($reorder)->shouldBeCalled();
+        $entityManager->flush()->shouldBeCalled();
+
+        $this->reorder($order, $channel);
+    }
+}

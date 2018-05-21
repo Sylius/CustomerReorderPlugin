@@ -55,7 +55,6 @@ final class CustomerReorderAction
     public function __invoke(Request $request): Response
     {
         $order = $this->orderRepository->find($request->attributes->get('id'));
-        assert($order instanceof OrderInterface);
 
         $channel = $this->channelContext->getChannel();
         assert($channel instanceof ChannelInterface);

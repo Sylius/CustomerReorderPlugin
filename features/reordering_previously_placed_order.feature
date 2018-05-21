@@ -41,12 +41,19 @@ Feature: Reordering previously placed order
         And I click reorder button next to the order "#00000666"
         Then I should be notified that total price differs from previously placed order
 
-    @todo
-    Scenario: Having address section filled with address information taken from previously placed order
+    @ui
+    Scenario: Having billing address section filled with address information taken from previously placed order
         When I browse my orders
         And I click reorder button next to the order "#00000666"
         And I proceed to the addressing step
-        Then I specify the shipping address as "Lucifer Morningstar", "Seaside Fwy", "90802", "Los Angeles" for "Jon Snow"
+        Then address "Lucifer Morningstar", "Seaside Fwy", "90802", "Los Angeles", "United States", "Arkansas" should be filled as billing address
+
+    @ui
+    Scenario: Having shipping address section filled with address information taken from previously placed order
+        When I browse my orders
+        And I click reorder button next to the order "#00000666"
+        And I proceed to the addressing step
+        Then address "Lucifer Morningstar", "Seaside Fwy", "90802", "Los Angeles", "United States", "Arkansas" should be filled as shipping address
 
     @todo
     Scenario: Having shipping method not filled with shipping information taken from previously placed order

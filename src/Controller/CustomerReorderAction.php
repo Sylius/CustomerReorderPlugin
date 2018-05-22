@@ -54,6 +54,7 @@ final class CustomerReorderAction
 
     public function __invoke(Request $request): Response
     {
+        /** @var OrderInterface $order */
         $order = $this->orderRepository->find($request->attributes->get('id'));
 
         $channel = $this->channelContext->getChannel();

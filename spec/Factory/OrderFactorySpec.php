@@ -6,6 +6,7 @@ namespace spec\Sylius\CustomerReorderPlugin\Factory;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
+use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
@@ -49,7 +50,9 @@ final class OrderFactorySpec extends ObjectBehavior
         ChannelInterface $channel,
         CustomerInterface $customer,
         OrderItemInterface $firstOrderItem,
-        OrderItemInterface $secondOrderItem
+        OrderItemInterface $secondOrderItem,
+        AddressInterface $shippingAddress,
+        AddressInterface $billingAddress
     ) {
         $decoratedFactory->createNew()->willReturn($reorder);
         $order->getCustomer()->willReturn($customer);
@@ -60,6 +63,8 @@ final class OrderFactorySpec extends ObjectBehavior
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
         ]));
+        $order->getShippingAddress()->willReturn($shippingAddress);
+        $order->getBillingAddress()->willReturn($billingAddress);
 
         $reorder->setChannel($channel)->shouldBeCalled();
         $reorder->setCustomer($customer)->shouldBeCalled();
@@ -69,6 +74,9 @@ final class OrderFactorySpec extends ObjectBehavior
 
         $reorder->addItem($firstOrderItem)->shouldBeCalled();
         $reorder->addItem($secondOrderItem)->shouldBeCalled();
+
+        $reorder->setBillingAddress($billingAddress)->shouldBeCalled();
+        $reorder->setShippingAddress($shippingAddress)->shouldBeCalled();
 
         $this->createFromExistingOrder($order, $channel);
     }

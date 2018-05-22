@@ -1,0 +1,4 @@
+suites:
+    main:
+        namespace: Sylius\CustomerReorderPlugin
+        psr4_prefix: Sylius\CustomerReorderPlugin

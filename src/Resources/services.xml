@@ -2,6 +2,23 @@
 
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Sylius\CustomerReorderPlugin\Controller\CustomerReorderAction" />
+        <service id="Sylius\CustomerReorderPlugin\Controller\CustomerReorderAction">
+            <argument type="service" id="sylius.storage.cart_session" />
+            <argument type="service" id="sylius.context.channel" />
+            <argument type="service" id="sylius.context.cart" />
+            <argument type="service" id="sylius.repository.order" />
+            <argument type="service" id="Sylius\CustomerReorderPlugin\Reorder\Reorderer" />
+            <argument type="service" id="router" />
+        </service>
+        <service id="Sylius\CustomerReorderPlugin\Reorder\Reorderer">
+            <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="sylius.order_processing.order_processor" />
+        </service>
+        <service id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" decorates="sylius.factory.order" public="false">
+            <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory.inner" />
+            <argument type="service" id="sylius.order_item_quantity_modifier" />
+            <argument type="service" id="sylius.factory.order_item" />
+        </service>
     </services>
 </container>

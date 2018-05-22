@@ -41,7 +41,19 @@ final class ReorderContext implements Context
      */
     public function iClickReorderButtonNextToTheOrder(string $orderNumber): void
     {
+        $orderData = $this->session->getPage()->find('css', sprintf('tr:contains("%s")', $orderNumber));
 
+        if (null === $orderData) {
+            throw new \Exception(sprintf('There is no order %s on the orders list', $orderNumber));
+        }
+
+        $reorderButton = $orderData->find('css', 'td:last-child')->find('css', 'button');
+
+        if (null === $reorderButton || $reorderButton->getText() != 'Reorder') {
+            throw new \Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
+        }
+
+        $reorderButton->click();
     }
 
     /**

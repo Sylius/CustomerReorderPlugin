@@ -7,6 +7,8 @@ namespace Sylius\CustomerReorderPlugin\Factory;
 use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
@@ -21,14 +23,19 @@ final class OrderFactory implements OrderFactoryInterface
     /** @var FactoryInterface */
     private $orderItemFactory;
 
+    /** @var OrderItemQuantityModifierInterface */
+    private $orderItemQuantityModifier;
+
     public function __construct(
         FactoryInterface $decoratedFactory,
+        FactoryInterface $orderItemFactory,
         OrderModifierInterface $orderModifier,
-        FactoryInterface $orderItemFactory
+        OrderItemQuantityModifierInterface $orderItemQuantityModifier
     ) {
         $this->decoratedFactory = $decoratedFactory;
-        $this->orderModifier = $orderModifier;
         $this->orderItemFactory = $orderItemFactory;
+        $this->orderModifier = $orderModifier;
+        $this->orderItemQuantityModifier = $orderItemQuantityModifier;
     }
 
     public function createNew()
@@ -66,8 +73,18 @@ final class OrderFactory implements OrderFactoryInterface
     {
         $orderItems = $order->getItems();
 
+        /** @var OrderItemInterface $orderItem */
         foreach ($orderItems as $orderItem) {
-            $this->orderModifier->addToOrder($reorder, clone $orderItem);
+
+            /** @var OrderItemInterface $newItem */
+            $newItem = $this->orderItemFactory->createNew();
+
+            $orderItem->getVariant();
+            $newItem->setVariant($orderItem->getVariant());
+            $newItem->setUnitPrice($orderItem->getUnitPrice());
+
+            $this->orderItemQuantityModifier->modify($newItem, $orderItem->getQuantity());
+            $this->orderModifier->addToOrder($reorder, $newItem);
         }
     }
 }

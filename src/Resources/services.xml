@@ -17,7 +17,7 @@
         </service>
         <service id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" decorates="sylius.factory.order" public="false">
             <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory.inner" />
-            <argument type="service" id="sylius.order_item_quantity_modifier" />
+            <argument type="service" id="sylius.order_modifier" />
             <argument type="service" id="sylius.factory.order_item" />
         </service>
     </services>

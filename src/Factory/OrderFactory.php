@@ -7,10 +7,7 @@ namespace Sylius\CustomerReorderPlugin\Factory;
 use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
-use Sylius\Component\Core\Model\OrderItemInterface;
-use Sylius\Component\Core\Model\PaymentInterface;
-use Sylius\Component\Core\OrderCheckoutStates;
-use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
+use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
 final class OrderFactory implements OrderFactoryInterface
@@ -18,19 +15,19 @@ final class OrderFactory implements OrderFactoryInterface
     /** @var FactoryInterface */
     private $decoratedFactory;
 
-    /** @var OrderItemQuantityModifierInterface */
-    private $orderItemQuantityModifier;
+    /** @var OrderModifierInterface */
+    private $orderModifier;
 
     /** @var FactoryInterface */
     private $orderItemFactory;
 
     public function __construct(
         FactoryInterface $decoratedFactory,
-        OrderItemQuantityModifierInterface $orderItemQuantityModifier,
+        OrderModifierInterface $orderModifier,
         FactoryInterface $orderItemFactory
     ) {
         $this->decoratedFactory = $decoratedFactory;
-        $this->orderItemQuantityModifier = $orderItemQuantityModifier;
+        $this->orderModifier = $orderModifier;
         $this->orderItemFactory = $orderItemFactory;
     }
 
@@ -70,7 +67,7 @@ final class OrderFactory implements OrderFactoryInterface
         $orderItems = $order->getItems();
 
         foreach ($orderItems as $orderItem) {
-            $reorder->addItem(clone $orderItem);
+            $this->orderModifier->addToOrder($reorder, clone $orderItem);
         }
     }
 }

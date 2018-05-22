@@ -95,13 +95,13 @@ final class ReorderContext implements Context
     {
 
     }
-    
+
     /**
      * @When I proceed to the addressing step
      */
     public function iProceedToTheAddressingStep(): void
     {
-        
+        $this->session->getPage()->clickLink('Checkout');
     }
 
     /**

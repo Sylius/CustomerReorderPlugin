@@ -14,8 +14,8 @@ Feature: Reordering previously placed order
         And this promotion gives "$20.00" discount to every order
         And I placed an order "#00000666"
         And I bought a single "Angel T-Shirt"
-        And I addressed it to "Lucifer Morningstar", "Seaside Fwy", "90802" "Los Angeles" in the "United States"
-        And for the billing address of "Mazikeen Lilim" in the "Pacific Coast Hwy", "90806" "Los Angeles", "United States"
+        And I addressed it to "Lucifer Morningstar", "Seaside Fwy", "90802" "Los Angeles" in the "United States", "Arkansas"
+        And for the billing address of "Mazikeen Lilim" in the "Pacific Coast Hwy", "90806" "Los Angeles", "United States", "Arkansas"
         And I chose "Free" shipping method with "Cash on Delivery" payment
 
     @ui
@@ -46,7 +46,7 @@ Feature: Reordering previously placed order
         When I browse my orders
         And I click reorder button next to the order "#00000666"
         And I proceed to the addressing step
-        Then address "Lucifer Morningstar", "Seaside Fwy", "90802", "Los Angeles", "United States", "Arkansas" should be filled as billing address
+        Then address "Mazikeen Lilim", "Pacific Coast Hwy", "90806", "Los Angeles", "United States", "Arkansas" should be filled as billing address
 
     @ui
     Scenario: Having shipping address section filled with address information taken from previously placed order

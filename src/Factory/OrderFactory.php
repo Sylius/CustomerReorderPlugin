@@ -50,6 +50,8 @@ final class OrderFactory implements OrderFactoryInterface
         $reorder->setCurrencyCode($order->getCurrencyCode());
         $reorder->setNotes($order->getNotes());
         $reorder->setLocaleCode($order->getLocaleCode());
+        $reorder->setBillingAddress(clone $order->getBillingAddress());
+        $reorder->setShippingAddress(clone $order->getShippingAddress());
 
         $this->copyOrderItemsToReorder($order, $reorder);
 

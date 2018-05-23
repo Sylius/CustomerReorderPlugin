@@ -75,11 +75,9 @@ final class OrderFactory implements OrderFactoryInterface
 
         /** @var OrderItemInterface $orderItem */
         foreach ($orderItems as $orderItem) {
-
             /** @var OrderItemInterface $newItem */
             $newItem = $this->orderItemFactory->createNew();
 
-            $orderItem->getVariant();
             $newItem->setVariant($orderItem->getVariant());
             $newItem->setUnitPrice($orderItem->getUnitPrice());
 

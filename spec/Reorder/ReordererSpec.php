@@ -28,7 +28,7 @@ final class ReordererSpec extends ObjectBehavior
         $this->shouldBeAnInstanceOf(Reorderer::class);
     }
 
-    function it_implements()
+    function it_implements_reorderer_interface()
     {
         $this->shouldImplement(ReordererInterface::class);
     }

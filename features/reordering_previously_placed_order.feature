@@ -26,6 +26,13 @@ Feature: Reordering previously placed order
         And I should see "Angel T-Shirt" with quantity 1 in my cart
         And my cart total should be "$19.00"
 
+    @ui
+    Scenario: Having order's promotion applied when it's still enabled
+        When I browse my orders
+        And I click reorder button next to the order "#00000666"
+        Then I should be on my cart summary page
+        And my discount should be "-$20.00"
+
     @todo
     Scenario: Reordering previously placed order when one of items is out of stock
         Given the product "Angel T-Shirt" is out of stock

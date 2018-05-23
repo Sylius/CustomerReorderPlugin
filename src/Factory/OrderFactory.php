@@ -8,9 +8,8 @@ use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
-use Sylius\Component\Core\Model\PaymentInterface;
-use Sylius\Component\Core\OrderCheckoutStates;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
+use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
 final class OrderFactory implements OrderFactoryInterface
@@ -18,20 +17,25 @@ final class OrderFactory implements OrderFactoryInterface
     /** @var FactoryInterface */
     private $decoratedFactory;
 
-    /** @var OrderItemQuantityModifierInterface */
-    private $orderItemQuantityModifier;
+    /** @var OrderModifierInterface */
+    private $orderModifier;
 
     /** @var FactoryInterface */
     private $orderItemFactory;
 
+    /** @var OrderItemQuantityModifierInterface */
+    private $orderItemQuantityModifier;
+
     public function __construct(
         FactoryInterface $decoratedFactory,
-        OrderItemQuantityModifierInterface $orderItemQuantityModifier,
-        FactoryInterface $orderItemFactory
+        FactoryInterface $orderItemFactory,
+        OrderModifierInterface $orderModifier,
+        OrderItemQuantityModifierInterface $orderItemQuantityModifier
     ) {
         $this->decoratedFactory = $decoratedFactory;
-        $this->orderItemQuantityModifier = $orderItemQuantityModifier;
         $this->orderItemFactory = $orderItemFactory;
+        $this->orderModifier = $orderModifier;
+        $this->orderItemQuantityModifier = $orderItemQuantityModifier;
     }
 
     public function createNew()
@@ -69,8 +73,16 @@ final class OrderFactory implements OrderFactoryInterface
     {
         $orderItems = $order->getItems();
 
+        /** @var OrderItemInterface $orderItem */
         foreach ($orderItems as $orderItem) {
-            $reorder->addItem(clone $orderItem);
+            /** @var OrderItemInterface $newItem */
+            $newItem = $this->orderItemFactory->createNew();
+
+            $newItem->setVariant($orderItem->getVariant());
+            $newItem->setUnitPrice($orderItem->getUnitPrice());
+
+            $this->orderItemQuantityModifier->modify($newItem, $orderItem->getQuantity());
+            $this->orderModifier->addToOrder($reorder, $newItem);
         }
     }
 }

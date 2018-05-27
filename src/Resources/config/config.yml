@@ -1,3 +1,6 @@
+imports:
+    - { resource: "@SyliusCustomerReorderPlugin/Resources/config/services.xml" }
+
 sylius_grid:
     grids:
         sylius_shop_account_order:

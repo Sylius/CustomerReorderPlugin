@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace spec\Sylius\CustomerReorderPlugin\Reorder;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpSpec\ObjectBehavior;
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;

@@ -49,6 +49,14 @@ Feature: Reordering previously placed order
         Then I should be notified that total price differs from previously placed order
 
     @ui
+    Scenario: Reordering previously placed order when items' prices has changed
+        Given the product "Angel T-Shirt" changed its price to "$300.00"
+        When I browse my orders
+        And I click reorder button next to the order "#00000666"
+        Then I should be on my cart summary page
+        Then I should be notified that total price differs from previously placed order and the previous price was "$19.00"
+
+    @ui
     Scenario: Having billing address section filled with address information taken from previously placed order
         When I browse my orders
         And I click reorder button next to the order "#00000666"

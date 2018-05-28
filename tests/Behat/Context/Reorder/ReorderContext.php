@@ -65,11 +65,22 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that total price differs from previously placed order
+     * @Then I should be notified that total price differs from previously placed order and the previous price was :orderTotal
      */
-    public function iShouldBeNotifiedThatToalPriceDiffersFromPreviouslyPlacedOrder(): void
+    public function iShouldBeNotifiedThatTotalPriceDiffersFromPreviouslyPlacedOrder(string $orderTotal): void
     {
+        $notification = $this->session->getPage()->find('css', '.sylius-flash-message');
 
+        if (null === $notification) {
+            throw new \Exception('There is no notification on current page.');
+        }
+
+        $message = $notification->getText();
+
+        if (!strpos($message, sprintf(
+            'Price of some order items has changed. It may have affected order total. Previous order total: ', $orderTotal))) {
+            throw new \Exception('Notification text does not contain information about total order price change');
+        }
     }
 
     /**

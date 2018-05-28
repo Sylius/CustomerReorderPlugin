@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
 
 use Behat\Behat\Context\Context;
+use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
 use Sylius\Component\Core\Model\AddressInterface;
+use Sylius\Component\Core\Model\PromotionInterface;
 
 final class ReorderContext implements Context
 {
@@ -65,22 +67,29 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that total price differs from previously placed order and the previous price was :orderTotal
+     * @Then I should be notified that order items price has changed
+     */
+    public function iShouldBeNotifiedThatOrderItemsPriceHasChanged(): void
+    {
+        $this->assertFlashMessageWithTextExists('Price of some order items has changed. It may have affected order total.');
+    }
+
+    /**
+     * @Then I should be notified that previous order total was :orderTotal
      */
     public function iShouldBeNotifiedThatTotalPriceDiffersFromPreviouslyPlacedOrder(string $orderTotal): void
     {
-        $notification = $this->session->getPage()->find('css', '.sylius-flash-message');
+        $this->assertFlashMessageWithTextExists(sprintf('Previous order total: %s', $orderTotal));
+    }
 
-        if (null === $notification) {
-            throw new \Exception('There is no notification on current page.');
-        }
-
-        $message = $notification->getText();
-
-        if (!strpos($message, sprintf(
-            'Prices of some products has changed, which have affected order total. Previous order total: ', $orderTotal))) {
-            throw new \Exception('Notification text does not contain information about total order price change');
-        }
+    /**
+     * @Then I should be notified that promotion :promotion is no longer enabled
+     */
+    public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(PromotionInterface $promotion): void
+    {
+        $this->assertFlashMessageWithTextExists(sprintf(
+            'The promotions %s are no longer enabled. It may have affected order total.',
+            $promotion->getName()));
     }
 
     /**
@@ -129,5 +138,24 @@ final class ReorderContext implements Context
     public function iProceedToThePaymentStep(): void
     {
 
+    }
+
+    private function assertFlashMessageWithTextExists(string $text) {
+        $notifications = $this->session->getPage()->findAll('css', '.sylius-flash-message');
+
+        if (null === $notifications) {
+            throw new \Exception('There is no notification on current page.');
+        }
+
+        /** @var NodeElement $notification */
+        foreach ($notifications as $notification) {
+            $message = $notification->getText();
+
+            if (strpos($message, $text)) {
+                return;
+            }
+        }
+
+        throw new \Exception(sprintf('Flash message with text %s not found', $text));
     }
 }

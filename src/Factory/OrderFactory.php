@@ -80,6 +80,8 @@ final class OrderFactory implements OrderFactoryInterface
 
             $newItem->setVariant($orderItem->getVariant());
             $newItem->setUnitPrice($orderItem->getUnitPrice());
+            $newItem->setProductName($orderItem->getProductName());
+            $newItem->setVariantName($orderItem->getVariantName());
 
             $this->orderItemQuantityModifier->modify($newItem, $orderItem->getQuantity());
             $this->orderModifier->addToOrder($reorder, $newItem);

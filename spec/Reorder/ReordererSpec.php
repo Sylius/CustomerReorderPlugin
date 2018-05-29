@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace spec\Sylius\CustomerReorderPlugin\Reorder;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpSpec\ObjectBehavior;
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
@@ -14,6 +13,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
+use Sylius\CustomerReorderPlugin\Reorder\OrderToReorderComparatorInterface;
 use Sylius\CustomerReorderPlugin\Reorder\Reorderer;
 use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -26,9 +26,12 @@ final class ReordererSpec extends ObjectBehavior
         EntityManagerInterface $entityManager,
         OrderProcessorInterface $orderProcessor,
         MoneyFormatterInterface $moneyFormatter,
-        Session $session
+        Session $session,
+        OrderToReorderComparatorInterface $orderToReorderComparator
     ) {
-        $this->beConstructedWith($orderFactory, $entityManager, $orderProcessor, $moneyFormatter, $session);
+        $this->beConstructedWith(
+            $orderFactory, $entityManager, $orderProcessor, $moneyFormatter, $session, $orderToReorderComparator
+        );
     }
 
     function it_is_initializable()
@@ -69,7 +72,8 @@ final class ReordererSpec extends ObjectBehavior
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
         FlashBagInterface $flashBag,
-        ArrayCollection $promotions
+        ArrayCollection $promotions,
+        OrderToReorderComparatorInterface $orderToReorderComparator
     ) {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -77,6 +81,9 @@ final class ReordererSpec extends ObjectBehavior
 
         $reorder->getTotal()->willReturn(150);
         $reorder->getPromotions()->willReturn($promotions);
+
+        $orderToReorderComparator->havePromotionsChanged($order, $reorder)->willReturn(false);
+        $orderToReorderComparator->haveItemsPricesChanged($order, $reorder)->willReturn(true);
 
         $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
         $session->getFlashBag()->willReturn($flashBag);
@@ -103,7 +110,8 @@ final class ReordererSpec extends ObjectBehavior
         Session $session,
         FlashBagInterface $flashBag,
         PromotionInterface $firstPromotion,
-        PromotionInterface $secondPromotion
+        PromotionInterface $secondPromotion,
+        OrderToReorderComparatorInterface $orderToReorderComparator
     ) {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -118,14 +126,12 @@ final class ReordererSpec extends ObjectBehavior
         $reorder->getTotal()->willReturn(150);
         $reorder->getPromotions()->willReturn(new ArrayCollection());
 
+        $orderToReorderComparator->haveItemsPricesChanged($order, $reorder)->willReturn(false);
+        $orderToReorderComparator->havePromotionsChanged($order, $reorder)->willReturn(true);
+
         $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
         $session->getFlashBag()->willReturn($flashBag);
-        $flashBag->add('info', [
-            'message' => 'sylius.reorder.promotion_not_enabled',
-            'parameters' => [
-                '%promotion_name%' => 'test_promotion_01 test_promotion_02 ',
-            ]
-        ])->shouldBeCalled();
+        $flashBag->add('info','sylius.reorder.promotion_not_enabled')->shouldBeCalled();
         $flashBag->add('info', [
             'message' => 'sylius.reorder.previous_order_total',
             'parameters' => [

@@ -83,13 +83,11 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that promotion :promotion is no longer enabled
+     * @Then I should be notified that promotion is no longer enabled
      */
-    public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(PromotionInterface $promotion): void
+    public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(): void
     {
-        $this->assertFlashMessageWithTextExists(sprintf(
-            'The promotions %s are no longer enabled. It may have affected order total.',
-            $promotion->getName()));
+        $this->assertFlashMessageWithTextExists('Some promotions are no longer enabled. It may have affected order total.');
     }
 
     /**

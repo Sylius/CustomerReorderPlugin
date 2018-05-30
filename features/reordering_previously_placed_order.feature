@@ -7,6 +7,8 @@ Feature: Reordering previously placed order
     Background:
         Given the store operates on a single channel in the "United States" named "Web"
         And the store has a product "Angel T-Shirt" priced at "$39.00"
+        And there are 25 units of product "Angel T-Shirt" available in the inventory
+        And this product is tracked by the inventory
         And the store ships everywhere for free
         And the store allows paying with "Cash on Delivery"
         And I am a logged in customer
@@ -33,13 +35,14 @@ Feature: Reordering previously placed order
         Then I should be on my cart summary page
         And my discount should be "-$20.00"
 
-    @todo
+    @ui
     Scenario: Reordering previously placed order when one of items is out of stock
         Given the product "Angel T-Shirt" is out of stock
         When I browse my orders
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
         And I should be notified that product "Angel T-Shirt" is out of stock
+        And I should be notified that previous order total was "$19.00"
 
     @ui
     Scenario: Reordering previously placed order when promotion is no longer available

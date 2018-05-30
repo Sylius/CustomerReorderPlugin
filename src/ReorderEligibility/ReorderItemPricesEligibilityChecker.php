@@ -2,19 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Sylius\CustomerReorderPlugin\Reorder;
+namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 
-final class OrderToReorderComparator implements OrderToReorderComparatorInterface
+final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChecker
 {
-    public function havePromotionsChanged(OrderInterface $order, OrderInterface $reorder): bool
-    {
-        return $order->getPromotions()->getValues() != $reorder->getPromotions()->getValues();
-    }
-
-    public function haveItemsPricesChanged(OrderInterface $order, OrderInterface $reorder): bool
+    public function check(OrderInterface $order, OrderInterface $reorder)
     {
         $orderVariantNamesToTotal = [];
         $reorderVariantNamesToTotal = [];
@@ -24,17 +19,24 @@ final class OrderToReorderComparator implements OrderToReorderComparatorInterfac
             $orderVariantNamesToTotal[$orderItem->getVariantName()] = $orderItem->getUnitPrice();
         }
 
-        /** @var OrderItemInterface $orderItem */
+        /** @var OrderItemInterface $reorderItem */
         foreach ($reorder->getItems()->getValues() as $reorderItem) {
             $reorderVariantNamesToTotal[$reorderItem->getVariantName()] = $reorderItem->getUnitPrice();
         }
 
         foreach (array_keys($orderVariantNamesToTotal) as $key) {
+            if (!array_key_exists($key, $reorderVariantNamesToTotal)) {
+                continue;
+            }
+
             if ($orderVariantNamesToTotal[$key] !== $reorderVariantNamesToTotal[$key]) {
-                return true;
+                return [
+                    'type' => 'info',
+                    'message' => 'sylius.reorder.items_price_changed'
+                ];
             }
         }
 
-        return false;
+        return [];
     }
 }

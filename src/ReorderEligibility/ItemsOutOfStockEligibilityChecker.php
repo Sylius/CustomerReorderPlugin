@@ -17,6 +17,15 @@ use Sylius\Component\Core\Model\OrderItemInterface;
 
 final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityChecker
 {
+    /** @var ReorderEligibilityConstraintMessageFormatterInterface */
+    private $reorderEligibilityConstraintMessageFormatter;
+
+    public function __construct(
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+    ) {
+        $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
+    }
+
     public function check(OrderInterface $order, OrderInterface $reorder)
     {
         $isAnyItemOutOfStock = false;
@@ -34,24 +43,11 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
             return [];
         }
 
-        $messageParameter = '';
-
-        if (count($variantsOutOfStock) === 1) {
-            $messageParameter = array_pop($variantsOutOfStock);
-        }
-
-        else {
-            $lastItemOutOfStock = end($variantOutOfStock);
-            foreach ($variantsOutOfStock as $variantOutOfStock) {
-                $messageParameter .= $variantOutOfStock . ($variantOutOfStock !== $lastItemOutOfStock) ? ', ' : '';
-            }
-        }
-
         return [
             'type' => 'info',
             'message' => 'sylius.reorder.items_out_of_stock',
             'parameters' => [
-                '%order_items%' => $messageParameter
+                '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($variantsOutOfStock),
             ]
         ];
     }

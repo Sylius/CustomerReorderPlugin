@@ -70,11 +70,14 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that order items price has changed
+     * @Then I should be notified that :orderItemName price has changed
      */
-    public function iShouldBeNotifiedThatOrderItemsPriceHasChanged(): void
+    public function iShouldBeNotifiedThatOrderItemsPriceHasChanged(string $orderItemName): void
     {
-        $this->assertFlashMessageWithTextExists('Prices of some products has changed, which have affected order total.');
+        $this->assertFlashMessageWithTextExists(sprintf(
+            'Following items: %s price has changed. It may have affected order total.',
+            $orderItemName)
+        );
     }
 
     /**
@@ -86,11 +89,14 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that promotion is no longer enabled
+     * @Then I should be notified that promotion :promotionName is no longer enabled
      */
-    public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(): void
+    public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(string $promotionName): void
     {
-        $this->assertFlashMessageWithTextExists('Some promotions are no longer enabled. It may have affected order total.');
+        $this->assertFlashMessageWithTextExists(sprintf(
+            'Following promotions: %s are no longer enabled. It may have affected order total.',
+            $promotionName)
+        );
     }
 
     /**

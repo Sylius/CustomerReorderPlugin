@@ -49,7 +49,7 @@ Feature: Reordering previously placed order
         Given the promotion was disabled for the channel "Web"
         When I browse my orders
         And I click reorder button next to the order "#00000666"
-        Then I should be notified that promotion is no longer enabled
+        Then I should be notified that promotion "Order's Extravaganza" is no longer enabled
         And I should be notified that previous order total was "$19.00"
 
     @ui
@@ -58,7 +58,7 @@ Feature: Reordering previously placed order
         When I browse my orders
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
-        And I should be notified that order items price has changed
+        And I should be notified that "Angel T-Shirt" price has changed
         And I should be notified that previous order total was "$19.00"
 
     @ui

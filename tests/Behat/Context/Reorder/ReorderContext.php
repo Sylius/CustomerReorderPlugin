@@ -63,7 +63,10 @@ final class ReorderContext implements Context
      */
     public function iShouldBeNotifiedThatProductIsOutOfStock(string $product): void
     {
-
+        $this->assertFlashMessageWithTextExists(sprintf(
+            'Following items: %s are out of stock. It may have affected order total.',
+            $product)
+        );
     }
 
     /**

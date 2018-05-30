@@ -9,15 +9,22 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
 use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 
 final class ReorderContext implements Context
 {
     /** @var Session */
     private $session;
 
-    public function __construct(Session $session)
-    {
+    /** @var ReorderEligibilityConstraintMessageFormatterInterface */
+    private $reorderEligibilityConstraintMessageFormatter;
+
+    public function __construct(
+        Session $session,
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+    ) {
         $this->session = $session;
+        $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
     /**
@@ -59,13 +66,14 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that product :product is out of stock
+     * @Then I should be notified that product :firstProduct is out of stock
+     * @Then I should be notified that products :firstProduct, :secondProduct are out of stock
      */
-    public function iShouldBeNotifiedThatProductIsOutOfStock(string $product): void
+    public function iShouldBeNotifiedThatProductIsOutOfStock(string ... $products): void
     {
         $this->assertFlashMessageWithTextExists(sprintf(
             'Following items: %s are out of stock. It may have affected order total.',
-            $product)
+            $this->reorderEligibilityConstraintMessageFormatter->format($products))
         );
     }
 

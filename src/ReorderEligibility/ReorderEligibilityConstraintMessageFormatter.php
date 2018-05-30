@@ -8,19 +8,19 @@ final class ReorderEligibilityConstraintMessageFormatter implements ReorderEligi
 {
     public function format(array $messageParameters): string
     {
-        $messageParameter = '';
+        $message = '';
 
         if (count($messageParameters) === 1) {
-            $messageParameter = array_pop($messageParameters);
+            $message = array_pop($messageParameters);
         }
 
         else {
             $lastMessageParameter = end($messageParameters);
             foreach ($messageParameters as $messageParameter) {
-                $messageParameter .= $messageParameter . ($messageParameters !== $lastMessageParameter) ? ', ' : '';
+                $message .= $messageParameter . (($messageParameter !== $lastMessageParameter) ? ', ' : '');
             }
         }
 
-        return $messageParameter;
+        return $message;
     }
 }

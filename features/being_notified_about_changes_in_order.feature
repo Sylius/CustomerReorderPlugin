@@ -37,6 +37,17 @@ Feature: Being notified about changes in order
         And I should see exactly 2 notifications
 
     @ui
+    Scenario: Reordering previously placed order when several items is out of stock
+        Given the product "Angel T-Shirt" is out of stock
+        Given the product "Awesome Mug" is out of stock
+        When I browse my orders
+        And I click reorder button next to the order "#00000666"
+        Then I should be on my cart summary page
+        And I should be notified that products "Angel T-Shirt", "Awesome Mug" are out of stock
+        And I should be notified that previous order total was "$59.00"
+        And I should see exactly 2 notifications
+
+    @ui
     Scenario: Reordering previously placed order when promotion is no longer available
         Given the promotion was disabled for the channel "Web"
         When I browse my orders

@@ -37,7 +37,7 @@ Feature: Being notified about changes in order
         And I should see exactly 2 notifications
 
     @ui
-    Scenario: Reordering previously placed order when several items is out of stock
+    Scenario: Reordering previously placed order when several items are out of stock
         Given the product "Angel T-Shirt" is out of stock
         Given the product "Awesome Mug" is out of stock
         When I browse my orders

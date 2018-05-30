@@ -27,6 +27,7 @@ Feature: Reordering previously placed order
         Then I should be on my cart summary page
         And I should see "Angel T-Shirt" with quantity 1 in my cart
         And my cart total should be "$19.00"
+        And I should see exactly 0 notifications
 
     @ui
     Scenario: Having order's promotion applied when it's still enabled
@@ -34,35 +35,7 @@ Feature: Reordering previously placed order
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
         And my discount should be "-$20.00"
-
-    @ui
-    Scenario: Reordering previously placed order when one of items is out of stock
-        Given the product "Angel T-Shirt" is out of stock
-        When I browse my orders
-        And I click reorder button next to the order "#00000666"
-        Then I should be on my cart summary page
-        And I should be notified that product "Angel T-Shirt" is out of stock
-        And I should be notified that previous order total was "$19.00"
-        And I should see exactly 2 notifications
-
-    @ui
-    Scenario: Reordering previously placed order when promotion is no longer available
-        Given the promotion was disabled for the channel "Web"
-        When I browse my orders
-        And I click reorder button next to the order "#00000666"
-        Then I should be notified that promotion "Order's Extravaganza" is no longer enabled
-        And I should be notified that previous order total was "$19.00"
-        And I should see exactly 2 notifications
-
-    @ui
-    Scenario: Reordering previously placed order when items' prices has changed
-        Given the product "Angel T-Shirt" changed its price to "$300.00"
-        When I browse my orders
-        And I click reorder button next to the order "#00000666"
-        Then I should be on my cart summary page
-        And I should be notified that "Angel T-Shirt" price has changed
-        And I should be notified that previous order total was "$19.00"
-        And I should see exactly 2 notifications
+        And I should see exactly 0 notifications
 
     @ui
     Scenario: Having billing address section filled with address information taken from previously placed order

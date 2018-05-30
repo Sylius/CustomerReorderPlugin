@@ -27,17 +27,22 @@
 
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" public="false" />
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityChecker">
+            <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />
             <tag name="sylius.reorder.eligibility_checker" priority="30" />
         </service>
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker">
+            <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter"/>
             <tag name="sylius.reorder.eligibility_checker" priority="20" />
         </service>
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderPromotionsEligibilityChecker">
+            <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter"/>
             <tag name="sylius.reorder.eligibility_checker" priority="10" />
         </service>
         <service id="sylius.reorder.eligibility_checker.total" class="Sylius\CustomerReorderPlugin\ReorderEligibility\TotalReorderAmountEligibilityChecker">
             <argument type="service" id="sylius.money_formatter"/>
             <tag name="sylius.reorder.eligibility_checker" priority="0" />
         </service>
+
+        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />
     </services>
 </container>

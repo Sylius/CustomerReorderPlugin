@@ -20,7 +20,7 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
 
     public function check(OrderInterface $order, OrderInterface $reorder)
     {
-        if (empty($reorder->getItems()) ||
+        if (empty($reorder->getItems()->getValues()) ||
             $order->getPromotions()->getValues() === $reorder->getPromotions()->getValues()
         ) {
             return [];

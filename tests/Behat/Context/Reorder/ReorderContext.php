@@ -100,6 +100,15 @@ final class ReorderContext implements Context
     }
 
     /**
+     * @Then I should see exactly :count notifications
+     */
+    public function iShouldSeeExactlyNotifications(int $count): void
+    {
+         assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) == $count);
+    }
+
+
+    /**
      * @Then /^I should have shipping address filled with (address "[^"]+", "[^"]+", "[^"]+", "[^"]+" for "[^"]+")$/
      */
     public function iShouldHaveTheAddressSectionFilledWithAddress(AddressInterface $address): void

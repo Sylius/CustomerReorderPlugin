@@ -43,6 +43,7 @@ Feature: Reordering previously placed order
         Then I should be on my cart summary page
         And I should be notified that product "Angel T-Shirt" is out of stock
         And I should be notified that previous order total was "$19.00"
+        And I should see exactly 2 notifications
 
     @ui
     Scenario: Reordering previously placed order when promotion is no longer available
@@ -51,6 +52,7 @@ Feature: Reordering previously placed order
         And I click reorder button next to the order "#00000666"
         Then I should be notified that promotion "Order's Extravaganza" is no longer enabled
         And I should be notified that previous order total was "$19.00"
+        And I should see exactly 2 notifications
 
     @ui
     Scenario: Reordering previously placed order when items' prices has changed
@@ -60,6 +62,7 @@ Feature: Reordering previously placed order
         Then I should be on my cart summary page
         And I should be notified that "Angel T-Shirt" price has changed
         And I should be notified that previous order total was "$19.00"
+        And I should see exactly 2 notifications
 
     @ui
     Scenario: Having billing address section filled with address information taken from previously placed order

@@ -1,6 +1,6 @@
 sylius:
     reorder:
-        items_out_of_stock: 'Following items: %order_items% are out of stock. It may have affected order total.'
+        items_out_of_stock: 'Following items: %order_items% are out of stock, which have affected order total.'
         items_price_changed: 'Prices of products: %product_names% have changed, which have affected order total.'
         previous_order_total: 'Previous order total: %order_total%'
         promotion_not_enabled: 'Following promotions: %promotion_names% are no longer enabled, which have affected order total.'

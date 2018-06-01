@@ -31,7 +31,7 @@ Feature: Being notified about changes in order
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
         And I should be notified that product "Angel T-Shirt" is out of stock
-        And I should be notified that previous order total was "$59.00"
+        And I should be notified that previous order total was "$148.00"
         And I should see exactly 2 notifications
 
     @ui
@@ -42,8 +42,20 @@ Feature: Being notified about changes in order
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
         And I should be notified that products "Angel T-Shirt", "Awesome Mug" are out of stock
-        And I should be notified that previous order total was "$59.00"
+        And I should be notified that previous order total was "$148.00"
         And I should see exactly 2 notifications
+
+    @ui
+    Scenario: Reordering previously placed order when there is no sufficient item's quantity in stock
+        Given there are 2 units of product "Angel T-Shirt" available in the inventory
+        And there are 5 units of product "Awesome Mug" available in the inventory
+        When I browse my orders
+        And I click reorder button next to the order "#00000666"
+        Then I should be on my cart summary page
+        And I should be notified that 1 unit of product "Angel T-Shirt" was added to cart instead of 2
+        And I should be notified that 1 unit of product "Awesome Mug" were added to cart instead of 2
+        And I should be notified that previous order total was "$148.00"
+        And I should see exactly 3 notifications
 
     @ui
     Scenario: Reordering previously placed order when promotion is no longer available
@@ -51,7 +63,7 @@ Feature: Being notified about changes in order
         When I browse my orders
         And I click reorder button next to the order "#00000666"
         Then I should be notified that promotion "Massive Order Discount" is no longer enabled
-        And I should be notified that previous order total was "$59.00"
+        And I should be notified that previous order total was "$148.00"
         And I should see exactly 2 notifications
 
     @ui
@@ -61,5 +73,5 @@ Feature: Being notified about changes in order
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
         And I should be notified that "Angel T-Shirt" price has changed
-        And I should be notified that previous order total was "$59.00"
+        And I should be notified that previous order total was "$148.00"
         And I should see exactly 2 notifications

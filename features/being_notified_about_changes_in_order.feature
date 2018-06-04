@@ -18,8 +18,8 @@ Feature: Being notified about changes in order
         And there is a promotion "Massive Order Discount"
         And this promotion gives "$10.00" discount to every order
         And I placed an order "#00000666"
-        And I bought a single "Angel T-Shirt"
-        And I bought a single "Awesome Mug"
+        And the customer bought 2 "Angel T-Shirt" products
+        And the customer bought 2 "Awesome Mug" products
         And I addressed it to "Lucifer Morningstar", "Seaside Fwy", "90802" "Los Angeles" in the "United States", "Arkansas"
         And for the billing address of "Mazikeen Lilim" in the "Pacific Coast Hwy", "90806" "Los Angeles", "United States", "Arkansas"
         And I chose "Free" shipping method with "Cash on Delivery" payment

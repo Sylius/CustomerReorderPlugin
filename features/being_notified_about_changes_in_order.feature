@@ -52,8 +52,7 @@ Feature: Being notified about changes in order
         When I browse my orders
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
-        And I should be notified that 1 unit of product "Angel T-Shirt" was added to cart instead of 2
-        And I should be notified that 1 unit of product "Awesome Mug" were added to cart instead of 2
+        And I should be notified that products "Angel T-Shirt", "Awesome Mug" are not available in expected quantity
         And I should be notified that previous order total was "$148.00"
         And I should see exactly 3 notifications
 

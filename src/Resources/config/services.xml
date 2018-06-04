@@ -29,6 +29,10 @@
         </service>
 
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" public="false" />
+        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\InsufficientItemQuantityEligibilityCheck">
+            <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />
+            <tag name="sylius.reorder.eligibility_checker" priority="40" />
+        </service>
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityChecker">
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />
             <tag name="sylius.reorder.eligibility_checker" priority="30" />

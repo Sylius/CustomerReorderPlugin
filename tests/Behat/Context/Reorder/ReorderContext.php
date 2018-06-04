@@ -78,14 +78,14 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that :actualItemQuantity unit(s) of product :productName was|were added to cart instead of :expectedItemQuantity
+     * @Then I should be notified that :actualItemQuantity unit(s) of product :productName was/were added to cart instead of :expectedItemQuantity
      */
-    public function iShouldBeNotifiedThatUnitsOfProductWereAddedToCardInsteadOf(
+    public function iShouldBeNotifiedThatUnitsOfProductWereAddedToCartInsteadOf(
         string $actualItemQuantity,
         string $productName,
         string $expectedItemQuantity
     ) : void {
-        $this->assertFlashMessageWithTextExists(sprinf(
+        $this->assertFlashMessageWithTextExists(sprintf(
             'Following item: %s is not available in %s quantity. %s units of % were added to cart. It may have affected order total.',
             $productName,
             $expectedItemQuantity,

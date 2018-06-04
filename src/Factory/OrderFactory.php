@@ -12,6 +12,7 @@ use Sylius\Component\Core\Model\ProductVariantInterface;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 final class OrderFactory implements OrderFactoryInterface
 {
@@ -27,16 +28,21 @@ final class OrderFactory implements OrderFactoryInterface
     /** @var OrderItemQuantityModifierInterface */
     private $orderItemQuantityModifier;
 
+    /** @var RepositoryInterface */
+    private $productVariantRepository;
+
     public function __construct(
         FactoryInterface $decoratedFactory,
         FactoryInterface $orderItemFactory,
         OrderModifierInterface $orderModifier,
-        OrderItemQuantityModifierInterface $orderItemQuantityModifier
+        OrderItemQuantityModifierInterface $orderItemQuantityModifier,
+        RepositoryInterface $productVariantRepository
     ) {
         $this->decoratedFactory = $decoratedFactory;
         $this->orderItemFactory = $orderItemFactory;
         $this->orderModifier = $orderModifier;
         $this->orderItemQuantityModifier = $orderItemQuantityModifier;
+        $this->productVariantRepository = $productVariantRepository;
     }
 
     public function createNew()

@@ -26,6 +26,7 @@
             <argument type="service" id="sylius.factory.order_item" />
             <argument type="service" id="sylius.order_modifier" />
             <argument type="service" id="sylius.order_item_quantity_modifier"/>
+            <argument type="service" id="sylius.repository.product_variant" />
         </service>
 
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" public="false" />

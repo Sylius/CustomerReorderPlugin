@@ -41,7 +41,7 @@ final class InsufficientItemQuantityEligibilityCheck implements ReorderEligibili
                 continue;
             }
 
-            if ($orderVariantNamesToQuantity[$variantName] !== $reorderVariantNamesToQuantity[$variantName]) {
+            if ($orderVariantNamesToQuantity[$variantName] > $reorderVariantNamesToQuantity[$variantName]) {
                 array_push($insufficientItems, $variantName);
             }
         }

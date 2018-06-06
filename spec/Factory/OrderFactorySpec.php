@@ -12,6 +12,7 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
+use Sylius\Component\Inventory\Checker\AvailabilityCheckerInterface;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
@@ -24,9 +25,10 @@ final class OrderFactorySpec extends ObjectBehavior
         FactoryInterface $decoratedFactory,
         FactoryInterface $orderItemFactory,
         OrderModifierInterface $orderModifier,
-        OrderItemQuantityModifierInterface $orderItemQuantityModifier
+        OrderItemQuantityModifierInterface $orderItemQuantityModifier,
+        AvailabilityCheckerInterface $availabilityChecker
     ) {
-        $this->beConstructedWith($decoratedFactory, $orderItemFactory, $orderModifier, $orderItemQuantityModifier);
+        $this->beConstructedWith($decoratedFactory, $orderItemFactory, $orderModifier, $orderItemQuantityModifier, $availabilityChecker);
     }
 
     function it_is_initializable()
@@ -62,7 +64,8 @@ final class OrderFactorySpec extends ObjectBehavior
         AddressInterface $shippingAddress,
         AddressInterface $billingAddress,
         OrderItemQuantityModifierInterface $orderItemQuantityModifier,
-        OrderModifierInterface $orderModifier
+        OrderModifierInterface $orderModifier,
+        AvailabilityCheckerInterface $availabilityChecker
     ) {
         $decoratedFactory->createNew()->willReturn($reorder);
         $order->getCustomer()->willReturn($customer);
@@ -97,13 +100,20 @@ final class OrderFactorySpec extends ObjectBehavior
         $secondOrderItem->getProductName()->willReturn('test_product_name_02');
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
 
+        $availabilityChecker->isStockSufficient($firstProductVariant, 1)->willReturn(true);
+        $availabilityChecker->isStockSufficient($secondProductVariant, 2)->willReturn(true);
+
         $orderItemFactory->createNew()->willReturn($firstNewOrderItem, $secondNewOrderItem);
 
         $firstProductVariant->isTracked()->willReturn(true);
         $firstProductVariant->isInStock()->willReturn(true);
+        $firstProductVariant->getOnHand()->willReturn(10);
+        $firstProductVariant->getOnHold()->willReturn(0);
 
         $secondProductVariant->isTracked()->willReturn(true);
         $secondProductVariant->isInStock()->willReturn(true);
+        $secondProductVariant->getOnHand()->willReturn(10);
+        $secondProductVariant->getOnHold()->willReturn(0);
 
         $firstNewOrderItem->setVariant($firstProductVariant)->shouldBeCalled();
         $firstNewOrderItem->setUnitPrice(10)->shouldBeCalled();

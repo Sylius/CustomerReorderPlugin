@@ -52,7 +52,7 @@ final class InsufficientItemQuantityEligibilityCheck implements ReorderEligibili
 
         return [
             'type' => 'info',
-            'message' => 'sylius.reorder.items_price_changed',
+            'message' => 'sylius.reorder.insufficient_quantity',
             'parameters' => [
                 '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($insufficientItems),
             ]

@@ -9,10 +9,10 @@ use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
+use Sylius\Component\Inventory\Checker\AvailabilityCheckerInterface;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 final class OrderFactory implements OrderFactoryInterface
 {
@@ -28,21 +28,21 @@ final class OrderFactory implements OrderFactoryInterface
     /** @var OrderItemQuantityModifierInterface */
     private $orderItemQuantityModifier;
 
-    /** @var RepositoryInterface */
-    private $productVariantRepository;
+    /** @var AvailabilityCheckerInterface */
+    private $availabilityChecker;
 
     public function __construct(
         FactoryInterface $decoratedFactory,
         FactoryInterface $orderItemFactory,
         OrderModifierInterface $orderModifier,
         OrderItemQuantityModifierInterface $orderItemQuantityModifier,
-        RepositoryInterface $productVariantRepository
+        AvailabilityCheckerInterface $availabilityChecker
     ) {
         $this->decoratedFactory = $decoratedFactory;
         $this->orderItemFactory = $orderItemFactory;
         $this->orderModifier = $orderModifier;
         $this->orderItemQuantityModifier = $orderItemQuantityModifier;
-        $this->productVariantRepository = $productVariantRepository;
+        $this->availabilityChecker = $availabilityChecker;
     }
 
     public function createNew()
@@ -88,6 +88,16 @@ final class OrderFactory implements OrderFactoryInterface
                 continue;
             }
 
+            $reorderItemQuantity = 0;
+
+            if (!$this->availabilityChecker->isStockSufficient($orderItem->getVariant(), $orderItem->getQuantity())) {
+                $reorderItemQuantity = $orderItem->getVariant()->getOnHand() - $orderItem->getVariant()->getOnHold();
+            }
+
+            else {
+                $reorderItemQuantity = $orderItem->getQuantity();
+            }
+
             /** @var OrderItemInterface $newItem */
             $newItem = $this->orderItemFactory->createNew();
 
@@ -96,7 +106,7 @@ final class OrderFactory implements OrderFactoryInterface
             $newItem->setProductName($orderItem->getProductName());
             $newItem->setVariantName($orderItem->getVariantName());
 
-            $this->orderItemQuantityModifier->modify($newItem, $orderItem->getQuantity());
+            $this->orderItemQuantityModifier->modify($newItem, $reorderItemQuantity);
             $this->orderModifier->addToOrder($reorder, $newItem);
         }
     }

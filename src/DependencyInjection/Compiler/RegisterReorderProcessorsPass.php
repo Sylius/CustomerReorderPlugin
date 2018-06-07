@@ -13,7 +13,7 @@ final class RegisterReorderProcessorsPass extends PrioritizedCompositeServicePas
         parent::__construct(
             'Sylius\CustomerReorderPlugin\ReorderProcessing\CompositeReorderProcessor',
             'Sylius\CustomerReorderPlugin\ReorderProcessing\CompositeReorderProcessor',
-            'sylius.reorder.processor',
+            'sylius.reorder_processor',
             'addProcessor'
         );
     }

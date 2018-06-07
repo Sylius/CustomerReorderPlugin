@@ -9,7 +9,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 
 final class ReorderDataProvider implements ReorderProcessor
 {
-    function process(OrderInterface $order, OrderInterface $reorder): void
+    public function process(OrderInterface $order, OrderInterface $reorder): void
     {
         $reorder->setCustomer($order->getCustomer());
         $reorder->setCurrencyCode($order->getCurrencyCode());

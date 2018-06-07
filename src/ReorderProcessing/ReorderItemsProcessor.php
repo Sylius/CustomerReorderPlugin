@@ -37,7 +37,7 @@ final class ReorderItemsProcessor implements ReorderProcessor
         $this->orderItemFactory = $orderItemFactory;
     }
 
-    function process(OrderInterface $order, OrderInterface $reorder): void
+    public function process(OrderInterface $order, OrderInterface $reorder): void
     {
         $orderItems = $order->getItems();
 

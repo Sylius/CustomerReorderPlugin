@@ -78,7 +78,7 @@ final class ReorderContext implements Context
         $message = $notification->getText();
 
         if (!strpos($message, sprintf(
-            'Price of some order items has changed. It may have affected order total. Previous order total: ', $orderTotal))) {
+            'Prices of some products has changed, which have affected order total. Previous order total: ', $orderTotal))) {
             throw new \Exception('Notification text does not contain information about total order price change');
         }
     }

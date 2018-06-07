@@ -58,18 +58,18 @@ final class OrderFactory implements OrderFactoryInterface
         assert($reorder instanceof OrderInterface);
 
         $reorder->setChannel($channel);
-        $reorder->setCustomer($order->getCustomer());
-        $reorder->setCurrencyCode($order->getCurrencyCode());
-        $reorder->setNotes($order->getNotes());
-        $reorder->setLocaleCode($order->getLocaleCode());
-
-        /** @var AddressInterface $billingAddress */
-        $billingAddress = $order->getBillingAddress();
-
-        /** @var AddressInterface $shippingAddress */
-        $shippingAddress = $order->getShippingAddress();
-        $reorder->setBillingAddress(clone $billingAddress);
-        $reorder->setShippingAddress(clone $shippingAddress);
+//        $reorder->setCustomer($order->getCustomer());
+//        $reorder->setCurrencyCode($order->getCurrencyCode());
+//        $reorder->setNotes($order->getNotes());
+//        $reorder->setLocaleCode($order->getLocaleCode());
+//
+//        /** @var AddressInterface $billingAddress */
+//        $billingAddress = $order->getBillingAddress();
+//
+//        /** @var AddressInterface $shippingAddress */
+//        $shippingAddress = $order->getShippingAddress();
+//        $reorder->setBillingAddress(clone $billingAddress);
+//        $reorder->setShippingAddress(clone $shippingAddress);
 
         $this->copyOrderItemsToReorder($order, $reorder);
 

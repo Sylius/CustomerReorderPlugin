@@ -19,9 +19,9 @@ final class CompositeReorderEligibilityChecker implements ReorderEligibilityChec
         $this->eligibilityCheckers = new PriorityQueue();
     }
 
-    public function addProcessor(ReorderEligibilityChecker $orderProcessor, int $priority = 0): void
+    public function addChecker(ReorderEligibilityChecker $eligibilityChecker, int $priority = 0): void
     {
-        $this->eligibilityCheckers->insert($orderProcessor, $priority);
+        $this->eligibilityCheckers->insert($eligibilityChecker, $priority);
     }
 
     /**

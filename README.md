@@ -1,3 +1,5 @@
+# CustomerReorderPlugin
+
 SyliusCustomerReorderPlugin allows customer to reorder previously placed order.
 
 ## Installation
@@ -26,7 +28,7 @@ Add plugin class to your `AppKernel`:
 
 ```php
 $bundles = [
-    new \Sylius\CustomerReorderPlugin\SyliusCustomerReorderPlugin()
+    new \Sylius\CustomerReorderPlugin\SyliusCustomerReorderPlugin(),
 ];
 ```
 

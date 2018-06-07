@@ -8,5 +8,5 @@ use Sylius\Component\Core\Model\OrderInterface;
 
 interface ReorderProcessor
 {
-    function process(OrderInterface $order, OrderInterface $reorder): void;
+    public function process(OrderInterface $order, OrderInterface $reorder): void;
 }

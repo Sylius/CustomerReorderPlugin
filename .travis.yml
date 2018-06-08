@@ -4,9 +4,24 @@ dist: trusty
 
 sudo: false
 
-php:
-    - 7.1
-    - 7.2
+matrix:
+    include:
+        -
+            php: 7.1
+            env:
+                - SYMFONY_VERSION="3.4.*"
+        -
+            php: 7.1
+            env:
+                - SYMFONY_VERSION="4.1.*"
+        -
+            php: 7.2
+            env:
+                - SYMFONY_VERSION="3.4.*"
+        -
+            php: 7.2
+            env:
+                - SYMFONY_VERSION="4.1.*"
 
 cache:
     yarn: true
@@ -25,11 +40,9 @@ before_install:
     - mkdir -p "${SYLIUS_CACHE_DIR}"
 
 install:
+    - composer require symfony/symfony:${SYMFONY_VERSION} --no-interaction --no-update --no-scripts --update-with-all-dependencies --prefer-dist
     - composer install --no-interaction --prefer-dist
     - (cd tests/Application && yarn install)
-    - npm install gulp gulp-concat gulp-chug gulp-debug gulp-if gulp-livereload gulp-order gulp-sass
-    - npm install gulp-sourcemaps gulp-uglify gulp-uglifycss jquery lightbox2
-    - npm install merge-stream semantic-ui-css yargs
 
 before_script:
     - (cd tests/Application && bin/console doctrine:database:create --env=test -vvv)

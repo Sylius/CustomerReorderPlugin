@@ -13,7 +13,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
-use Sylius\CustomerReorderPlugin\Reorder\OrderToReorderComparatorInterface;
+use Sylius\CustomerReorderPlugin\Reorder\OrdersComparatorInterface;
 use Sylius\CustomerReorderPlugin\Reorder\Reorderer;
 use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -27,7 +27,7 @@ final class ReordererSpec extends ObjectBehavior
         OrderProcessorInterface $orderProcessor,
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
-        OrderToReorderComparatorInterface $orderToReorderComparator
+        OrdersComparatorInterface $orderToReorderComparator
     ) {
         $this->beConstructedWith(
             $orderFactory, $entityManager, $orderProcessor, $moneyFormatter, $session, $orderToReorderComparator
@@ -73,7 +73,7 @@ final class ReordererSpec extends ObjectBehavior
         Session $session,
         FlashBagInterface $flashBag,
         ArrayCollection $promotions,
-        OrderToReorderComparatorInterface $orderToReorderComparator
+        OrdersComparatorInterface $orderToReorderComparator
     ) {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -82,8 +82,8 @@ final class ReordererSpec extends ObjectBehavior
         $reorder->getTotal()->willReturn(150);
         $reorder->getPromotions()->willReturn($promotions);
 
-        $orderToReorderComparator->havePromotionsChanged($order, $reorder)->willReturn(false);
-        $orderToReorderComparator->haveItemsPricesChanged($order, $reorder)->willReturn(true);
+        $orderToReorderComparator->hasAnyPromotionChanged($order, $reorder)->willReturn(false);
+        $orderToReorderComparator->hasAnyVariantPriceChanged($order, $reorder)->willReturn(true);
 
         $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
         $session->getFlashBag()->willReturn($flashBag);
@@ -111,7 +111,7 @@ final class ReordererSpec extends ObjectBehavior
         FlashBagInterface $flashBag,
         PromotionInterface $firstPromotion,
         PromotionInterface $secondPromotion,
-        OrderToReorderComparatorInterface $orderToReorderComparator
+        OrdersComparatorInterface $orderToReorderComparator
     ) {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -126,8 +126,8 @@ final class ReordererSpec extends ObjectBehavior
         $reorder->getTotal()->willReturn(150);
         $reorder->getPromotions()->willReturn(new ArrayCollection());
 
-        $orderToReorderComparator->haveItemsPricesChanged($order, $reorder)->willReturn(false);
-        $orderToReorderComparator->havePromotionsChanged($order, $reorder)->willReturn(true);
+        $orderToReorderComparator->hasAnyVariantPriceChanged($order, $reorder)->willReturn(false);
+        $orderToReorderComparator->hasAnyPromotionChanged($order, $reorder)->willReturn(true);
 
         $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
         $session->getFlashBag()->willReturn($flashBag);

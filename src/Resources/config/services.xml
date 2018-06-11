@@ -16,7 +16,7 @@
             <argument type="service" id="sylius.order_processing.order_processor" />
             <argument type="service" id="sylius.money_formatter" />
             <argument type="service" id="session" />
-            <argument type="service" id="Sylius\CustomerReorderPlugin\Reorder\OrderToReorderComparator" />
+            <argument type="service" id="Sylius\CustomerReorderPlugin\Reorder\OrdersComparator" />
         </service>
         <service id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" decorates="sylius.factory.order" public="false">
             <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory.inner" />
@@ -24,6 +24,6 @@
             <argument type="service" id="sylius.order_modifier" />
             <argument type="service" id="sylius.order_item_quantity_modifier"/>
         </service>
-        <service id="Sylius\CustomerReorderPlugin\Reorder\OrderToReorderComparator" />
+        <service id="Sylius\CustomerReorderPlugin\Reorder\OrdersComparator" />
     </services>
 </container>

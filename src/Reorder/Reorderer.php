@@ -29,7 +29,7 @@ final class Reorderer implements ReordererInterface
     /** @var Session */
     private $session;
 
-    /** @var OrderToReorderComparatorInterface */
+    /** @var OrdersComparatorInterface */
     private $orderToReorderComparator;
 
     public function __construct(
@@ -38,9 +38,8 @@ final class Reorderer implements ReordererInterface
         OrderProcessorInterface $orderProcessor,
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
-        OrderToReorderComparatorInterface $orderToReorderComparator
-    )
-    {
+        OrdersComparatorInterface $orderToReorderComparator
+    ) {
         $this->orderFactory = $orderFactory;
         $this->entityManager = $entityManager;
         $this->orderProcessor = $orderProcessor;
@@ -55,11 +54,11 @@ final class Reorderer implements ReordererInterface
         assert($reorder instanceof OrderInterface);
 
         if ($reorder->getTotal() !== $order->getTotal()) {
-            if ($this->orderToReorderComparator->haveItemsPricesChanged($order, $reorder)) {
+            if ($this->orderToReorderComparator->hasAnyVariantPriceChanged($order, $reorder)) {
                 $this->session->getFlashBag()->add('info', 'sylius.reorder.items_price_changed');
             }
 
-            if ($this->orderToReorderComparator->havePromotionsChanged($order, $reorder)) {
+            if ($this->orderToReorderComparator->hasAnyPromotionChanged($order, $reorder)) {
                 $this->session->getFlashBag()->add('info', 'sylius.reorder.promotion_not_enabled');
             }
 

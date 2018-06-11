@@ -138,7 +138,8 @@ final class ReorderContext implements Context
 
     }
 
-    private function assertFlashMessageWithTextExists(string $text) {
+    private function assertFlashMessageWithTextExists(string $text)
+    {
         $notifications = $this->session->getPage()->findAll('css', '.sylius-flash-message');
 
         if (null === $notifications) {

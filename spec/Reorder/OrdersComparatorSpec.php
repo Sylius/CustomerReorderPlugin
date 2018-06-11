@@ -1,12 +1,4 @@
 <?php
-/*
- * This file is part of the Sylius package.
- *
- * (c) Paweł Jędrzejewski
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -17,45 +9,45 @@ use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
-use Sylius\CustomerReorderPlugin\Reorder\OrderToReorderComparator;
-use Sylius\CustomerReorderPlugin\Reorder\OrderToReorderComparatorInterface;
+use Sylius\CustomerReorderPlugin\Reorder\OrdersComparator;
+use Sylius\CustomerReorderPlugin\Reorder\OrdersComparatorInterface;
 
-final class OrderToReorderComparatorSpec extends ObjectBehavior
+final class OrdersComparatorSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(OrderToReorderComparator::class);
+        $this->shouldHaveType(OrdersComparator::class);
     }
 
     function it_implements_order_to_reorder_comparator_interface()
     {
-        $this->shouldImplement(OrderToReorderComparatorInterface::class);
+        $this->shouldImplement(OrdersComparatorInterface::class);
     }
 
     function it_checks_if_applied_promotions_differ(
-        OrderInterface $order,
-        OrderInterface $reorder,
+        OrderInterface $firstOrder,
+        OrderInterface $secondOrder,
         PromotionInterface $firstPromotion,
         PromotionInterface $secondPromotion
     ) {
-        $order->getPromotions()->willReturn(new ArrayCollection([$firstPromotion->getWrappedObject()]));
-        $reorder->getPromotions()->willReturn(new ArrayCollection([$secondPromotion->getWrappedObject()]));
+        $firstOrder->getPromotions()->willReturn(new ArrayCollection([$firstPromotion->getWrappedObject()]));
+        $secondOrder->getPromotions()->willReturn(new ArrayCollection([$secondPromotion->getWrappedObject()]));
 
-        $this->havePromotionsChanged($order, $reorder)->shouldReturn(true);
+        $this->hasAnyPromotionChanged($firstOrder, $secondOrder)->shouldReturn(true);
     }
 
     function it_checks_if_order_items_prices_differ(
-        OrderInterface $order,
-        OrderInterface $reorder,
+        OrderInterface $firstOrder,
+        OrderInterface $secondOrder,
         OrderItemInterface $firstOrderItem,
         OrderItemInterface $secondOrderItem
     ) {
-        $order->getItems()->willReturn(new ArrayCollection([
+        $firstOrder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
         ]));
 
-        $reorder->getItems()->willReturn(new ArrayCollection([
+        $secondOrder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
         ]));
@@ -66,6 +58,6 @@ final class OrderToReorderComparatorSpec extends ObjectBehavior
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
         $secondOrderItem->getUnitPrice()->willReturn(10, 20);
 
-        $this->haveItemsPricesChanged($order, $reorder)->shouldReturn(true);
+        $this->hasAnyVariantPriceChanged($firstOrder, $secondOrder)->shouldReturn(true);
     }
 }

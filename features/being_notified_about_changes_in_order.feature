@@ -7,8 +7,10 @@ Feature: Being notified about changes in order
     Background:
         Given the store operates on a single channel in the "United States" named "Web"
         And the store has a product "Angel T-Shirt" priced at "$39.00"
+        And this product is tracked by the inventory
         And there are 25 units of product "Angel T-Shirt" available in the inventory
         And the store has a product "Awesome Mug" priced at "$50.00"
+        And this product is tracked by the inventory
         And there are 25 units of product "Awesome Mug" available in the inventory
         And the store ships everywhere for free
         And the store allows paying with "Cash on Delivery"
@@ -46,8 +48,8 @@ Feature: Being notified about changes in order
         And I should see exactly 2 notifications
 
     @ui
-    Scenario: Reordering previously placed order when there is no sufficient item's quantity in stock
-        Given there is 3 units of product "Angel T-Shirt" available in the inventory
+    Scenario: Reordering previously placed order when there is insufficient item's quantity in stock
+        Given there are 3 units of product "Angel T-Shirt" available in the inventory
         And there are 3 units of product "Awesome Mug" available in the inventory
         When I browse my orders
         And I click reorder button next to the order "#00000666"

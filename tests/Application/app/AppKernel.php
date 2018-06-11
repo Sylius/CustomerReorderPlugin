@@ -38,7 +38,6 @@ final class AppKernel extends Kernel
     protected function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new RegisterEligibilityCheckersPass());
-        $container->addCompilerPass(new RegisterEligibilityCheckerResponseProcessorsPass());
         $container->addCompilerPass(new RegisterReorderProcessorsPass());
     }
 }

@@ -44,7 +44,7 @@ final class ReorderItemsProcessor implements ReorderProcessor
         /** @var OrderItemInterface $orderItem */
         foreach ($orderItems as $orderItem) {
             if (null === $orderItem->getVariant() ||
-                !($orderItem->getVariant()->isTracked() && $orderItem->getVariant()->isInStock())
+                !$this->availabilityChecker->isStockAvailable($orderItem->getVariant())
             ) {
                 continue;
             }

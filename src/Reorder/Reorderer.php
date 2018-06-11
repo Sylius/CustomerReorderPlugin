@@ -68,7 +68,9 @@ final class Reorderer implements ReordererInterface
                 $this->session->getFlashBag()->add('info', 'sylius.reorder.promotion_not_enabled');
             }
 
-            $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $order->getCurrencyCode());
+            /** @var string $currencyCode */
+            $currencyCode = $order->getCurrencyCode();
+            $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $currencyCode);
             $this->session->getFlashBag()->add('info', [
                 'message' => 'sylius.reorder.previous_order_total',
                 'parameters' => ['%order_total%' => $formattedTotal]

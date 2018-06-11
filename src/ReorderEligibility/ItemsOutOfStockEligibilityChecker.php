@@ -14,6 +14,7 @@ namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\Component\Core\Model\ProductVariantInterface;
 
 final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityChecker
 {
@@ -33,7 +34,9 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
 
         /** @var OrderItemInterface $orderItem */
         foreach ($order->getItems()->getValues() as $orderItem) {
-            if (!($orderItem->getVariant()->isTracked() && $orderItem->getVariant()->isInStock())) {
+            /** @var ProductVariantInterface $productVariant */
+            $productVariant = $orderItem->getVariant();
+            if (!($productVariant->isTracked() && $productVariant->isInStock())) {
                 $isAnyItemOutOfStock = true;
                 array_push($variantsOutOfStock, $orderItem->getVariantName());
             }

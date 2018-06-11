@@ -30,7 +30,7 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
 
         /** @var PromotionInterface $promotion */
         foreach ($order->getPromotions()->getValues() as $promotion) {
-            if (!in_array($promotion, $reorder->getPromotions()->getValues())) {
+            if (!in_array($promotion, $reorder->getPromotions()->getValues(), true)) {
                 array_push($disabledPromotions, $promotion->getName());
             }
         }
@@ -39,7 +39,7 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
             'type' => 'info',
             'message' => 'sylius.reorder.promotion_not_enabled',
             'parameters' => [
-                '%promotions%' => $this->reorderEligibilityConstraintMessageFormatter->format($disabledPromotions),
+                '%promotion_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($disabledPromotions),
             ]
         ];
     }

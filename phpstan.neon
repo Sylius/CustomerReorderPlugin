@@ -8,4 +8,4 @@ parameters:
         - 'tests/Application/src/**.php'
 
     ignoreErrors:
-        - '/Parameter #2 \$message of method Symfony\\Component\\HttpFoundation\\Session\\Flash\\FlashBagInterface::add\(\) expects string, array<string, array<string, string>|string> given\./'
+        - '/Parameter #2 \$message of method Symfony\\Component\\HttpFoundation\\Session\\Flash\\FlashBagInterface::add\(\) expects string, array<string, mixed> given\./'

@@ -23,7 +23,9 @@ final class TotalReorderAmountEligibilityChecker implements ReorderEligibilityCh
             return [];
         }
 
-        $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $order->getCurrencyCode());
+        /** @var string */
+        $currencyCode = $order->getCurrencyCode();
+        $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $currencyCode);
 
         return [
             'type' => 'info',

@@ -8,6 +8,7 @@ use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\Component\Core\Model\ProductVariantInterface;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
@@ -75,7 +76,10 @@ final class OrderFactory implements OrderFactoryInterface
 
         /** @var OrderItemInterface $orderItem */
         foreach ($orderItems as $orderItem) {
-            if (!($orderItem->getVariant()->isTracked() && $orderItem->getVariant()->isInStock())) {
+
+            /** @var ProductVariantInterface $productVariant */
+            $productVariant = $orderItem->getVariant();
+            if (!($productVariant->isTracked() && $productVariant->isInStock())) {
                 continue;
             }
 

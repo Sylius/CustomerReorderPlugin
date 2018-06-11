@@ -49,7 +49,9 @@ final class Reorderer implements ReordererInterface
         assert($reorder instanceof OrderInterface);
 
         if ($reorder->getTotal() !== $order->getTotal()) {
-            $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $order->getCurrencyCode());
+            /** @var string $orderCurrencyCode */
+            $orderCurrencyCode = $order->getCurrencyCode();
+            $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $orderCurrencyCode);
 
             $this->session->getFlashBag()->add('info', [
                 'message' => 'sylius.reorder.items_price_changed',

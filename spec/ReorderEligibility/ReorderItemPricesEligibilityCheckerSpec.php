@@ -86,7 +86,7 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
             'type' => 'info',
             'message' => 'sylius.reorder.items_price_changed',
             'parameters' => [
-                '%order_items%' => 'test_variant_name_01, test_variant_name_02'
+                '%product_names%' => 'test_variant_name_01, test_variant_name_02'
             ]
         ]);
     }

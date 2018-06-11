@@ -92,7 +92,7 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
             'type' => 'info',
             'message' => 'sylius.reorder.promotion_not_enabled',
             'parameters' => [
-                '%promotions%' => 'test_promotion_01, test_promotion_02'
+                '%promotion_names%' => 'test_promotion_01, test_promotion_02'
             ]
         ]);
     }

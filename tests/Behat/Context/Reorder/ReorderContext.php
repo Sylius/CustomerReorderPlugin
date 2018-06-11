@@ -8,7 +8,6 @@ use Behat\Behat\Context\Context;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
 use Sylius\Component\Core\Model\AddressInterface;
-use Sylius\Component\Core\Model\PromotionInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 
 final class ReorderContext implements Context

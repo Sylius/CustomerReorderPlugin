@@ -71,7 +71,7 @@ final class ReorderContext implements Context
      */
     public function iShouldBeNotifiedThatOrderItemsPriceHasChanged(): void
     {
-        $this->assertFlashMessageWithTextExists('Price of some order items has changed. It may have affected order total.');
+        $this->assertFlashMessageWithTextExists('Prices of some products has changed, which have affected order total.');
     }
 
     /**

@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
-use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -40,7 +39,8 @@ final class Reorderer implements ReordererInterface
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
         OrderToReorderComparatorInterface $orderToReorderComparator
-    ) {
+    )
+    {
         $this->orderFactory = $orderFactory;
         $this->entityManager = $entityManager;
         $this->orderProcessor = $orderProcessor;
@@ -55,11 +55,6 @@ final class Reorderer implements ReordererInterface
         assert($reorder instanceof OrderInterface);
 
         if ($reorder->getTotal() !== $order->getTotal()) {
-            /** @var string $orderCurrencyCode */
-            $orderCurrencyCode = $order->getCurrencyCode();
-            $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $orderCurrencyCode);
-
-            if ($order->getPromotions()->getValues() === $reorder->getPromotions()->getValues()) {
             if ($this->orderToReorderComparator->haveItemsPricesChanged($order, $reorder)) {
                 $this->session->getFlashBag()->add('info', 'sylius.reorder.items_price_changed');
             }

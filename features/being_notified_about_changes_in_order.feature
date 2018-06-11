@@ -37,15 +37,14 @@ Feature: Being notified about changes in order
         And I should see exactly 2 notifications
 
     @ui
-    Scenario: Reordering previously placed order when several items are out of stock
+    Scenario: Reordering previously placed order when every item is out of stock
         Given the product "Angel T-Shirt" is out of stock
         And the product "Awesome Mug" is out of stock
         When I browse my orders
         And I click reorder button next to the order "#00000666"
-        Then I should be on my cart summary page
-        And I should be notified that products "Angel T-Shirt", "Awesome Mug" are out of stock
-        And I should be notified that previous order total was "$148.00"
-        And I should see exactly 2 notifications
+        Then I should not proceed to my cart summary page
+        And I should be notified that none of items from previously placed order is available
+        And I should see exactly 1 notification
 
     @ui
     Scenario: Reordering previously placed order when there is insufficient item's quantity in stock
@@ -76,3 +75,4 @@ Feature: Being notified about changes in order
         And I should be notified that "Angel T-Shirt" price has changed
         And I should be notified that previous order total was "$148.00"
         And I should see exactly 2 notifications
+

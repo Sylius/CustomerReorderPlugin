@@ -1,0 +1,3 @@
+sylius:
+    reorder:
+        items_price_changed: 'Prices of some products has changed, which have affected order total. Previous order total: %order_total%'

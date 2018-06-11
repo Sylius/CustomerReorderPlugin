@@ -5,3 +5,4 @@ sylius:
         previous_order_total: 'Previous order total: %order_total%.'
         promotion_not_enabled: 'Following promotions: %promotion_names% are no longer enabled, which have affected order total.'
         insufficient_quantity: 'Following items: %order_items% are not available in expected quantity, which have affected order total.'
+        none_of_items_is_available: 'None of items from previously placed order is available. Unable to place reorder.'

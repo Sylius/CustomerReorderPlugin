@@ -83,7 +83,7 @@ final class ReorderContext implements Context
     public function iShouldBeNotifiedThatOrderItemsPriceHasChanged(string $orderItemName): void
     {
         $this->assertFlashMessageWithTextExists(sprintf(
-            'Following items: %s price has changed. It may have affected order total.',
+            'Prices of products: %s have changed, which have affected order total.',
             $orderItemName)
         );
     }
@@ -102,7 +102,7 @@ final class ReorderContext implements Context
     public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(string $promotionName): void
     {
         $this->assertFlashMessageWithTextExists(sprintf(
-            'Following promotions: %s are no longer enabled. It may have affected order total.',
+            'Following promotions: %s are no longer enabled, which have affected order total.',
             $promotionName)
         );
     }

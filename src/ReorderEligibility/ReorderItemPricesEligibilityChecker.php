@@ -53,7 +53,7 @@ final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChe
             'type' => 'info',
             'message' => 'sylius.reorder.items_price_changed',
             'parameters' => [
-                '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($orderVariantsWithChangedPrice),
+                '%product_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($orderVariantsWithChangedPrice),
             ]
         ];
     }

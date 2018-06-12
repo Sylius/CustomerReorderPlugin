@@ -12,23 +12,25 @@ use Sylius\CustomerReorderPlugin\ReorderEligibility\TotalReorderAmountEligibilit
 
 final class TotalReorderAmountEligibilityCheckerSpec extends ObjectBehavior
 {
-    function let(MoneyFormatterInterface $moneyFormatter)
+    function let(MoneyFormatterInterface $moneyFormatter): void
     {
         $this->beConstructedWith($moneyFormatter);
     }
 
-    function it_is_initializable()
+    function it_is_initializable(): void
     {
         $this->shouldHaveType(TotalReorderAmountEligibilityChecker::class);
     }
 
-    function it_implements_reorder_eligibility_checker_interface()
+    function it_implements_reorder_eligibility_checker_interface(): void
     {
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
 
-    function it_returns_empty_array_when_total_amounts_are_the_same(OrderInterface $order, OrderInterface $reorder)
-    {
+    function it_returns_empty_array_when_total_amounts_are_the_same(
+        OrderInterface $order,
+        OrderInterface $reorder
+    ): void {
         $order->getTotal()->willReturn(100);
         $reorder->getTotal()->willReturn(100);
 
@@ -39,7 +41,7 @@ final class TotalReorderAmountEligibilityCheckerSpec extends ObjectBehavior
         OrderInterface $order,
         OrderInterface $reorder,
         MoneyFormatterInterface $moneyFormatter
-    ) {
+    ): void {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
         $reorder->getTotal()->willReturn(150);

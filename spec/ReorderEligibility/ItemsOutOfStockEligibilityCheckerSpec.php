@@ -15,17 +15,18 @@ use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraint
 
 final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
 {
-    function let(ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter)
-    {
+    function let(
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+    ): void {
         $this->beConstructedWith($reorderEligibilityConstraintMessageFormatter);
     }
 
-    function it_is_initializable()
+    function it_is_initializable(): void
     {
         $this->shouldBeAnInstanceOf(ItemsOutOfStockEligibilityChecker::class);
     }
 
-    function it_implements_reorder_eligibility_checker_interface()
+    function it_implements_reorder_eligibility_checker_interface(): void
     {
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
@@ -37,7 +38,7 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         OrderItemInterface $secondOrderItem,
         ProductVariantInterface $firstProductVariant,
         ProductVariantInterface $secondProductVariant
-    ) {
+    ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
@@ -63,7 +64,7 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         ProductVariantInterface $firstProductVariant,
         ProductVariantInterface $secondProductVariant,
         ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
-    ) {
+    ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
@@ -75,10 +76,10 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         $secondOrderItem->getVariantName()->willReturn('test_name_02');
 
         $firstProductVariant->isInStock()->willReturn(false);
-        $firstProductVariant->isTracked()->willReturn(false);
+        $firstProductVariant->isTracked()->willReturn(true);
 
         $secondProductVariant->isInStock()->willReturn(false);
-        $secondProductVariant->isTracked()->willReturn(false);
+        $secondProductVariant->isTracked()->willReturn(true);
 
         $reorderEligibilityConstraintMessageFormatter->format([
             'test_name_01',

@@ -8,10 +8,8 @@ Feature: Being notified about changes in order
         Given the store operates on a single channel in the "United States" named "Web"
         And the store has a product "Angel T-Shirt" priced at "$39.00"
         And there are 25 units of product "Angel T-Shirt" available in the inventory
-        And this product is tracked by the inventory
         And the store has a product "Awesome Mug" priced at "$50.00"
         And there are 25 units of product "Awesome Mug" available in the inventory
-        And this product is tracked by the inventory
         And the store ships everywhere for free
         And the store allows paying with "Cash on Delivery"
         And I am a logged in customer
@@ -39,7 +37,7 @@ Feature: Being notified about changes in order
     @ui
     Scenario: Reordering previously placed order when several items are out of stock
         Given the product "Angel T-Shirt" is out of stock
-        Given the product "Awesome Mug" is out of stock
+        And the product "Awesome Mug" is out of stock
         When I browse my orders
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page

@@ -112,7 +112,15 @@ final class ReorderContext implements Context
      */
     public function iShouldSeeExactlyNotifications(int $count): void
     {
-         assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) == $count);
+         assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === $count);
+    }
+
+    /**
+     * @Then I should not see any notifications
+     */
+    public function iShouldNotSeeAnyNotifications(): void
+    {
+        assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === 0);
     }
 
 

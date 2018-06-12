@@ -27,7 +27,7 @@ final class CompositeReorderEligibilityChecker implements ReorderEligibilityChec
     /**
      * {@inheritdoc}
      */
-    public function check(OrderInterface $order, OrderInterface $reorder)
+    public function check(OrderInterface $order, OrderInterface $reorder): array
     {
         $result = [];
         foreach ($this->eligibilityCheckers as $eligibilityChecker) {

@@ -15,23 +15,26 @@ use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderPromotionsEligibility
 
 final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
 {
-    function let(ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter)
-    {
+    function let(
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+    ): void {
         $this->beConstructedWith($reorderEligibilityConstraintMessageFormatter);
     }
 
-    function it_is_initializable()
+    function it_is_initializable(): void
     {
         $this->shouldHaveType(ReorderPromotionsEligibilityChecker::class);
     }
 
-    function it_implements_reorder_eligibility_checker_interface()
+    function it_implements_reorder_eligibility_checker_interface(): void
     {
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
 
-    function it_returns_empty_array_when_there_are_no_reorder_items(OrderInterface $order, OrderInterface $reorder)
-    {
+    function it_returns_empty_array_when_there_are_no_reorder_items(
+        OrderInterface $order,
+        OrderInterface $reorder
+    ): void {
         $reorder->getItems()->willReturn(new ArrayCollection());
 
         $this->check($order, $reorder)->shouldReturn([]);
@@ -43,7 +46,7 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
         OrderItemInterface $reorderItem,
         PromotionInterface $firstPromotion,
         PromotionInterface $secondPromotion
-    ) {
+    ): void {
         $reorder->getItems()->willReturn(new ArrayCollection([
             $reorderItem->getWrappedObject()
         ]));
@@ -68,7 +71,7 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
         PromotionInterface $firstPromotion,
         PromotionInterface $secondPromotion,
         ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
-    ) {
+    ): void {
         $reorder->getItems()->willReturn(new ArrayCollection([
             $reorderItem->getWrappedObject()
         ]));

@@ -12,13 +12,12 @@ final class ReorderEligibilityConstraintMessageFormatter implements ReorderEligi
 
         if (count($messageParameters) === 1) {
             $message = array_pop($messageParameters);
+            return $message;
         }
 
-        else {
-            $lastMessageParameter = end($messageParameters);
-            foreach ($messageParameters as $messageParameter) {
-                $message .= $messageParameter . (($messageParameter !== $lastMessageParameter) ? ', ' : '');
-            }
+        $lastMessageParameter = end($messageParameters);
+        foreach ($messageParameters as $messageParameter) {
+            $message .= $messageParameter . (($messageParameter !== $lastMessageParameter) ? ', ' : '');
         }
 
         return $message;

@@ -76,10 +76,9 @@ final class OrderFactory implements OrderFactoryInterface
 
         /** @var OrderItemInterface $orderItem */
         foreach ($orderItems as $orderItem) {
-
             /** @var ProductVariantInterface $productVariant */
             $productVariant = $orderItem->getVariant();
-            if (!($productVariant->isTracked() && $productVariant->isInStock())) {
+            if ($productVariant->isTracked() && !$productVariant->isInStock()) {
                 continue;
             }
 

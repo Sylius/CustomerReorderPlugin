@@ -34,7 +34,7 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
         OrderItemInterface $secondOrderItem
-    ) {
+    ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
@@ -60,7 +60,7 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         OrderItemInterface $firstOrderItem,
         OrderItemInterface $secondOrderItem,
         ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
-    ) {
+    ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()

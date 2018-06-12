@@ -18,7 +18,7 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder)
+    public function check(OrderInterface $order, OrderInterface $reorder): array
     {
         if (empty($reorder->getItems()->getValues()) ||
             $order->getPromotions()->getValues() === $reorder->getPromotions()->getValues()

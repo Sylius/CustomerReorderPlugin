@@ -27,7 +27,7 @@ Feature: Reordering previously placed order
         Then I should be on my cart summary page
         And I should see "Angel T-Shirt" with quantity 1 in my cart
         And my cart total should be "$19.00"
-        And I should see exactly 0 notifications
+        And I should not see any notifications
 
     @ui
     Scenario: Having order's promotion applied when it's still enabled
@@ -35,7 +35,7 @@ Feature: Reordering previously placed order
         And I click reorder button next to the order "#00000666"
         Then I should be on my cart summary page
         And my discount should be "-$20.00"
-        And I should see exactly 0 notifications
+        And I should not see any notifications
 
     @ui
     Scenario: Having billing address section filled with address information taken from previously placed order

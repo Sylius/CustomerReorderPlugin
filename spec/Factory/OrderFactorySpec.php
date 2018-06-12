@@ -88,18 +88,26 @@ final class OrderFactorySpec extends ObjectBehavior
         $firstOrderItem->getUnitPrice()->willReturn(10);
         $firstOrderItem->getVariant()->willReturn($firstProductVariant);
         $firstOrderItem->getQuantity()->willReturn(1);
+        $firstOrderItem->getProductName()->willReturn('test_product_name_01');
+        $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
 
         $secondOrderItem->getUnitPrice()->willReturn(20);
         $secondOrderItem->getVariant()->willReturn($secondProductVariant);
         $secondOrderItem->getQuantity()->willReturn(2);
+        $secondOrderItem->getProductName()->willReturn('test_product_name_02');
+        $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
 
         $orderItemFactory->createNew()->willReturn($firstNewOrderItem, $secondNewOrderItem);
 
         $firstNewOrderItem->setVariant($firstProductVariant)->shouldBeCalled();
         $firstNewOrderItem->setUnitPrice(10)->shouldBeCalled();
+        $firstNewOrderItem->setProductName('test_product_name_01')->shouldBeCalled();
+        $firstNewOrderItem->setVariantName('test_variant_name_01')->shouldBeCalled();
 
         $secondNewOrderItem->setVariant($secondProductVariant)->shouldBeCalled();
         $secondNewOrderItem->setUnitPrice(20)->shouldBeCalled();
+        $secondNewOrderItem->setProductName('test_product_name_02')->shouldBeCalled();
+        $secondNewOrderItem->setVariantName('test_variant_name_02')->shouldBeCalled();
 
         $orderItemQuantityModifier->modify($firstNewOrderItem, 1)->shouldBeCalled();
         $orderItemQuantityModifier->modify($secondNewOrderItem, 2)->shouldBeCalled();

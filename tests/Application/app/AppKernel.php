@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use Sylius\Bundle\CoreBundle\Application\Kernel;
+use Sylius\CustomerReorderPlugin\DependencyInjection\Compiler\RegisterEligibilityCheckersPass;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class AppKernel extends Kernel
 {
@@ -29,5 +31,10 @@ final class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load($this->getRootDir() . '/config/config.yml');
+    }
+
+    protected function build(ContainerBuilder $container): void
+    {
+        $container->addCompilerPass(new RegisterEligibilityCheckersPass());
     }
 }

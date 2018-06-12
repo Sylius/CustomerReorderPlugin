@@ -99,6 +99,12 @@ final class OrderFactorySpec extends ObjectBehavior
 
         $orderItemFactory->createNew()->willReturn($firstNewOrderItem, $secondNewOrderItem);
 
+        $firstProductVariant->isTracked()->willReturn(true);
+        $firstProductVariant->isInStock()->willReturn(true);
+
+        $secondProductVariant->isTracked()->willReturn(true);
+        $secondProductVariant->isInStock()->willReturn(true);
+
         $firstNewOrderItem->setVariant($firstProductVariant)->shouldBeCalled();
         $firstNewOrderItem->setUnitPrice(10)->shouldBeCalled();
         $firstNewOrderItem->setProductName('test_product_name_01')->shouldBeCalled();

@@ -17,22 +17,22 @@ final class TotalReorderAmountEligibilityChecker implements ReorderEligibilityCh
         $this->moneyFormatter = $moneyFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder): array
+    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
     {
+        $response = new ReorderEligibilityCheckerResponse();
+
         if ($order->getTotal() === $reorder->getTotal()) {
-            return [];
+            $response->addResults([self::class => true]);
+            return $response;
         }
 
         /** @var string */
         $currencyCode = $order->getCurrencyCode();
         $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $currencyCode);
 
-        return [
-            'type' => 'info',
-            'message' => 'sylius.reorder.previous_order_total',
-            'parameters' => [
-                '%order_total%' => $formattedTotal
-            ]
-        ];
+        $response->addResults([TotalReorderAmountEligibilityChecker::class => false]);
+        $response->addMessages([TotalReorderAmountEligibilityChecker::class => $formattedTotal]);
+
+        return $response;
     }
 }

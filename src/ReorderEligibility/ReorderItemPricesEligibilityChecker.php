@@ -18,7 +18,7 @@ final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChe
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder): array
+    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
     {
         $orderVariantNamesToTotal = [];
         $reorderVariantNamesToTotal = [];
@@ -45,16 +45,18 @@ final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChe
             }
         }
 
+        $response = new ReorderEligibilityCheckerResponse();
+
         if (empty($orderVariantsWithChangedPrice)) {
-            return [];
+            $response->addResults([ReorderItemPricesEligibilityChecker::class => true]);
+            return $response;
         }
 
-        return [
-            'type' => 'info',
-            'message' => 'sylius.reorder.items_price_changed',
-            'parameters' => [
-                '%product_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($orderVariantsWithChangedPrice),
-            ]
-        ];
+        $response->addResults([ReorderItemPricesEligibilityChecker::class => false]);
+        $response->addMessages([
+            ReorderItemPricesEligibilityChecker::class => $this->reorderEligibilityConstraintMessageFormatter->format($orderVariantsWithChangedPrice)
+        ]);
+
+        return $response;
     }
 }

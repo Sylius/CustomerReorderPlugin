@@ -19,7 +19,7 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder): array
+    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
     {
         $variantsOutOfStock = [];
 
@@ -32,16 +32,18 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
             }
         }
 
+        $response = new ReorderEligibilityCheckerResponse();
+
         if (empty($variantsOutOfStock)) {
-            return [];
+            $response->addResults([ItemsOutOfStockEligibilityChecker::class => true]);
+            return $response;
         }
 
-        return [
-            'type' => 'info',
-            'message' => 'sylius.reorder.items_out_of_stock',
-            'parameters' => [
-                '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($variantsOutOfStock),
-            ]
-        ];
+        $response->addResults([ItemsOutOfStockEligibilityChecker::class => false]);
+        $response->addMessages([
+            ItemsOutOfStockEligibilityChecker::class => $this->reorderEligibilityConstraintMessageFormatter->format($variantsOutOfStock)
+        ]);
+
+        return $response;
     }
 }

@@ -18,12 +18,15 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder): array
+    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
     {
+        $response = new ReorderEligibilityCheckerResponse();
+
         if (empty($reorder->getItems()->getValues()) ||
             $order->getPromotions()->getValues() === $reorder->getPromotions()->getValues()
         ) {
-            return [];
+            $response->addResults([ReorderPromotionsEligibilityChecker::class => true]);
+            return $response;
         }
 
         $disabledPromotions = [];
@@ -35,12 +38,11 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
             }
         }
 
-        return [
-            'type' => 'info',
-            'message' => 'sylius.reorder.promotion_not_enabled',
-            'parameters' => [
-                '%promotion_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($disabledPromotions),
-            ]
-        ];
+        $response->addResults([ReorderPromotionsEligibilityChecker::class => false]);
+        $response->addMessages([
+            ReorderPromotionsEligibilityChecker::class => $this->reorderEligibilityConstraintMessageFormatter->format($disabledPromotions)
+        ]);
+
+        return $response;
     }
 }

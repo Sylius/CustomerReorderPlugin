@@ -11,6 +11,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 final class Reorderer implements ReordererInterface
@@ -33,13 +34,17 @@ final class Reorderer implements ReordererInterface
     /** @var ReorderEligibilityChecker */
     private $reorderEligibilityChecker;
 
+    /** @var ReorderEligibilityCheckerResponseProcessor */
+    private $reorderEligibilityCheckerResponseProcessor;
+
     public function __construct(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         OrderProcessorInterface $orderProcessor,
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
-        ReorderEligibilityChecker $reorderEligibilityChecker
+        ReorderEligibilityChecker $reorderEligibilityChecker,
+        ReorderEligibilityCheckerResponseProcessor $reorderEligibilityCheckerResponseProcessor
     ) {
         $this->orderFactory = $orderFactory;
         $this->entityManager = $entityManager;
@@ -47,6 +52,7 @@ final class Reorderer implements ReordererInterface
         $this->moneyFormatter = $moneyFormatter;
         $this->session = $session;
         $this->reorderEligibilityChecker= $reorderEligibilityChecker;
+        $this->reorderEligibilityCheckerResponseProcessor= $reorderEligibilityCheckerResponseProcessor;
     }
 
     public function reorder(OrderInterface $order, ChannelInterface $channel): OrderInterface
@@ -55,17 +61,18 @@ final class Reorderer implements ReordererInterface
         assert($reorder instanceof OrderInterface);
 
         $reorderEligibilityChecks = $this->reorderEligibilityChecker->check($order, $reorder);
+        $this->reorderEligibilityCheckerResponseProcessor->process($reorderEligibilityChecks);
 
-        foreach ($reorderEligibilityChecks as $eligibilityCheck) {
-            if (empty($eligibilityCheck)) {
-                continue;
-            }
-
-            $this->session->getFlashBag()->add($eligibilityCheck['type'], [
-                'message' => $eligibilityCheck['message'],
-                'parameters' => array_key_exists('parameters', $eligibilityCheck) ? $eligibilityCheck['parameters'] : []
-            ]);
-        }
+//        foreach ($reorderEligibilityChecks as $eligibilityCheck) {
+//            if (empty($eligibilityCheck)) {
+//                continue;
+//            }
+//
+//            $this->session->getFlashBag()->add($eligibilityCheck['type'], [
+//                'message' => $eligibilityCheck['message'],
+//                'parameters' => array_key_exists('parameters', $eligibilityCheck) ? $eligibilityCheck['parameters'] : []
+//            ]);
+//        }
 
         $this->entityManager->persist($reorder);
         $this->entityManager->flush();

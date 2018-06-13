@@ -43,6 +43,5 @@
     },
     "config": {
         "bin-dir": "bin"
-    },
-    "minimum-stability": "RC"
+    }
 }

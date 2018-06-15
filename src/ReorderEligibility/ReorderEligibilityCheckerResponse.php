@@ -22,17 +22,17 @@ class ReorderEligibilityCheckerResponse
         return $this->messages;
     }
 
-    public function addResults(array $results): void
+    public function addResults(array $eligibilityCheckerResults): void
     {
-        foreach (array_keys($results) as $result) {
-            $this->result[$result] = $results[$result];
+        foreach (array_keys($eligibilityCheckerResults) as $resultKey) {
+            $this->result[$resultKey] = $eligibilityCheckerResults[$resultKey];
         }
     }
 
-    public function addMessages(array $messages): void
+    public function addMessages(array $eligibilityCheckerMessages): void
     {
-        foreach (array_keys($messages) as $message) {
-            $this->messages[$message] = $messages[$message];
+        foreach (array_keys($eligibilityCheckerMessages) as $messageKey) {
+            $this->messages[$messageKey] = $eligibilityCheckerMessages[$messageKey];
         }
     }
 }

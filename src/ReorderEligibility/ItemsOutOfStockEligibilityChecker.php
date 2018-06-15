@@ -28,7 +28,7 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
             /** @var ProductVariantInterface $productVariant */
             $productVariant = $orderItem->getVariant();
             if ($productVariant->isTracked() && !$productVariant->isInStock()) {
-                array_push($variantsOutOfStock, $orderItem->getVariantName());
+                $variantsOutOfStock[] = $orderItem->getVariantName();
             }
         }
 

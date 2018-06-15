@@ -51,8 +51,9 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
         $secondOrderItem->getUnitPrice()->willReturn(100);
 
-        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderItemPricesEligibilityChecker::class => true]);
-        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
+        $response = $this->check($order, $reorder);
+        $response->getResult()->shouldBeEqualTo([ReorderItemPricesEligibilityChecker::class => true]);
+        $response->getMessages()->shouldReturn([]);
     }
 
     function it_returns_violation_message_when_some_prices_are_different(
@@ -73,17 +74,20 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         ]));
 
         $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
-        $firstOrderItem->getUnitPrice()->willReturn(100, 150, 100, 150);
+        $firstOrderItem->getUnitPrice()->willReturn(100, 150);
 
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
-        $secondOrderItem->getUnitPrice()->willReturn(100, 150, 100, 150);
+        $secondOrderItem->getUnitPrice()->willReturn(100, 150);
 
         $reorderEligibilityConstraintMessageFormatter->format([
             'test_variant_name_01',
             'test_variant_name_02'
         ])->willReturn('test_variant_name_01, test_variant_name_02');
 
-        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderItemPricesEligibilityChecker::class => false]);
-        $this->check($order, $reorder)->getMessages()->shouldReturn([ReorderItemPricesEligibilityChecker::class => 'test_variant_name_01, test_variant_name_02']);
+        $response = $this->check($order, $reorder);
+        $response->getResult()->shouldBeEqualTo([ReorderItemPricesEligibilityChecker::class => false]);
+        $response->getMessages()->shouldBeEqualTo([
+            ReorderItemPricesEligibilityChecker::class => 'test_variant_name_01, test_variant_name_02'
+        ]);
     }
 }

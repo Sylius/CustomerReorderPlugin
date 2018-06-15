@@ -38,8 +38,9 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
     ): void {
         $reorder->getItems()->willReturn(new ArrayCollection());
 
-        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderPromotionsEligibilityChecker::class => true]);
-        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
+        $response = $this->check($order, $reorder);
+        $response->getResult()->shouldBeEqualTo([ReorderPromotionsEligibilityChecker::class => true]);
+        $response->getMessages()->shouldBeEqualTo([]);
     }
 
     function it_returns_positive_result_when_the_same_promotions_are_applied(
@@ -63,8 +64,9 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
             $secondPromotion->getWrappedObject()
         ]));
 
-        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderPromotionsEligibilityChecker::class => true]);
-        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
+        $response = $this->check($order, $reorder);
+        $response->getResult()->shouldBeEqualTo([ReorderPromotionsEligibilityChecker::class => true]);
+        $response->getMessages()->shouldBeEqualTo([]);
     }
 
     function it_returns_violation_message_when_some_promotions_are_not_applied(
@@ -94,8 +96,9 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
             'test_promotion_02'
         ])->willReturn('test_promotion_01, test_promotion_02');
 
-        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderPromotionsEligibilityChecker::class => false]);
-        $this->check($order, $reorder)->getMessages()->shouldReturn([
+        $response = $this->check($order, $reorder);
+        $response->getResult()->shouldBeEqualTo([ReorderPromotionsEligibilityChecker::class => false]);
+        $response->getMessages()->shouldBeEqualTo([
             ReorderPromotionsEligibilityChecker::class => 'test_promotion_01, test_promotion_02'
         ]);
     }

@@ -55,8 +55,9 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         $secondProductVariant->isInStock()->willReturn(true);
         $secondProductVariant->isTracked()->willReturn(true);
 
-        $this->check($order, $reorder)->getResult()->shouldReturn([ItemsOutOfStockEligibilityChecker::class => true]);
-        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
+        $response = $this->check($order, $reorder);
+        $response->getResult()->shouldBeEqualTo([ItemsOutOfStockEligibilityChecker::class => true]);
+        $response->getMessages()->shouldBeEqualTo([]);
     }
 
     function it_returns_violation_message_when_some_reorder_items_are_out_of_stock(
@@ -89,15 +90,11 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
             'test_name_02'
         ])->willReturn('test_name_01, test_name_02');
 
-        $this->check($order, $reorder)
-            ->getResult()
-            ->shouldReturn([
+        $response = $this->check($order, $reorder);
+        $response->getResult()->shouldBeEqualTo([
                 ItemsOutOfStockEligibilityChecker::class => false
         ]);
-
-        $this->check($order, $reorder)
-            ->getMessages()
-            ->shouldReturn([
+        $response->getMessages()->shouldBeEqualTo([
                 ItemsOutOfStockEligibilityChecker::class => 'test_name_01, test_name_02'
         ]);
     }

@@ -6,11 +6,13 @@ namespace spec\Sylius\CustomerReorderPlugin\ReorderEligibility;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 
 final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
@@ -31,7 +33,7 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
 
-    function it_returns_empty_array_when_all_reorder_items_are_on_hand(
+    function it_returns_positive_result_when_all_reorder_items_are_on_hand(
         OrderInterface $order,
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
@@ -53,7 +55,8 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         $secondProductVariant->isInStock()->willReturn(true);
         $secondProductVariant->isTracked()->willReturn(true);
 
-        $this->check($order, $reorder)->shouldReturn([]);
+        $this->check($order, $reorder)->getResult()->shouldReturn([ItemsOutOfStockEligibilityChecker::class => true]);
+        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
     }
 
     function it_returns_violation_message_when_some_reorder_items_are_out_of_stock(
@@ -86,12 +89,16 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
             'test_name_02'
         ])->willReturn('test_name_01, test_name_02');
 
-        $this->check($order, $reorder)->shouldReturn([
-            'type' => 'info',
-            'message' => 'sylius.reorder.items_out_of_stock',
-            'parameters' => [
-                '%order_items%' => 'test_name_01, test_name_02'
-            ]
+        $this->check($order, $reorder)
+            ->getResult()
+            ->shouldReturn([
+                ItemsOutOfStockEligibilityChecker::class => false
+        ]);
+
+        $this->check($order, $reorder)
+            ->getMessages()
+            ->shouldReturn([
+                ItemsOutOfStockEligibilityChecker::class => 'test_name_01, test_name_02'
         ]);
     }
 }

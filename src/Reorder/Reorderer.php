@@ -63,17 +63,6 @@ final class Reorderer implements ReordererInterface
         $reorderEligibilityChecks = $this->reorderEligibilityChecker->check($order, $reorder);
         $this->reorderEligibilityCheckerResponseProcessor->process($reorderEligibilityChecks);
 
-//        foreach ($reorderEligibilityChecks as $eligibilityCheck) {
-//            if (empty($eligibilityCheck)) {
-//                continue;
-//            }
-//
-//            $this->session->getFlashBag()->add($eligibilityCheck['type'], [
-//                'message' => $eligibilityCheck['message'],
-//                'parameters' => array_key_exists('parameters', $eligibilityCheck) ? $eligibilityCheck['parameters'] : []
-//            ]);
-//        }
-
         $this->entityManager->persist($reorder);
         $this->entityManager->flush();
 

@@ -27,14 +27,15 @@ final class TotalReorderAmountEligibilityCheckerSpec extends ObjectBehavior
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
 
-    function it_returns_empty_array_when_total_amounts_are_the_same(
+    function it_returns_positive_result_when_total_amounts_are_the_same(
         OrderInterface $order,
         OrderInterface $reorder
     ): void {
         $order->getTotal()->willReturn(100);
         $reorder->getTotal()->willReturn(100);
 
-        $this->check($order, $reorder)->shouldReturn([]);
+        $this->check($order, $reorder)->getResult()->shouldReturn([TotalReorderAmountEligibilityChecker::class => true]);
+        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
     }
 
     function it_returns_violation_message_when_total_amounts_differ(
@@ -48,12 +49,7 @@ final class TotalReorderAmountEligibilityCheckerSpec extends ObjectBehavior
 
         $moneyFormatter->format(100, 'USD')->willReturn('$100.00');
 
-        $this->check($order, $reorder)->shouldReturn([
-            'type' => 'info',
-            'message' => 'sylius.reorder.previous_order_total',
-            'parameters' => [
-                '%order_total%' => '$100.00'
-            ]
-        ]);
+        $this->check($order, $reorder)->getResult([TotalReorderAmountEligibilityChecker::class => false]);
+        $this->check($order, $reorder)->getMessages([TotalReorderAmountEligibilityChecker::class => '$100.00']);
     }
 }

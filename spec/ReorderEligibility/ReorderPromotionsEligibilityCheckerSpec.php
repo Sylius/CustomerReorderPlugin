@@ -11,6 +11,7 @@ use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderPromotionsEligibilityChecker;
 
 final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
@@ -31,16 +32,17 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
 
-    function it_returns_empty_array_when_there_are_no_reorder_items(
+    function it_returns_positive_result_when_there_are_no_reorder_items(
         OrderInterface $order,
         OrderInterface $reorder
     ): void {
         $reorder->getItems()->willReturn(new ArrayCollection());
 
-        $this->check($order, $reorder)->shouldReturn([]);
+        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderPromotionsEligibilityChecker::class => true]);
+        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
     }
 
-    function it_returns_empty_array_when_the_same_promotions_are_applied(
+    function it_returns_positive_result_when_the_same_promotions_are_applied(
         OrderInterface $order,
         OrderInterface $reorder,
         OrderItemInterface $reorderItem,
@@ -61,7 +63,8 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
             $secondPromotion->getWrappedObject()
         ]));
 
-        $this->check($order, $reorder)->shouldReturn([]);
+        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderPromotionsEligibilityChecker::class => true]);
+        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
     }
 
     function it_returns_violation_message_when_some_promotions_are_not_applied(
@@ -91,12 +94,9 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
             'test_promotion_02'
         ])->willReturn('test_promotion_01, test_promotion_02');
 
-        $this->check($order, $reorder)->shouldReturn([
-            'type' => 'info',
-            'message' => 'sylius.reorder.promotion_not_enabled',
-            'parameters' => [
-                '%promotion_names%' => 'test_promotion_01, test_promotion_02'
-            ]
+        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderPromotionsEligibilityChecker::class => false]);
+        $this->check($order, $reorder)->getMessages()->shouldReturn([
+            ReorderPromotionsEligibilityChecker::class => 'test_promotion_01, test_promotion_02'
         ]);
     }
 }

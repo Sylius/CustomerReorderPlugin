@@ -16,7 +16,13 @@ use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 use Sylius\CustomerReorderPlugin\Reorder\OrdersComparatorInterface;
 use Sylius\CustomerReorderPlugin\Reorder\Reorderer;
 use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderPromotionsEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\TotalReorderAmountEligibilityChecker;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -28,10 +34,17 @@ final class ReordererSpec extends ObjectBehavior
         OrderProcessorInterface $orderProcessor,
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
-        ReorderEligibilityChecker $reorderEligibilityChecker
+        ReorderEligibilityChecker $reorderEligibilityChecker,
+        ReorderEligibilityCheckerResponseProcessor $reorderEligibilityCheckerResponseProcessor
     ) {
         $this->beConstructedWith(
-            $orderFactory, $entityManager, $orderProcessor, $moneyFormatter, $session, $reorderEligibilityChecker
+            $orderFactory,
+            $entityManager,
+            $orderProcessor,
+            $moneyFormatter,
+            $session,
+            $reorderEligibilityChecker,
+            $reorderEligibilityCheckerResponseProcessor
         );
     }
 
@@ -51,7 +64,8 @@ final class ReordererSpec extends ObjectBehavior
         ChannelInterface $channel,
         OrderInterface $order,
         OrderInterface $reorder,
-        ReorderEligibilityChecker $reorderEligibilityChecker
+        ReorderEligibilityChecker $reorderEligibilityChecker,
+        ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse
     ) {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -62,22 +76,30 @@ final class ReordererSpec extends ObjectBehavior
         $entityManager->persist($reorder)->shouldBeCalled();
         $entityManager->flush()->shouldBeCalled();
 
-        $reorderEligibilityChecker->check($order, $reorder)->willReturn([]);
+        $reorderEligibilityCheckerResponse->getResult()->willReturn([
+            ItemsOutOfStockEligibilityChecker::class => true,
+            ReorderItemPricesEligibilityChecker::class => true,
+            ReorderPromotionsEligibilityChecker::class => true,
+            TotalReorderAmountEligibilityChecker::class => true,
+        ]);
+        $reorderEligibilityCheckerResponse->getMessages()->willReturn([]);
+
+        $reorderEligibilityChecker->check($order, $reorder)->willReturn($reorderEligibilityCheckerResponse);
 
         $this->reorder($order, $channel);
     }
 
-    function it_notifies_when_orders_totals_differ(
+    function it_checks_if_orders_totals_differ(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         ChannelInterface $channel,
         OrderInterface $order,
         OrderInterface $reorder,
         MoneyFormatterInterface $moneyFormatter,
-        Session $session,
-        FlashBagInterface $flashBag,
         ArrayCollection $promotions,
-        ReorderEligibilityChecker $reorderEligibilityChecker
+        ReorderEligibilityChecker $reorderEligibilityChecker,
+        ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse,
+        ReorderEligibilityCheckerResponseProcessor $reorderEligibilityCheckerResponseProcessor
     ) {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -88,19 +110,15 @@ final class ReordererSpec extends ObjectBehavior
 
         $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
 
-        $reorderEligibilityChecker->check($order, $reorder)->willReturn([
-            [
-                'type' => 'info',
-                'message' => 'sylius.reorder.previous_order_total',
-                'parameters' => ['%order_total%' => '$1.00']
-            ]
+        $reorderEligibilityCheckerResponse->getResult()->willReturn([
+            ItemsOutOfStockEligibilityChecker::class => true,
+            ReorderItemPricesEligibilityChecker::class => true,
+            ReorderPromotionsEligibilityChecker::class => true,
+            TotalReorderAmountEligibilityChecker::class => false,
         ]);
+        $reorderEligibilityCheckerResponse->getMessages()->willReturn([TotalReorderAmountEligibilityChecker::class => '$1.00']);
 
-        $session->getFlashBag()->willReturn($flashBag);
-        $flashBag->add('info', [
-            'message' => 'sylius.reorder.previous_order_total',
-            'parameters' => ['%order_total%' => '$1.00']
-        ])->shouldBeCalled();
+        $reorderEligibilityChecker->check($order, $reorder)->willReturn($reorderEligibilityCheckerResponse);
 
         $orderFactory->createFromExistingOrder($order, $channel)->willReturn($reorder);
         $entityManager->persist($reorder)->shouldBeCalled();
@@ -109,18 +127,17 @@ final class ReordererSpec extends ObjectBehavior
         $this->reorder($order, $channel);
     }
 
-    function it_notifies_when_promotion_is_no_longer_available(
+    function it_checks_if_promotion_is_no_longer_available(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         ChannelInterface $channel,
         OrderInterface $order,
         OrderInterface $reorder,
         MoneyFormatterInterface $moneyFormatter,
-        Session $session,
-        FlashBagInterface $flashBag,
         PromotionInterface $firstPromotion,
         PromotionInterface $secondPromotion,
-        ReorderEligibilityChecker $reorderEligibilityChecker
+        ReorderEligibilityChecker $reorderEligibilityChecker,
+        ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse
     ) {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -137,36 +154,17 @@ final class ReordererSpec extends ObjectBehavior
 
         $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
 
-        $reorderEligibilityChecker->check($order, $reorder)->willReturn([
-            [
-                'type' => 'info',
-                'message' => 'sylius.reorder.promotion_not_enabled',
-                'parameters' => [
-                    '%promotions%' => 'test_promotion_01, test_promotion02'
-                ]
-            ],
-            [
-                'type' => 'info',
-                'message' => 'sylius.reorder.previous_order_total',
-                'parameters' => ['%order_total%' => '$1.00']
-            ]
+        $reorderEligibilityCheckerResponse->getResult()->willReturn([
+            ItemsOutOfStockEligibilityChecker::class => true,
+            ReorderItemPricesEligibilityChecker::class => true,
+            ReorderPromotionsEligibilityChecker::class => false,
+            TotalReorderAmountEligibilityChecker::class => true,
+        ]);
+        $reorderEligibilityCheckerResponse->getMessages()->willReturn([
+            ReorderPromotionsEligibilityChecker::class => 'test_promotion_01, test_promotion_02'
         ]);
 
-        $session->getFlashBag()->willReturn($flashBag);
-        $flashBag->add('info',
-            [
-                'message' => 'sylius.reorder.promotion_not_enabled',
-                'parameters' => [
-                    '%promotions%' => 'test_promotion_01, test_promotion02'
-                ]
-            ]
-        )->shouldBeCalled();
-        $flashBag->add('info', [
-            'message' => 'sylius.reorder.previous_order_total',
-            'parameters' => [
-                '%order_total%' => '$1.00'
-            ]
-        ])->shouldBeCalled();
+        $reorderEligibilityChecker->check($order, $reorder)->willReturn($reorderEligibilityCheckerResponse);
 
         $orderFactory->createFromExistingOrder($order, $channel)->willReturn($reorder);
         $entityManager->persist($reorder)->shouldBeCalled();

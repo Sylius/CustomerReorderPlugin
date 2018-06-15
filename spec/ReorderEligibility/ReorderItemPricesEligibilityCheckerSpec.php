@@ -29,7 +29,7 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
 
-    function it_returns_empty_array_when_prices_are_the_same(
+    function it_returns_positive_result_when_prices_are_the_same(
         OrderInterface $order,
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
@@ -51,7 +51,8 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
         $secondOrderItem->getUnitPrice()->willReturn(100);
 
-        $this->check($order, $reorder)->shouldReturn([]);
+        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderItemPricesEligibilityChecker::class => true]);
+        $this->check($order, $reorder)->getMessages()->shouldReturn([]);
     }
 
     function it_returns_violation_message_when_some_prices_are_different(
@@ -72,22 +73,17 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         ]));
 
         $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
-        $firstOrderItem->getUnitPrice()->willReturn(100, 150);
+        $firstOrderItem->getUnitPrice()->willReturn(100, 150, 100, 150);
 
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
-        $secondOrderItem->getUnitPrice()->willReturn(100, 150);
+        $secondOrderItem->getUnitPrice()->willReturn(100, 150, 100, 150);
 
         $reorderEligibilityConstraintMessageFormatter->format([
             'test_variant_name_01',
             'test_variant_name_02'
         ])->willReturn('test_variant_name_01, test_variant_name_02');
 
-        $this->check($order, $reorder)->shouldReturn([
-            'type' => 'info',
-            'message' => 'sylius.reorder.items_price_changed',
-            'parameters' => [
-                '%product_names%' => 'test_variant_name_01, test_variant_name_02'
-            ]
-        ]);
+        $this->check($order, $reorder)->getResult()->shouldReturn([ReorderItemPricesEligibilityChecker::class => false]);
+        $this->check($order, $reorder)->getMessages()->shouldReturn([ReorderItemPricesEligibilityChecker::class => 'test_variant_name_01, test_variant_name_02']);
     }
 }

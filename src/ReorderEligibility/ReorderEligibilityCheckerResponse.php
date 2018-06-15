@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 
-final class ReorderEligibilityCheckerResponse
+class ReorderEligibilityCheckerResponse
 {
     /** @var array */
     private $result = [];

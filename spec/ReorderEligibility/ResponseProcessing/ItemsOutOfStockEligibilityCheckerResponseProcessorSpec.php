@@ -7,8 +7,8 @@ namespace spec\Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessin
 use PhpSpec\ObjectBehavior;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
-use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ItemsOutOfStockEligibilityCheckerResponseProcessor;
-use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ItemsOutOfStockEligibilityCheckerResponseProcessorInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessorInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -21,12 +21,12 @@ final class ItemsOutOfStockEligibilityCheckerResponseProcessorSpec extends Objec
 
     function it_is_initializable(): void
     {
-        $this->shouldHaveType(ItemsOutOfStockEligibilityCheckerResponseProcessor::class);
+        $this->shouldHaveType(ItemsOutOfStockEligibilityCheckerResponseProcessorInterface::class);
     }
 
     function it_implements_reorder_eligibility_checker_response_processor_interface()
     {
-        $this->shouldImplement(ReorderEligibilityCheckerResponseProcessor::class);
+        $this->shouldImplement(ReorderEligibilityCheckerResponseProcessorInterface::class);
     }
 
     function it_does_nothing_when_eligibility_checker_response_was_positive(

@@ -17,7 +17,7 @@
             <argument type="service" id="sylius.money_formatter" />
             <argument type="service" id="session" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" />
-            <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\CompositeReorderEligibilityCheckerResponseProcessor" />
+            <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor" />
         </service>
         <service id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" decorates="sylius.factory.order" public="false">
             <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory.inner" />
@@ -46,22 +46,9 @@
 
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />
 
-        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\CompositeReorderEligibilityCheckerResponseProcessor" public="false" />
-        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ItemsOutOfStockEligibilityCheckerResponseProcessor">
-            <argument type="service" id="session" />
-            <tag name="sylius.reorder.eligibility_checker_response_processor" priority="30" />
+        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor">
+            <argument type="service" id="session"/>
         </service>
-        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderItemPricesEligibilityCheckerResponseProcessor">
-            <argument type="service" id="session" />
-            <tag name="sylius.reorder.eligibility_checker_response_processor" priority="20" />
-        </service>
-        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderPromotionsEligibilityCheckerResponseProcessor">
-            <argument type="service" id="session" />
-            <tag name="sylius.reorder.eligibility_checker_response_processor" priority="10" />
-        </service>
-        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\TotalReorderAmountEligibilityCheckerResponseProcessor">
-            <argument type="service" id="session" />
-            <tag name="sylius.reorder.eligibility_checker_response_processor" priority="0" />
-        </service>
+
     </services>
 </container>

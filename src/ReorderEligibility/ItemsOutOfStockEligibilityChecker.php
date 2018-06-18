@@ -7,6 +7,7 @@ namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityChecker
 {
@@ -19,7 +20,7 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
+    public function check(OrderInterface $order, OrderInterface $reorder): array
     {
         $variantsOutOfStock = [];
 
@@ -32,18 +33,17 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
             }
         }
 
-        $response = new ReorderEligibilityCheckerResponse();
-
         if (empty($variantsOutOfStock)) {
-            $response->addResults([ItemsOutOfStockEligibilityChecker::class => true]);
-            return $response;
+            return [];
         }
 
-        $response->addResults([ItemsOutOfStockEligibilityChecker::class => false]);
-        $response->addMessages([
-            ItemsOutOfStockEligibilityChecker::class => $this->reorderEligibilityConstraintMessageFormatter->format($variantsOutOfStock)
+        $eligibilityCheckerResponse = new ReorderEligibilityCheckerResponse();
+
+        $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::ITEMS_OUT_OF_STOCK);
+        $eligibilityCheckerResponse->setParameters([
+            '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($variantsOutOfStock)
         ]);
 
-        return $response;
+        return [$eligibilityCheckerResponse];
     }
 }

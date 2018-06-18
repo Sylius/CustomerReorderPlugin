@@ -6,6 +6,7 @@ namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChecker
 {
@@ -18,15 +19,12 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
+    public function check(OrderInterface $order, OrderInterface $reorder): array
     {
-        $response = new ReorderEligibilityCheckerResponse();
-
         if (empty($reorder->getItems()->getValues()) ||
             $order->getPromotions()->getValues() === $reorder->getPromotions()->getValues()
         ) {
-            $response->addResults([ReorderPromotionsEligibilityChecker::class => true]);
-            return $response;
+            return [];
         }
 
         $disabledPromotions = [];
@@ -38,11 +36,13 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
             }
         }
 
-        $response->addResults([ReorderPromotionsEligibilityChecker::class => false]);
-        $response->addMessages([
-            ReorderPromotionsEligibilityChecker::class => $this->reorderEligibilityConstraintMessageFormatter->format($disabledPromotions)
+        $eligibilityCheckerResponse = new ReorderEligibilityCheckerResponse();
+
+        $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::REORDER_PROMOTIONS_CHANGED);
+        $eligibilityCheckerResponse->setParameters([
+            '%promotion_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($disabledPromotions)
         ]);
 
-        return $response;
+        return [$eligibilityCheckerResponse];
     }
 }

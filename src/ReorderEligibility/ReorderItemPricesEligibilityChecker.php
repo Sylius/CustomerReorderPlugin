@@ -6,6 +6,7 @@ namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChecker
 {
@@ -18,7 +19,7 @@ final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChe
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
+    public function check(OrderInterface $order, OrderInterface $reorder): array
     {
         $orderVariantNamesToTotal = [];
         $reorderVariantNamesToTotal = [];
@@ -45,18 +46,17 @@ final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChe
             }
         }
 
-        $response = new ReorderEligibilityCheckerResponse();
-
         if (empty($orderVariantsWithChangedPrice)) {
-            $response->addResults([ReorderItemPricesEligibilityChecker::class => true]);
-            return $response;
+            return [];
         }
 
-        $response->addResults([ReorderItemPricesEligibilityChecker::class => false]);
-        $response->addMessages([
-            ReorderItemPricesEligibilityChecker::class => $this->reorderEligibilityConstraintMessageFormatter->format($orderVariantsWithChangedPrice)
+        $eligibilityCheckerResponse = new ReorderEligibilityCheckerResponse();
+
+        $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
+        $eligibilityCheckerResponse->setParameters([
+            '%product_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($orderVariantsWithChangedPrice)
         ]);
 
-        return $response;
+        return [$eligibilityCheckerResponse];
     }
 }

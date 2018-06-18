@@ -6,6 +6,7 @@ namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class TotalReorderAmountEligibilityChecker implements ReorderEligibilityChecker
 {
@@ -17,22 +18,23 @@ final class TotalReorderAmountEligibilityChecker implements ReorderEligibilityCh
         $this->moneyFormatter = $moneyFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
+    public function check(OrderInterface $order, OrderInterface $reorder): array
     {
-        $response = new ReorderEligibilityCheckerResponse();
-
         if ($order->getTotal() === $reorder->getTotal()) {
-            $response->addResults([self::class => true]);
-            return $response;
+            return [];
         }
 
         /** @var string */
         $currencyCode = $order->getCurrencyCode();
         $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $currencyCode);
 
-        $response->addResults([TotalReorderAmountEligibilityChecker::class => false]);
-        $response->addMessages([TotalReorderAmountEligibilityChecker::class => $formattedTotal]);
+        $eligibilityCheckerResponse = new ReorderEligibilityCheckerResponse();
 
-        return $response;
+        $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::TOTAL_AMOUNT_CHANGED);
+        $eligibilityCheckerResponse->setParameters([
+            '%order_total%' => $formattedTotal
+        ]);
+
+        return [$eligibilityCheckerResponse];
     }
 }

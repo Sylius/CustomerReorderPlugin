@@ -5,9 +5,27 @@ declare(strict_types=1);
 namespace Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing;
 
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Zend\Stdlib\PriorityQueue;
 
-interface ReorderEligibilityCheckerResponseProcessor
+final class ReorderEligibilityCheckerResponseProcessor implements ReorderEligibilityCheckerResponseProcessorInterface
 {
-    public function process(ReorderEligibilityCheckerResponse $response): void;
-    public function getClassName(): string;
+    /** @var Session */
+    private $session;
+
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+    }
+
+    public function process(array $responses): void
+    {
+        /** @var ReorderEligibilityCheckerResponse $response */
+        foreach ($responses as $response) {
+            $this->session->getFlashBag()->add('info', [
+                'message' => $response->getMessage(),
+                'parameters' => $response->getParameters()
+            ]);
+        }
+    }
 }

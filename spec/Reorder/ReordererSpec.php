@@ -21,7 +21,7 @@ use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderPromotionsEligibilityChecker;
-use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessorInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\TotalReorderAmountEligibilityChecker;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -35,7 +35,7 @@ final class ReordererSpec extends ObjectBehavior
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
         ReorderEligibilityChecker $reorderEligibilityChecker,
-        ReorderEligibilityCheckerResponseProcessor $reorderEligibilityCheckerResponseProcessor
+        ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor
     ) {
         $this->beConstructedWith(
             $orderFactory,
@@ -99,7 +99,7 @@ final class ReordererSpec extends ObjectBehavior
         ArrayCollection $promotions,
         ReorderEligibilityChecker $reorderEligibilityChecker,
         ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse,
-        ReorderEligibilityCheckerResponseProcessor $reorderEligibilityCheckerResponseProcessor
+        ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor
     ) {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');

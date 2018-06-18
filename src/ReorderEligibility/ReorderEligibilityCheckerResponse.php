@@ -4,35 +4,28 @@ declare(strict_types=1);
 
 namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 
-class ReorderEligibilityCheckerResponse
+final class ReorderEligibilityCheckerResponse
 {
-    /** @var array */
-    private $result = [];
+    /** @var string */
+    private $message;
 
     /** @var array */
-    private $messages = [];
+    private $parameters;
 
-    public function getResult(): array
+    public function getMessage(): string
     {
-        return $this->result;
+        return $this->message;
     }
-
-    public function getMessages(): array
+    public function setMessage(string $message): void
     {
-        return $this->messages;
+        $this->message = $message;
     }
-
-    public function addResults(array $eligibilityCheckerResults): void
+    public function getParameters(): array
     {
-        foreach (array_keys($eligibilityCheckerResults) as $resultKey) {
-            $this->result[$resultKey] = $eligibilityCheckerResults[$resultKey];
-        }
+        return $this->parameters;
     }
-
-    public function addMessages(array $eligibilityCheckerMessages): void
+    public function setParameters(array $parameters): void
     {
-        foreach (array_keys($eligibilityCheckerMessages) as $messageKey) {
-            $this->messages[$messageKey] = $eligibilityCheckerMessages[$messageKey];
-        }
+        $this->parameters = $parameters;
     }
 }

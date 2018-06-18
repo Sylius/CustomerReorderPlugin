@@ -11,8 +11,8 @@ final class RegisterEligibilityCheckerResponseProcessorsPass extends Prioritized
     public function __construct()
     {
         parent::__construct(
-            'Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\CompositeReorderEligibilityCheckerResponseProcessor',
-            'Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\CompositeReorderEligibilityCheckerResponseProcessor',
+            'Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor',
+            'Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor',
             'sylius.reorder.eligibility_checker_response_processor',
             'addProcessor'
         );

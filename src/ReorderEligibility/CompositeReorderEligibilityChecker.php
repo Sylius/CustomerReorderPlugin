@@ -27,15 +27,16 @@ final class CompositeReorderEligibilityChecker implements ReorderEligibilityChec
     /**
      * {@inheritdoc}
      */
-    public function check(OrderInterface $order, OrderInterface $reorder): ReorderEligibilityCheckerResponse
+    public function check(OrderInterface $order, OrderInterface $reorder): array
     {
-        $compositeReorderEligibilityCheckerResponse = new ReorderEligibilityCheckerResponse();
+        $eligibilityCheckersFailures = [];
+
         foreach ($this->eligibilityCheckers as $eligibilityChecker) {
-            $eligibilityCheckerResponse = $eligibilityChecker->check($order, $reorder);
-            $compositeReorderEligibilityCheckerResponse->addResults($eligibilityCheckerResponse->getResult());
-            $compositeReorderEligibilityCheckerResponse->addMessages($eligibilityCheckerResponse->getMessages());
+            $eligibilityCheckersFailures = array_merge(
+                $eligibilityCheckersFailures, $eligibilityChecker->check($order, $reorder)
+            );
         }
 
-        return $compositeReorderEligibilityCheckerResponse;
+        return $eligibilityCheckersFailures;
     }
 }

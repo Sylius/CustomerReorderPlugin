@@ -11,7 +11,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
-use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessorInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 final class Reorderer implements ReordererInterface
@@ -34,7 +34,7 @@ final class Reorderer implements ReordererInterface
     /** @var ReorderEligibilityChecker */
     private $reorderEligibilityChecker;
 
-    /** @var ReorderEligibilityCheckerResponseProcessor */
+    /** @var ReorderEligibilityCheckerResponseProcessorInterface */
     private $reorderEligibilityCheckerResponseProcessor;
 
     public function __construct(
@@ -44,7 +44,7 @@ final class Reorderer implements ReordererInterface
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
         ReorderEligibilityChecker $reorderEligibilityChecker,
-        ReorderEligibilityCheckerResponseProcessor $reorderEligibilityCheckerResponseProcessor
+        ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor
     ) {
         $this->orderFactory = $orderFactory;
         $this->entityManager = $entityManager;

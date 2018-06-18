@@ -9,6 +9,7 @@ use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\TotalReorderAmountEligibilityChecker;
 
 final class TotalReorderAmountEligibilityCheckerSpec extends ObjectBehavior
@@ -36,8 +37,7 @@ final class TotalReorderAmountEligibilityCheckerSpec extends ObjectBehavior
         $reorder->getTotal()->willReturn(100);
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([TotalReorderAmountEligibilityChecker::class => true]);
-        $response->getMessages()->shouldBeEqualTo([]);
+        $response->shouldBeEqualTo([]);
     }
 
     function it_returns_violation_message_when_total_amounts_differ(
@@ -52,7 +52,7 @@ final class TotalReorderAmountEligibilityCheckerSpec extends ObjectBehavior
         $moneyFormatter->format(100, 'USD')->willReturn('$100.00');
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([TotalReorderAmountEligibilityChecker::class => false]);
-        $response->getMessages()->shouldBeEqualTo([TotalReorderAmountEligibilityChecker::class => '$100.00']);
+        $response[0]->getMessage()->shouldBeEqualTo(EligibilityCheckerFailureResponses::TOTAL_AMOUNT_CHANGED);
+        $response[0]->getParameters()->shouldBeEqualTo(['%order_total%' => '$100.00']);
     }
 }

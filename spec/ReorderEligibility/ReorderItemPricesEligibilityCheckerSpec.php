@@ -11,6 +11,7 @@ use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
 {
@@ -52,8 +53,7 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         $secondOrderItem->getUnitPrice()->willReturn(100);
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([ReorderItemPricesEligibilityChecker::class => true]);
-        $response->getMessages()->shouldReturn([]);
+        $response->shouldBeEqualTo([]);
     }
 
     function it_returns_violation_message_when_some_prices_are_different(
@@ -85,9 +85,9 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         ])->willReturn('test_variant_name_01, test_variant_name_02');
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([ReorderItemPricesEligibilityChecker::class => false]);
-        $response->getMessages()->shouldBeEqualTo([
-            ReorderItemPricesEligibilityChecker::class => 'test_variant_name_01, test_variant_name_02'
+        $response[0]->getMessage()->shouldBeEqualTo(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
+        $response[0]->getParameters()->shouldBeEqualTo([
+            '%product_names%' => 'test_variant_name_01, test_variant_name_02'
         ]);
     }
 }

@@ -13,6 +13,7 @@ use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderPromotionsEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
 {
@@ -39,8 +40,7 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
         $reorder->getItems()->willReturn(new ArrayCollection());
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([ReorderPromotionsEligibilityChecker::class => true]);
-        $response->getMessages()->shouldBeEqualTo([]);
+        $response->shouldBeEqualTo([]);
     }
 
     function it_returns_positive_result_when_the_same_promotions_are_applied(
@@ -65,8 +65,7 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
         ]));
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([ReorderPromotionsEligibilityChecker::class => true]);
-        $response->getMessages()->shouldBeEqualTo([]);
+        $response->shouldBeEqualTo([]);
     }
 
     function it_returns_violation_message_when_some_promotions_are_not_applied(
@@ -97,9 +96,9 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
         ])->willReturn('test_promotion_01, test_promotion_02');
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([ReorderPromotionsEligibilityChecker::class => false]);
-        $response->getMessages()->shouldBeEqualTo([
-            ReorderPromotionsEligibilityChecker::class => 'test_promotion_01, test_promotion_02'
-        ]);
+        $response[0]->getMessage()->shouldBeEqualTo(EligibilityCheckerFailureResponses::REORDER_PROMOTIONS_CHANGED);
+        $response[0]->getParameters()->shouldBeEqualTo([
+            '%promotion_names%' => 'test_promotion_01, test_promotion_02']
+        );
     }
 }

@@ -14,6 +14,7 @@ use Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityCh
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
 {
@@ -56,8 +57,7 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         $secondProductVariant->isTracked()->willReturn(true);
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([ItemsOutOfStockEligibilityChecker::class => true]);
-        $response->getMessages()->shouldBeEqualTo([]);
+        $response->shouldBeEqualTo([]);
     }
 
     function it_returns_violation_message_when_some_reorder_items_are_out_of_stock(
@@ -91,11 +91,11 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         ])->willReturn('test_name_01, test_name_02');
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([
-                ItemsOutOfStockEligibilityChecker::class => false
-        ]);
-        $response->getMessages()->shouldBeEqualTo([
-                ItemsOutOfStockEligibilityChecker::class => 'test_name_01, test_name_02'
+        $response[0]->getMessage()->shouldBeEqualTo(
+                EligibilityCheckerFailureResponses::ITEMS_OUT_OF_STOCK
+        );
+        $response[0]->getParameters()->shouldBeEqualTo([
+                '%order_items%' => 'test_name_01, test_name_02'
         ]);
     }
 }

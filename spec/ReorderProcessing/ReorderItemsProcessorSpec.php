@@ -76,6 +76,9 @@ final class ReorderItemsProcessorSpec extends ObjectBehavior
         $secondOrderItem->getProductName()->willReturn('test_product_name_02');
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
 
+        $availabilityChecker->isStockAvailable($firstProductVariant)->willReturn(true);
+        $availabilityChecker->isStockAvailable($secondProductVariant)->willReturn(true);
+
         $availabilityChecker->isStockSufficient($firstProductVariant, 1)->willReturn(true);
         $availabilityChecker->isStockSufficient($secondProductVariant, 2)->willReturn(true);
 

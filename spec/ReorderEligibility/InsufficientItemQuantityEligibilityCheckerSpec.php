@@ -11,6 +11,7 @@ use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\InsufficientItemQuantityEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavior
 {
@@ -52,8 +53,7 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
         $secondOrderItem->getQuantity()->willReturn(100);
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([InsufficientItemQuantityEligibilityChecker::class => true]);
-        $response->getMessages()->shouldBeEqualTo([]);
+        $response->shouldBeEqualTo([]);
     }
 
     function it_returns_empty_array_when_reorder_has_no_items(
@@ -76,8 +76,7 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
         $secondOrderItem->getQuantity()->willReturn(10);
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([InsufficientItemQuantityEligibilityChecker::class => true]);
-        $response->getMessages()->shouldBeEqualTo([]);
+        $response->shouldBeEqualTo([]);
     }
 
     function it_returns_flash_message_when_reorder_items_quantity_differ(
@@ -107,8 +106,10 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
             ->willReturn('test_variant_name_01, test_variant_name_02');
 
         $response = $this->check($order, $reorder);
-        $response->getResult()->shouldBeEqualTo([InsufficientItemQuantityEligibilityChecker::class => false]);
-        $response->getMessages()->shouldBeEqualTo([InsufficientItemQuantityEligibilityChecker::class => 'test_variant_name_01, test_variant_name_02']);
+        $response[0]->getMessage()->shouldBeEqualTo(EligibilityCheckerFailureResponses::INSUFFICIENT_ITEM_QUANTITY);
+        $response[0]->getParameters()->shouldBeEqualTo([
+            '%order_items%' => 'test_variant_name_01, test_variant_name_02'
+        ]);
     }
 
 }

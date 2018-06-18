@@ -6,8 +6,9 @@ namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
-final class InsufficientItemQuantityEligibilityCheck implements ReorderEligibilityChecker
+final class InsufficientItemQuantityEligibilityChecker implements ReorderEligibilityChecker
 {
     /** @var ReorderEligibilityConstraintMessageFormatterInterface */
     private $reorderEligibilityConstraintMessageFormatter;
@@ -18,7 +19,7 @@ final class InsufficientItemQuantityEligibilityCheck implements ReorderEligibili
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
-    public function check(OrderInterface $order, OrderInterface $reorder)
+    public function check(OrderInterface $order, OrderInterface $reorder): array
     {
         $orderVariantNamesToQuantity = [];
         $reorderVariantNamesToQuantity = [];
@@ -50,12 +51,13 @@ final class InsufficientItemQuantityEligibilityCheck implements ReorderEligibili
             return [];
         }
 
-        return [
-            'type' => 'info',
-            'message' => 'sylius.reorder.insufficient_quantity',
-            'parameters' => [
-                '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($insufficientItems),
-            ]
-        ];
+        $reorderEligibilityCheckerResponse = new ReorderEligibilityCheckerResponse();
+
+        $reorderEligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::INSUFFICIENT_ITEM_QUANTITY);
+        $reorderEligibilityCheckerResponse->setParameters([
+            '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($insufficientItems)
+        ]);
+
+        return [$reorderEligibilityCheckerResponse];
     }
 }

@@ -71,7 +71,7 @@ final class ReorderContext implements Context
     public function iShouldBeNotifiedThatProductIsOutOfStock(string ... $products): void
     {
         $this->assertFlashMessageWithTextExists(sprintf(
-            'Following items: %s are out of stock. It may have affected order total.',
+            'Following items: %s are out of stock, which have affected order total.',
             $this->reorderEligibilityConstraintMessageFormatter->format($products))
         );
     }
@@ -84,7 +84,7 @@ final class ReorderContext implements Context
         string ... $products
     ) : void {
         $this->assertFlashMessageWithTextExists(sprintf(
-            'Following items: %s are not available in expected quantity. It may have affected order total.',
+            'Following items: %s are not available in expected quantity, which have affected order total.',
             $this->reorderEligibilityConstraintMessageFormatter->format($products)
         ));
     }

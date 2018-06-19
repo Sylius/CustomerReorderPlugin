@@ -9,15 +9,22 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
 use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 
 final class ReorderContext implements Context
 {
     /** @var Session */
     private $session;
 
-    public function __construct(Session $session)
-    {
+    /** @var ReorderEligibilityConstraintMessageFormatterInterface */
+    private $reorderEligibilityConstraintMessageFormatter;
+
+    public function __construct(
+        Session $session,
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+    ) {
         $this->session = $session;
+        $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
     }
 
     /**
@@ -59,19 +66,26 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that product :product is out of stock
+     * @Then I should be notified that product :firstProduct is out of stock
+     * @Then I should be notified that products :firstProduct, :secondProduct are out of stock
      */
-    public function iShouldBeNotifiedThatProductIsOutOfStock(string $product): void
+    public function iShouldBeNotifiedThatProductIsOutOfStock(string ... $products): void
     {
-
+        $this->assertFlashMessageWithTextExists(sprintf(
+            'Following items: %s are out of stock. It may have affected order total.',
+            $this->reorderEligibilityConstraintMessageFormatter->format($products))
+        );
     }
 
     /**
-     * @Then I should be notified that order items price has changed
+     * @Then I should be notified that :orderItemName price has changed
      */
-    public function iShouldBeNotifiedThatOrderItemsPriceHasChanged(): void
+    public function iShouldBeNotifiedThatOrderItemsPriceHasChanged(string $orderItemName): void
     {
-        $this->assertFlashMessageWithTextExists('Prices of some products has changed, which have affected order total.');
+        $this->assertFlashMessageWithTextExists(sprintf(
+            'Prices of products: %s have changed, which have affected order total.',
+            $orderItemName)
+        );
     }
 
     /**
@@ -83,12 +97,32 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should be notified that promotion is no longer enabled
+     * @Then I should be notified that promotion :promotionName is no longer enabled
      */
-    public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(): void
+    public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(string $promotionName): void
     {
-        $this->assertFlashMessageWithTextExists('Some promotions are no longer enabled. It may have affected order total.');
+        $this->assertFlashMessageWithTextExists(sprintf(
+            'Following promotions: %s are no longer enabled, which have affected order total.',
+            $promotionName)
+        );
     }
+
+    /**
+     * @Then I should see exactly :count notifications
+     */
+    public function iShouldSeeExactlyNotifications(int $count): void
+    {
+         assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === $count);
+    }
+
+    /**
+     * @Then I should not see any notifications
+     */
+    public function iShouldNotSeeAnyNotifications(): void
+    {
+        assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === 0);
+    }
+
 
     /**
      * @Then /^I should have shipping address filled with (address "[^"]+", "[^"]+", "[^"]+", "[^"]+" for "[^"]+")$/

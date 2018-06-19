@@ -10,6 +10,8 @@ use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessorInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 final class Reorderer implements ReordererInterface
@@ -29,8 +31,11 @@ final class Reorderer implements ReordererInterface
     /** @var Session */
     private $session;
 
-    /** @var OrdersComparatorInterface */
-    private $orderToReorderComparator;
+    /** @var ReorderEligibilityChecker */
+    private $reorderEligibilityChecker;
+
+    /** @var ReorderEligibilityCheckerResponseProcessorInterface */
+    private $reorderEligibilityCheckerResponseProcessor;
 
     public function __construct(
         OrderFactoryInterface $orderFactory,
@@ -38,14 +43,16 @@ final class Reorderer implements ReordererInterface
         OrderProcessorInterface $orderProcessor,
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
-        OrdersComparatorInterface $orderToReorderComparator
+        ReorderEligibilityChecker $reorderEligibilityChecker,
+        ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor
     ) {
         $this->orderFactory = $orderFactory;
         $this->entityManager = $entityManager;
         $this->orderProcessor = $orderProcessor;
         $this->moneyFormatter = $moneyFormatter;
         $this->session = $session;
-        $this->orderToReorderComparator = $orderToReorderComparator;
+        $this->reorderEligibilityChecker= $reorderEligibilityChecker;
+        $this->reorderEligibilityCheckerResponseProcessor= $reorderEligibilityCheckerResponseProcessor;
     }
 
     public function reorder(OrderInterface $order, ChannelInterface $channel): OrderInterface
@@ -53,23 +60,8 @@ final class Reorderer implements ReordererInterface
         $reorder = $this->orderFactory->createFromExistingOrder($order, $channel);
         assert($reorder instanceof OrderInterface);
 
-        if ($reorder->getTotal() !== $order->getTotal()) {
-            if ($this->orderToReorderComparator->hasAnyVariantPriceChanged($order, $reorder)) {
-                $this->session->getFlashBag()->add('info', 'sylius.reorder.items_price_changed');
-            }
-
-            if ($this->orderToReorderComparator->hasAnyPromotionChanged($order, $reorder)) {
-                $this->session->getFlashBag()->add('info', 'sylius.reorder.promotion_not_enabled');
-            }
-
-            /** @var string $currencyCode */
-            $currencyCode = $order->getCurrencyCode();
-            $formattedTotal = $this->moneyFormatter->format($order->getTotal(), $currencyCode);
-            $this->session->getFlashBag()->add('info', [
-                'message' => 'sylius.reorder.previous_order_total',
-                'parameters' => ['%order_total%' => $formattedTotal]
-            ]);
-        }
+        $reorderEligibilityChecks = $this->reorderEligibilityChecker->check($order, $reorder);
+        $this->reorderEligibilityCheckerResponseProcessor->process($reorderEligibilityChecks);
 
         $this->entityManager->persist($reorder);
         $this->entityManager->flush();

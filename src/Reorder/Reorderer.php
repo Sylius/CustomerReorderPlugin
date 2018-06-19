@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;

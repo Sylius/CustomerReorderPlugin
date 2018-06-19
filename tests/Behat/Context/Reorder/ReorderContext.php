@@ -8,7 +8,6 @@ use Behat\Behat\Context\Context;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
 use Sylius\Component\Core\Model\AddressInterface;
-use Sylius\Component\Core\Model\PromotionInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 
 final class ReorderContext implements Context
@@ -72,9 +71,22 @@ final class ReorderContext implements Context
     public function iShouldBeNotifiedThatProductIsOutOfStock(string ... $products): void
     {
         $this->assertFlashMessageWithTextExists(sprintf(
-            'Following items: %s are out of stock. It may have affected order total.',
+            'Following items: %s are out of stock, which have affected order total.',
             $this->reorderEligibilityConstraintMessageFormatter->format($products))
         );
+    }
+
+    /**
+     * @Then I should be notified that product :productName is not available in expected quantity
+     * @Then I should be notified that products :firstProduct, :secondProduct are not available in expected quantity
+     */
+    public function iShouldBeNotifiedThatUnitsOfProductWereAddedToCartInsteadOf(
+        string ... $products
+    ) : void {
+        $this->assertFlashMessageWithTextExists(sprintf(
+            'Following items: %s are not available in expected quantity, which have affected order total.',
+            $this->reorderEligibilityConstraintMessageFormatter->format($products)
+        ));
     }
 
     /**

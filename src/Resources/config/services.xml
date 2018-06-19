@@ -23,12 +23,13 @@
         </service>
         <service id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" decorates="sylius.factory.order" public="false">
             <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory.inner" />
-            <argument type="service" id="sylius.factory.order_item" />
-            <argument type="service" id="sylius.order_modifier" />
-            <argument type="service" id="sylius.order_item_quantity_modifier"/>
+            <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderProcessing\CompositeReorderProcessor" />
         </service>
-
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" public="false" />
+        <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\InsufficientItemQuantityEligibilityChecker">
+            <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />
+            <tag name="sylius.reorder.eligibility_checker" priority="40" />
+        </service>
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityChecker">
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />
             <tag name="sylius.reorder.eligibility_checker" priority="30" />
@@ -44,6 +45,17 @@
         <service id="sylius.reorder.eligibility_checker.total" class="Sylius\CustomerReorderPlugin\ReorderEligibility\TotalReorderAmountEligibilityChecker">
             <argument type="service" id="sylius.money_formatter"/>
             <tag name="sylius.reorder.eligibility_checker" priority="0" />
+        </service>
+        <service id="Sylius\CustomerReorderPlugin\ReorderProcessing\CompositeReorderProcessor" public="false" />
+        <service id="Sylius\CustomerReorderPlugin\ReorderProcessing\ReorderDataProvider" >
+            <tag name="sylius.reorder_processor" priority="10"/>
+        </service>
+        <service id="Sylius\CustomerReorderPlugin\ReorderProcessing\ReorderItemsProcessor">
+            <argument type="service" id="sylius.order_item_quantity_modifier" />
+            <argument type="service" id="sylius.order_modifier" />
+            <argument type="service" id="sylius.availability_checker.default" />
+            <argument type="service" id="sylius.factory.order_item" />
+            <tag name="sylius.reorder_processor" priority="0" />
         </service>
 
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />

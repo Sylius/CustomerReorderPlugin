@@ -31,7 +31,7 @@ final class CustomerReorderAction
     private $orderRepository;
 
     /** @var ReordererInterface */
-    private $reorderService;
+    private $reorderer;
 
     /** @var UrlGeneratorInterface */
     private $urlGenerator;
@@ -48,7 +48,7 @@ final class CustomerReorderAction
         $this->channelContext = $channelContext;
         $this->cartContext = $cartContext;
         $this->orderRepository = $orderRepository;
-        $this->reorderService = $reorderService;
+        $this->reorderer = $reorderService;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -60,7 +60,7 @@ final class CustomerReorderAction
         $channel = $this->channelContext->getChannel();
         assert($channel instanceof ChannelInterface);
 
-        $reorder = $this->reorderService->reorder($order, $channel);
+        $reorder = $this->reorderer->reorder($order, $channel);
         assert($reorder instanceof OrderInterface);
 
         $this->cartSessionStorage->setForChannel($channel, $reorder);

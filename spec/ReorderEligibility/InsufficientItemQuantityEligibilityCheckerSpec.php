@@ -8,25 +8,26 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\InsufficientItemQuantityEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
-use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
-final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
+final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavior
 {
-    function let(ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter)
-    {
+    function let(
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+    ): void {
         $this->beConstructedWith($reorderEligibilityConstraintMessageFormatter);
     }
 
-    function it_is_initializable()
+    function it_is_initializable(): void
     {
-        $this->shouldHaveType(ReorderItemPricesEligibilityChecker::class);
+        $this->shouldBeAnInstanceOf(InsufficientItemQuantityEligibilityChecker::class);
     }
 
-    function it_implements_reorder_eligibility_checker_interface()
+    function it_implements_reorder_eligibility_checker(): void
     {
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
@@ -48,16 +49,39 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         ]));
 
         $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
-        $firstOrderItem->getUnitPrice()->willReturn(100);
+        $firstOrderItem->getQuantity()->willReturn(100);
 
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
-        $secondOrderItem->getUnitPrice()->willReturn(100);
+        $secondOrderItem->getQuantity()->willReturn(100);
 
         $response = $this->check($order, $reorder);
         $response->shouldBeEqualTo([]);
     }
 
-    function it_returns_violation_message_when_some_prices_are_different(
+    function it_returns_empty_array_when_reorder_has_no_items(
+        OrderInterface $order,
+        OrderInterface $reorder,
+        OrderItemInterface $firstOrderItem,
+        OrderItemInterface $secondOrderItem
+    ): void {
+        $order->getItems()->willReturn(new ArrayCollection([
+            $firstOrderItem->getWrappedObject(),
+            $secondOrderItem->getWrappedObject()
+        ]));
+
+        $reorder->getItems()->willReturn(new ArrayCollection([]));
+
+        $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
+        $firstOrderItem->getQuantity()->willReturn(10);
+
+        $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
+        $secondOrderItem->getQuantity()->willReturn(10);
+
+        $response = $this->check($order, $reorder);
+        $response->shouldBeEqualTo([]);
+    }
+
+    function it_returns_flash_message_when_reorder_items_quantity_differ(
         OrderInterface $order,
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
@@ -75,20 +99,18 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
         ]));
 
         $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
-        $firstOrderItem->getUnitPrice()->willReturn(100, 150);
+        $firstOrderItem->getQuantity()->willReturn(10, 5);
 
         $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
-        $secondOrderItem->getUnitPrice()->willReturn(100, 150);
+        $secondOrderItem->getQuantity()->willReturn(10, 5);
 
-        $reorderEligibilityConstraintMessageFormatter->format([
-            'test_variant_name_01',
-            'test_variant_name_02'
-        ])->willReturn('test_variant_name_01, test_variant_name_02');
+        $reorderEligibilityConstraintMessageFormatter->format(['test_variant_name_01', 'test_variant_name_02'])
+            ->willReturn('test_variant_name_01, test_variant_name_02');
 
         $response = new ReorderEligibilityCheckerResponse();
-        $response->setMessage(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
+        $response->setMessage(EligibilityCheckerFailureResponses::INSUFFICIENT_ITEM_QUANTITY);
         $response->setParameters([
-            '%product_names%' => 'test_variant_name_01, test_variant_name_02'
+            '%order_items%' => 'test_variant_name_01, test_variant_name_02'
         ]);
 
         $this->check($order, $reorder)->shouldBeLike([$response]);

@@ -10,6 +10,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderPromotionsEligibilityChecker;
@@ -95,10 +96,12 @@ final class ReorderPromotionsEligibilityCheckerSpec extends ObjectBehavior
             'test_promotion_02'
         ])->willReturn('test_promotion_01, test_promotion_02');
 
-        $response = $this->check($order, $reorder);
-        $response[0]->getMessage()->shouldBeEqualTo(EligibilityCheckerFailureResponses::REORDER_PROMOTIONS_CHANGED);
-        $response[0]->getParameters()->shouldBeEqualTo([
-            '%promotion_names%' => 'test_promotion_01, test_promotion_02']
-        );
+        $response = new ReorderEligibilityCheckerResponse();
+        $response->setMessage(EligibilityCheckerFailureResponses::REORDER_PROMOTIONS_CHANGED);
+        $response->setParameters([
+            '%promotion_names%' => 'test_promotion_01, test_promotion_02'
+        ]);
+
+        $this->check($order, $reorder)->shouldBeLike([$response]);
     }
 }

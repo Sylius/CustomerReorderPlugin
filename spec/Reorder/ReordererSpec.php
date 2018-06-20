@@ -58,10 +58,10 @@ final class ReordererSpec extends ObjectBehavior
     function it_creates_and_persists_reorder_from_existing_order(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
+        ReorderEligibilityChecker $reorderEligibilityChecker,
         ChannelInterface $channel,
         OrderInterface $order,
-        OrderInterface $reorder,
-        ReorderEligibilityChecker $reorderEligibilityChecker
+        OrderInterface $reorder
     ): void {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -80,12 +80,12 @@ final class ReordererSpec extends ObjectBehavior
     function it_checks_if_orders_totals_differ(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
+        ReorderEligibilityChecker $reorderEligibilityChecker,
         ChannelInterface $channel,
         OrderInterface $order,
         OrderInterface $reorder,
         MoneyFormatterInterface $moneyFormatter,
         ArrayCollection $promotions,
-        ReorderEligibilityChecker $reorderEligibilityChecker,
         ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse
     ): void {
         $order->getTotal()->willReturn(100);
@@ -114,13 +114,13 @@ final class ReordererSpec extends ObjectBehavior
     function it_checks_if_promotion_is_no_longer_available(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
+        ReorderEligibilityChecker $reorderEligibilityChecker,
         ChannelInterface $channel,
         OrderInterface $order,
         OrderInterface $reorder,
         MoneyFormatterInterface $moneyFormatter,
         PromotionInterface $firstPromotion,
         PromotionInterface $secondPromotion,
-        ReorderEligibilityChecker $reorderEligibilityChecker,
         ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse
     ): void {
         $order->getPromotions()->willReturn(new ArrayCollection([
@@ -154,12 +154,12 @@ final class ReordererSpec extends ObjectBehavior
     function it_checks_if_price_of_any_item_has_changed(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
+        ReorderEligibilityChecker $reorderEligibilityChecker,
         ChannelInterface $channel,
         OrderInterface $order,
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
         OrderItemInterface $secondOrderItem,
-        ReorderEligibilityChecker $reorderEligibilityChecker,
         ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse
     ): void {
         $firstOrderItem->getUnitPrice()->willReturn(100);
@@ -198,6 +198,7 @@ final class ReordererSpec extends ObjectBehavior
     function it_checks_if_any_item_is_out_of_stock(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
+        ReorderEligibilityChecker $reorderEligibilityChecker,
         ChannelInterface $channel,
         OrderInterface $order,
         OrderInterface $reorder,
@@ -205,7 +206,6 @@ final class ReordererSpec extends ObjectBehavior
         OrderItemInterface $secondOrderItem,
         ProductVariantInterface $firstProductVariant,
         ProductVariantInterface $secondProductVariant,
-        ReorderEligibilityChecker $reorderEligibilityChecker,
         ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse
     ): void {
         $firstProductVariant->isTracked()->willReturn(true);

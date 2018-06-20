@@ -51,8 +51,10 @@ final class TotalReorderAmountEligibilityCheckerSpec extends ObjectBehavior
 
         $moneyFormatter->format(100, 'USD')->willReturn('$100.00');
 
-        $response = $this->check($order, $reorder);
-        $response[0]->getMessage()->shouldBeEqualTo(EligibilityCheckerFailureResponses::TOTAL_AMOUNT_CHANGED);
-        $response[0]->getParameters()->shouldBeEqualTo(['%order_total%' => '$100.00']);
+        $response = new ReorderEligibilityCheckerResponse();
+        $response->setMessage(EligibilityCheckerFailureResponses::TOTAL_AMOUNT_CHANGED);
+        $response->setParameters(['%order_total%' => '$100.00']);
+
+        $this->check($order, $reorder)->shouldBeLike([$response]);
     }
 }

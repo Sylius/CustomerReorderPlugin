@@ -1,12 +1,4 @@
 <?php
-/*
- * This file is part of the Sylius package.
- *
- * (c) Paweł Jędrzejewski
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 declare(strict_types=1);
 
@@ -31,21 +23,24 @@ final class ReorderItemsProcessorSpec extends ObjectBehavior
         OrderModifierInterface $orderModifier,
         AvailabilityCheckerInterface $availabilityChecker,
         FactoryInterface $orderItemFactory
-    ) {
+    ): void {
         $this->beConstructedWith($orderItemQuantityModifier, $orderModifier, $availabilityChecker, $orderItemFactory);
     }
 
-    function it_is_initializable()
+    function it_is_initializable(): void
     {
         $this->shouldHaveType(ReorderItemsProcessor::class);
     }
 
-    function it_implements_reorder_processor_interface()
+    function it_implements_reorder_processor_interface(): void
     {
         $this->shouldImplement(ReorderProcessor::class);
     }
 
     function it_copies_order_items_to_reorder(
+        OrderItemQuantityModifierInterface $orderItemQuantityModifier,
+        OrderModifierInterface $orderModifier,
+        AvailabilityCheckerInterface $availabilityChecker,
         FactoryInterface $orderItemFactory,
         OrderInterface $order,
         OrderInterface $reorder,
@@ -54,11 +49,8 @@ final class ReorderItemsProcessorSpec extends ObjectBehavior
         ProductVariantInterface $firstProductVariant,
         ProductVariantInterface $secondProductVariant,
         OrderItemInterface $firstNewOrderItem,
-        OrderItemInterface $secondNewOrderItem,
-        OrderItemQuantityModifierInterface $orderItemQuantityModifier,
-        OrderModifierInterface $orderModifier,
-        AvailabilityCheckerInterface $availabilityChecker
-    ) {
+        OrderItemInterface $secondNewOrderItem
+    ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()

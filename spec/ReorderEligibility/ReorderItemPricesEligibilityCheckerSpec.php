@@ -9,6 +9,7 @@ use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
@@ -84,10 +85,12 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
             'test_variant_name_02'
         ])->willReturn('test_variant_name_01, test_variant_name_02');
 
-        $response = $this->check($order, $reorder);
-        $response[0]->getMessage()->shouldBeEqualTo(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
-        $response[0]->getParameters()->shouldBeEqualTo([
+        $response = new ReorderEligibilityCheckerResponse();
+        $response->setMessage(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
+        $response->setParameters([
             '%product_names%' => 'test_variant_name_01, test_variant_name_02'
         ]);
+
+        $this->check($order, $reorder)->shouldBeLike([$response]);
     }
 }

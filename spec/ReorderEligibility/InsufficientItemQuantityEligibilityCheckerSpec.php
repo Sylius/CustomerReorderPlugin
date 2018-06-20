@@ -10,22 +10,24 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\InsufficientItemQuantityEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
+use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavior
 {
-    function let(ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter)
-    {
+    function let(
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+    ): void {
         $this->beConstructedWith($reorderEligibilityConstraintMessageFormatter);
     }
 
-    function it_is_initializable()
+    function it_is_initializable(): void
     {
         $this->shouldBeAnInstanceOf(InsufficientItemQuantityEligibilityChecker::class);
     }
 
-    function it_implements_reorder_eligibility_checker()
+    function it_implements_reorder_eligibility_checker(): void
     {
         $this->shouldImplement(ReorderEligibilityChecker::class);
     }
@@ -35,7 +37,7 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
         OrderItemInterface $secondOrderItem
-    ) {
+    ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
@@ -61,7 +63,7 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
         OrderItemInterface $secondOrderItem
-    ) {
+    ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
@@ -85,7 +87,7 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
         OrderItemInterface $firstOrderItem,
         OrderItemInterface $secondOrderItem,
         ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
-    ) {
+    ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
@@ -105,11 +107,12 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
         $reorderEligibilityConstraintMessageFormatter->format(['test_variant_name_01', 'test_variant_name_02'])
             ->willReturn('test_variant_name_01, test_variant_name_02');
 
-        $response = $this->check($order, $reorder);
-        $response[0]->getMessage()->shouldBeEqualTo(EligibilityCheckerFailureResponses::INSUFFICIENT_ITEM_QUANTITY);
-        $response[0]->getParameters()->shouldBeEqualTo([
+        $response = new ReorderEligibilityCheckerResponse();
+        $response->setMessage(EligibilityCheckerFailureResponses::INSUFFICIENT_ITEM_QUANTITY);
+        $response->setParameters([
             '%order_items%' => 'test_variant_name_01, test_variant_name_02'
         ]);
-    }
 
+        $this->check($order, $reorder)->shouldBeLike([$response]);
+    }
 }

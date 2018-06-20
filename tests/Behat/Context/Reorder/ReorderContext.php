@@ -143,7 +143,6 @@ final class ReorderContext implements Context
         assert(strpos($this->session->getCurrentUrl(), '/cart') === false);
     }
 
-
     /**
      * @Then I should be notified that none of items from previously placed order is available
      */

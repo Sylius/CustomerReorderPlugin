@@ -61,7 +61,9 @@ final class ReordererSpec extends ObjectBehavior
         ReorderEligibilityChecker $reorderEligibilityChecker,
         ChannelInterface $channel,
         OrderInterface $order,
-        OrderInterface $reorder
+        OrderInterface $reorder,
+        OrderItemInterface $firstOrderItem,
+        OrderItemInterface $secondOrderItem
     ): void {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -73,6 +75,11 @@ final class ReordererSpec extends ObjectBehavior
         $entityManager->flush()->shouldBeCalled();
 
         $reorderEligibilityChecker->check($order, $reorder)->willReturn([]);
+
+        $reorder->getItems()->willReturn(new ArrayCollection([
+            $firstOrderItem->getWrappedObject(),
+            $secondOrderItem->getWrappedObject()
+        ]));
 
         $this->reorder($order, $channel);
     }
@@ -86,7 +93,9 @@ final class ReordererSpec extends ObjectBehavior
         OrderInterface $reorder,
         MoneyFormatterInterface $moneyFormatter,
         ArrayCollection $promotions,
-        ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse
+        ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse,
+        OrderItemInterface $firstOrderItem,
+        OrderItemInterface $secondOrderItem
     ): void {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
@@ -94,6 +103,11 @@ final class ReordererSpec extends ObjectBehavior
 
         $reorder->getTotal()->willReturn(150);
         $reorder->getPromotions()->willReturn($promotions);
+
+        $reorder->getItems()->willReturn(new ArrayCollection([
+            $firstOrderItem->getWrappedObject(),
+            $secondOrderItem->getWrappedObject()
+        ]));
 
         $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
 
@@ -121,7 +135,9 @@ final class ReordererSpec extends ObjectBehavior
         MoneyFormatterInterface $moneyFormatter,
         PromotionInterface $firstPromotion,
         PromotionInterface $secondPromotion,
-        ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse
+        ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse,
+        OrderItemInterface $firstOrderItem,
+        OrderItemInterface $secondOrderItem
     ): void {
         $order->getPromotions()->willReturn(new ArrayCollection([
             $firstPromotion->getWrappedObject(),
@@ -132,6 +148,11 @@ final class ReordererSpec extends ObjectBehavior
         $secondPromotion->getName()->willReturn('test_promotion_02');
 
         $reorder->getPromotions()->willReturn(new ArrayCollection());
+
+        $reorder->getItems()->willReturn(new ArrayCollection([
+            $firstOrderItem->getWrappedObject(),
+            $secondOrderItem->getWrappedObject()
+        ]));
 
         $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
 

@@ -120,7 +120,7 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should see exactly :count notifications
+     * @Then I should see exactly :count notification(s)
      */
     public function iShouldSeeExactlyNotifications(int $count): void
     {
@@ -135,6 +135,21 @@ final class ReorderContext implements Context
         assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === 0);
     }
 
+    /**
+     * @Then I should not proceed to my cart summary page
+     */
+    public function iShouldNotProceedToMyCartSummaryPage(): void
+    {
+        assert(strpos($this->session->getCurrentUrl(), '/cart') === false);
+    }
+
+    /**
+     * @Then I should be notified that none of items from previously placed order is available
+     */
+    public function iShouldBeNotifiedThatNoneOfItemsFromPreviouslyPlacedOrderIsAvailable(): void
+    {
+        $this->assertFlashMessageWithTextExists('None of items from previously placed order is available. Unable to place reorder.');
+    }
 
     /**
      * @Then /^I should have shipping address filled with (address "[^"]+", "[^"]+", "[^"]+", "[^"]+" for "[^"]+")$/

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sylius\CustomerReorderPlugin\Reorder;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Nette\InvalidStateException;
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
@@ -59,6 +60,10 @@ final class Reorderer implements ReordererInterface
     {
         $reorder = $this->orderFactory->createFromExistingOrder($order, $channel);
         assert($reorder instanceof OrderInterface);
+
+        if (empty($reorder->getItems()->getValues())) {
+            throw new InvalidStateException('sylius.reorder.none_of_items_is_available');
+        }
 
         $reorderEligibilityChecks = $this->reorderEligibilityChecker->check($order, $reorder);
         $this->reorderEligibilityCheckerResponseProcessor->process($reorderEligibilityChecks);

@@ -7,8 +7,9 @@ namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
 use Behat\Behat\Context\Context;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
-use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
+use Tests\Sylius\CustomerReorderPlugin\Behat\Page\SelectPaymentPageInterface;
+use Tests\Sylius\CustomerReorderPlugin\Behat\Page\SelectShippingPageInterface;
 
 final class ReorderContext implements Context
 {
@@ -18,12 +19,22 @@ final class ReorderContext implements Context
     /** @var ReorderEligibilityConstraintMessageFormatterInterface */
     private $reorderEligibilityConstraintMessageFormatter;
 
+    /** @var SelectShippingPageInterface */
+    private $selectShippingPage;
+
+    /** @var SelectPaymentPageInterface */
+    private $selectPaymentPage;
+
     public function __construct(
         Session $session,
-        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter,
+        SelectShippingPageInterface $selectShippingPage,
+        SelectPaymentPageInterface $selectPaymentPage
     ) {
         $this->session = $session;
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
+        $this->selectShippingPage = $selectShippingPage;
+        $this->selectPaymentPage = $selectPaymentPage;
     }
 
     /**
@@ -152,24 +163,19 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then /^I should have shipping address filled with (address "[^"]+", "[^"]+", "[^"]+", "[^"]+" for "[^"]+")$/
+     * @Then :shippingMethod shipping method should not be selected
      */
-    public function iShouldHaveTheAddressSectionFilledWithAddress(AddressInterface $address): void
+    public function shippingMethodShouldNotBeSelected(string $shippingMethod): void
     {
+        assert($this->selectShippingPage->isShippingMethodSelected($shippingMethod) === false);
     }
 
     /**
-     * @Then I should not have the shipping method section copied from order :orderNumber
+     * @Then :paymentMethod payment method should not be selected
      */
-    public function iShouldNotHaveTheShippingMethodSectionFilledWithInformationTakenFromOrder(string $orderNumber): void
+    public function paymentMethodShouldNotBeSelected(string $paymentMethod): void
     {
-    }
-
-    /**
-     * @Then I should not have the payment method section copied from order :orderNumber
-     */
-    public function iShouldNotHaveThePaymentMethodSectionFilledWithInformationTakenFromOrder(string $orderNumber): void
-    {
+        assert($this->selectPaymentPage->isPaymentMethodSelected($paymentMethod) === false);
     }
 
     /**
@@ -185,6 +191,7 @@ final class ReorderContext implements Context
      */
     public function iProceedToTheShippingStep(): void
     {
+        $this->session->getPage()->clickLink('Next');
     }
 
     /**
@@ -192,6 +199,7 @@ final class ReorderContext implements Context
      */
     public function iProceedToThePaymentStep(): void
     {
+        $this->session->getPage()->clickLink('Next');
     }
 
     private function assertFlashMessageWithTextExists(string $text)

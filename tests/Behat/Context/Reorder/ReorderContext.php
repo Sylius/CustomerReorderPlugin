@@ -191,7 +191,7 @@ final class ReorderContext implements Context
      */
     public function iProceedToTheShippingStep(): void
     {
-        $this->session->getPage()->clickLink('Next');
+        $this->session->getPage()->find('css', '#next-step')->click();
     }
 
     /**
@@ -199,7 +199,7 @@ final class ReorderContext implements Context
      */
     public function iProceedToThePaymentStep(): void
     {
-        $this->session->getPage()->clickLink('Next');
+        $this->session->getPage()->find('css', '#next-step')->click();
     }
 
     private function assertFlashMessageWithTextExists(string $text)

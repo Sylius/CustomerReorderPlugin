@@ -10,6 +10,9 @@ final class SelectPaymentPage extends BaseSelectPaymentPage implements SelectPay
 {
     public function isPaymentMethodSelected(string $paymentMethod): bool
     {
-        return false;
+        return null !== $this
+                ->getElement('payment_method_option', ['%payment_method%' => $paymentMethod])
+                ->getAttribute('checked')
+        ;
     }
 }

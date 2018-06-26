@@ -63,12 +63,11 @@ Feature: Reordering previously placed order
         And I proceed to the shipping step
         Then "Golab Pocztowy" shipping method should not be selected
 
-    @todo
+    @ui
     Scenario: Having payment method not filled with payment information taken from previously placed order
         Given I browse my orders
         When I reorder the order "#00000666"
         And I proceed to the addressing step
         And I proceed to the shipping step
         And I proceed to the payment step
-        Then I should not have the payment method section copied from order "#00000666"
-        Then "Paypal" shipping method should not be selected
+        Then "Paypal" payment method should not be selected

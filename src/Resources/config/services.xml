@@ -22,8 +22,8 @@
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor" />
         </service>
-        <service id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" decorates="sylius.factory.order" public="false">
-            <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory.inner" />
+        <service id="Sylius\CustomerReorderPlugin\Factory\OrderFactory">
+            <argument type="service" id="sylius.factory.order" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderProcessing\CompositeReorderProcessor" />
         </service>
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" public="false" />

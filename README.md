@@ -20,7 +20,7 @@ imports:
 Import routing:
 
 ````yaml
-sylius_admin_order_creation:
+sylius_customer_reorder:
     resource: "@SyliusCustomerReorderPlugin/Resources/config/app/reorder_routing.yml"
 ````
 

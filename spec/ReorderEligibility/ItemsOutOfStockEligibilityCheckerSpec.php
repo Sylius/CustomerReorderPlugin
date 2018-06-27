@@ -75,9 +75,9 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         ]));
 
         $firstOrderItem->getVariant()->willReturn($firstProductVariant);
-        $firstOrderItem->getVariantName()->willReturn('test_name_01');
+        $firstOrderItem->getProductName()->willReturn('test_name_01');
         $secondOrderItem->getVariant()->willReturn($secondProductVariant);
-        $secondOrderItem->getVariantName()->willReturn('test_name_02');
+        $secondOrderItem->getProductName()->willReturn('test_name_02');
 
         $firstProductVariant->isInStock()->willReturn(false);
         $firstProductVariant->isTracked()->willReturn(true);

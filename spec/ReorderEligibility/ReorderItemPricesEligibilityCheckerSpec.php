@@ -47,10 +47,10 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
             $secondOrderItem->getWrappedObject()
         ]));
 
-        $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
+        $firstOrderItem->getProductName()->willReturn('test_product_name_01');
         $firstOrderItem->getUnitPrice()->willReturn(100);
 
-        $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
+        $secondOrderItem->getProductName()->willReturn('test_product_name_02');
         $secondOrderItem->getUnitPrice()->willReturn(100);
 
         $response = $this->check($order, $reorder);
@@ -74,21 +74,21 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
             $secondOrderItem->getWrappedObject()
         ]));
 
-        $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
+        $firstOrderItem->getProductName()->willReturn('test_product_name_01');
         $firstOrderItem->getUnitPrice()->willReturn(100, 150);
 
-        $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
+        $secondOrderItem->getProductName()->willReturn('test_product_name_02');
         $secondOrderItem->getUnitPrice()->willReturn(100, 150);
 
         $reorderEligibilityConstraintMessageFormatter->format([
-            'test_variant_name_01',
-            'test_variant_name_02'
-        ])->willReturn('test_variant_name_01, test_variant_name_02');
+            'test_product_name_01',
+            'test_product_name_02'
+        ])->willReturn('test_product_name_01, test_product_name_02');
 
         $response = new ReorderEligibilityCheckerResponse();
         $response->setMessage(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
         $response->setParameters([
-            '%product_names%' => 'test_variant_name_01, test_variant_name_02'
+            '%product_names%' => 'test_product_name_01, test_product_name_02'
         ]);
 
         $this->check($order, $reorder)->shouldBeLike([$response]);

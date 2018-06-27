@@ -21,29 +21,29 @@ final class InsufficientItemQuantityEligibilityChecker implements ReorderEligibi
 
     public function check(OrderInterface $order, OrderInterface $reorder): array
     {
-        $orderVariantNamesToQuantity = [];
-        $reorderVariantNamesToQuantity = [];
+        $orderProductNamesToQuantity = [];
+        $reorderProductNamesToQuantity = [];
 
         /** @var OrderItemInterface $item */
         foreach ($order->getItems()->getValues() as $item) {
-            $orderVariantNamesToQuantity[$item->getVariantName()] = $item->getQuantity();
+            $orderProductNamesToQuantity[$item->getProductName()] = $item->getQuantity();
         }
 
         /** @var OrderItemInterface $item */
         foreach ($reorder->getItems()->getValues() as $item) {
-            $reorderVariantNamesToQuantity[$item->getVariantName()] = $item->getQuantity();
+            $reorderProductNamesToQuantity[$item->getProductName()] = $item->getQuantity();
         }
 
         $insufficientItems = [];
 
         /** @var OrderItemInterface $item */
-        foreach (array_keys($orderVariantNamesToQuantity) as $variantName) {
-            if (!array_key_exists($variantName, $reorderVariantNamesToQuantity)) {
+        foreach (array_keys($orderProductNamesToQuantity) as $productName) {
+            if (!array_key_exists($productName, $reorderProductNamesToQuantity)) {
                 continue;
             }
 
-            if ($orderVariantNamesToQuantity[$variantName] > $reorderVariantNamesToQuantity[$variantName]) {
-                array_push($insufficientItems, $variantName);
+            if ($orderProductNamesToQuantity[$productName] > $reorderProductNamesToQuantity[$productName]) {
+                array_push($insufficientItems, $productName);
             }
         }
 

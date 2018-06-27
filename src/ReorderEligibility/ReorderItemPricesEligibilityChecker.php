@@ -21,32 +21,32 @@ final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChe
 
     public function check(OrderInterface $order, OrderInterface $reorder): array
     {
-        $orderVariantNamesToTotal = [];
-        $reorderVariantNamesToTotal = [];
+        $orderProductNamesToTotal = [];
+        $reorderProductNamesToTotal = [];
 
         /** @var OrderItemInterface $orderItem */
         foreach ($order->getItems()->getValues() as $orderItem) {
-            $orderVariantNamesToTotal[$orderItem->getVariantName()] = $orderItem->getUnitPrice();
+            $orderProductNamesToTotal[$orderItem->getProductName()] = $orderItem->getUnitPrice();
         }
 
         /** @var OrderItemInterface $reorderItem */
         foreach ($reorder->getItems()->getValues() as $reorderItem) {
-            $reorderVariantNamesToTotal[$reorderItem->getVariantName()] = $reorderItem->getUnitPrice();
+            $reorderProductNamesToTotal[$reorderItem->getProductName()] = $reorderItem->getUnitPrice();
         }
 
-        $orderVariantsWithChangedPrice = [];
+        $orderItemsWithChangedPrice = [];
 
-        foreach (array_keys($orderVariantNamesToTotal) as $variantName) {
-            if (!array_key_exists($variantName, $reorderVariantNamesToTotal)) {
+        foreach (array_keys($orderProductNamesToTotal) as $productName) {
+            if (!array_key_exists($productName, $reorderProductNamesToTotal)) {
                 continue;
             }
 
-            if ($orderVariantNamesToTotal[$variantName] !== $reorderVariantNamesToTotal[$variantName]) {
-                array_push($orderVariantsWithChangedPrice, $variantName);
+            if ($orderProductNamesToTotal[$productName] !== $reorderProductNamesToTotal[$productName]) {
+                array_push($orderItemsWithChangedPrice, $productName);
             }
         }
 
-        if (empty($orderVariantsWithChangedPrice)) {
+        if (empty($orderItemsWithChangedPrice)) {
             return [];
         }
 
@@ -54,7 +54,7 @@ final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChe
 
         $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
         $eligibilityCheckerResponse->setParameters([
-            '%product_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($orderVariantsWithChangedPrice)
+            '%product_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($orderItemsWithChangedPrice)
         ]);
 
         return [$eligibilityCheckerResponse];

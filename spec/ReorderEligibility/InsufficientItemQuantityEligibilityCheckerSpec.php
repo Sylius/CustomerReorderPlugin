@@ -48,10 +48,10 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
             $secondOrderItem->getWrappedObject()
         ]));
 
-        $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
+        $firstOrderItem->getProductName()->willReturn('test_product_name_01');
         $firstOrderItem->getQuantity()->willReturn(100);
 
-        $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
+        $secondOrderItem->getProductName()->willReturn('test_product_name_02');
         $secondOrderItem->getQuantity()->willReturn(100);
 
         $response = $this->check($order, $reorder);
@@ -71,10 +71,10 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
 
         $reorder->getItems()->willReturn(new ArrayCollection([]));
 
-        $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
+        $firstOrderItem->getProductName()->willReturn('test_product_name_01');
         $firstOrderItem->getQuantity()->willReturn(10);
 
-        $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
+        $secondOrderItem->getProductName()->willReturn('test_product_name_02');
         $secondOrderItem->getQuantity()->willReturn(10);
 
         $response = $this->check($order, $reorder);
@@ -98,19 +98,19 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
             $secondOrderItem->getWrappedObject()
         ]));
 
-        $firstOrderItem->getVariantName()->willReturn('test_variant_name_01');
+        $firstOrderItem->getProductName()->willReturn('test_product_name_01');
         $firstOrderItem->getQuantity()->willReturn(10, 5);
 
-        $secondOrderItem->getVariantName()->willReturn('test_variant_name_02');
+        $secondOrderItem->getProductName()->willReturn('test_product_name_02');
         $secondOrderItem->getQuantity()->willReturn(10, 5);
 
-        $reorderEligibilityConstraintMessageFormatter->format(['test_variant_name_01', 'test_variant_name_02'])
-            ->willReturn('test_variant_name_01, test_variant_name_02');
+        $reorderEligibilityConstraintMessageFormatter->format(['test_product_name_01', 'test_product_name_02'])
+            ->willReturn('test_product_name_01, test_product_name_02');
 
         $response = new ReorderEligibilityCheckerResponse();
         $response->setMessage(EligibilityCheckerFailureResponses::INSUFFICIENT_ITEM_QUANTITY);
         $response->setParameters([
-            '%order_items%' => 'test_variant_name_01, test_variant_name_02'
+            '%order_items%' => 'test_product_name_01, test_product_name_02'
         ]);
 
         $this->check($order, $reorder)->shouldBeLike([$response]);

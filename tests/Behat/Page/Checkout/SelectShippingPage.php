@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\CustomerReorderPlugin\Behat\Page;
+namespace Tests\Sylius\CustomerReorderPlugin\Behat\Page\Checkout;
 
 use Sylius\Behat\Page\Shop\Checkout\SelectShippingPage as BaseSelectShippingPage;
 
@@ -11,8 +11,8 @@ final class SelectShippingPage extends BaseSelectShippingPage implements SelectS
     public function isShippingMethodSelected(string $shippingMethodName): bool
     {
         return null !== $this
-                ->getElement('shipping_method_option', ['%shipping_method%' => $shippingMethodName])
-                ->getAttribute('checked')
+            ->getElement('shipping_method_option', ['%shipping_method%' => $shippingMethodName])
+            ->getAttribute('checked')
         ;
     }
 }

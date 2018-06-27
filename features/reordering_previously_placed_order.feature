@@ -10,8 +10,8 @@ Feature: Reordering previously placed order
         And there are 25 units of product "Angel T-Shirt" available in the inventory
         And this product is tracked by the inventory
         And the store ships everywhere for free
-        And the store also allows shipping with "Golab Pocztowy"
-        And the store also allows shipping with "Sowa Hedwiga"
+        And the store also allows shipping with "Post Pigeon"
+        And the store also allows shipping with "Hedwig Owl"
         And the store allows paying with "Cash on Delivery"
         And the store allows paying with "Paypal"
         And the store allows paying with "Offline Bank Transfer"
@@ -22,7 +22,7 @@ Feature: Reordering previously placed order
         And I bought a single "Angel T-Shirt"
         And I addressed it to "Lucifer Morningstar", "Seaside Fwy", "90802" "Los Angeles" in the "United States", "Arkansas"
         And for the billing address of "Mazikeen Lilim" in the "Pacific Coast Hwy", "90806" "Los Angeles", "United States", "Arkansas"
-        And I chose "Golab Pocztowy" shipping method with "Paypal" payment
+        And I chose "Post Pigeon" shipping method with "Paypal" payment
 
     @ui
     Scenario: Reordering previously placed order
@@ -61,7 +61,7 @@ Feature: Reordering previously placed order
         When I reorder the order "#00000666"
         And I proceed to the addressing step
         And I proceed to the shipping step
-        Then "Golab Pocztowy" shipping method should not be selected
+        Then "Post Pigeon" shipping method should not be selected
 
     @ui
     Scenario: Having payment method not filled with payment information taken from previously placed order

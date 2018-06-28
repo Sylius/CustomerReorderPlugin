@@ -14,9 +14,9 @@ use Sylius\CustomerReorderPlugin\ReorderProcessing\ReorderProcessor;
 
 final class OrderFactorySpec extends ObjectBehavior
 {
-    function let(FactoryInterface $decoratedFactory, ReorderProcessor $reorderProcessor): void
+    function let(FactoryInterface $baseOrderFactory, ReorderProcessor $reorderProcessor): void
     {
-        $this->beConstructedWith($decoratedFactory, $reorderProcessor);
+        $this->beConstructedWith($baseOrderFactory, $reorderProcessor);
     }
 
     function it_is_initializable(): void
@@ -29,21 +29,14 @@ final class OrderFactorySpec extends ObjectBehavior
         $this->shouldImplement(OrderFactoryInterface::class);
     }
 
-    function it_creates_new_order(FactoryInterface $decoratedFactory, OrderInterface $order): void
-    {
-        $decoratedFactory->createNew()->willReturn($order);
-
-        $this->createNew()->shouldReturnAnInstanceOf(OrderInterface::class);
-    }
-
     function it_creates_reorder_from_existing_order(
-        FactoryInterface $decoratedFactory,
+        FactoryInterface $baseOrderFactory,
         ReorderProcessor $reorderProcessor,
         OrderInterface $order,
         OrderInterface $reorder,
         ChannelInterface $channel
     ): void {
-      $decoratedFactory->createNew()->willReturn($reorder);
+      $baseOrderFactory->createNew()->willReturn($reorder);
       $reorder->setChannel($channel)->shouldBeCalled();
 
       $reorderProcessor->process($order, $reorder)->shouldBeCalled();

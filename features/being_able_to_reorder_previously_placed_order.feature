@@ -19,4 +19,4 @@ Feature: Being able to reorder previously placed order
   @ui
   Scenario: Seeing reorder button next to the previously placed order
       When I browse my orders
-      Then I should see reorder button next to the order "#00000666"
+      Then I should be able to reorder the order "#00000666"

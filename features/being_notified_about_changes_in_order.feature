@@ -30,7 +30,7 @@ Feature: Being notified about changes in order
     Scenario: Reordering previously placed order when one of items is out of stock
         Given the product "Angel T-Shirt" is out of stock
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         Then I should be on my cart summary page
         And I should be notified that product "Angel T-Shirt" is out of stock
         And I should be notified that previous order total was "$148.00"
@@ -41,7 +41,7 @@ Feature: Being notified about changes in order
         Given the product "Angel T-Shirt" is out of stock
         And the product "Awesome Mug" is out of stock
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         Then I should not proceed to my cart summary page
         And I should be notified that none of items from previously placed order is available
         And I should see exactly 1 notification
@@ -51,7 +51,7 @@ Feature: Being notified about changes in order
         Given there are 3 units of product "Angel T-Shirt" available in the inventory
         And there are 3 units of product "Awesome Mug" available in the inventory
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         Then I should be on my cart summary page
         And I should be notified that products "Angel T-Shirt", "Awesome Mug" are not available in expected quantity
         And I should be notified that previous order total was "$148.00"
@@ -61,7 +61,7 @@ Feature: Being notified about changes in order
     Scenario: Reordering previously placed order when promotion is no longer available
         Given the promotion was disabled for the channel "Web"
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         Then I should be notified that promotion "Massive Order Discount" is no longer enabled
         And I should be notified that previous order total was "$148.00"
         And I should see exactly 2 notifications
@@ -70,7 +70,7 @@ Feature: Being notified about changes in order
     Scenario: Reordering previously placed order when items' prices has changed
         Given the product "Angel T-Shirt" changed its price to "$300.00"
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         Then I should be on my cart summary page
         And I should be notified that "Angel T-Shirt" price has changed
         And I should be notified that previous order total was "$148.00"

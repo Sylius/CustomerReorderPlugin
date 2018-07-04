@@ -55,7 +55,7 @@ final class InsufficientItemQuantityEligibilityChecker implements ReorderEligibi
 
         $reorderEligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::INSUFFICIENT_ITEM_QUANTITY);
         $reorderEligibilityCheckerResponse->setParameters([
-            '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($insufficientItems)
+            '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($insufficientItems),
         ]);
 
         return [$reorderEligibilityCheckerResponse];

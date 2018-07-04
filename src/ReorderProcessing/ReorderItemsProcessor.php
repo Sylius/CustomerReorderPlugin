@@ -53,9 +53,7 @@ final class ReorderItemsProcessor implements ReorderProcessor
 
             if (!$this->availabilityChecker->isStockSufficient($orderItem->getVariant(), $orderItem->getQuantity())) {
                 $reorderItemQuantity = $orderItem->getVariant()->getOnHand() - $orderItem->getVariant()->getOnHold();
-            }
-
-            else {
+            } else {
                 $reorderItemQuantity = $orderItem->getQuantity();
             }
 

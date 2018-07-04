@@ -68,7 +68,7 @@ final class ReorderContext implements Context
      * @Then I should be notified that product :firstProduct is out of stock
      * @Then I should be notified that products :firstProduct, :secondProduct are out of stock
      */
-    public function iShouldBeNotifiedThatProductIsOutOfStock(string ... $products): void
+    public function iShouldBeNotifiedThatProductIsOutOfStock(string ...$products): void
     {
         $this->assertFlashMessageWithTextExists(sprintf(
             'Following items: %s are out of stock, which have affected order total.',
@@ -81,8 +81,8 @@ final class ReorderContext implements Context
      * @Then I should be notified that products :firstProduct, :secondProduct are not available in expected quantity
      */
     public function iShouldBeNotifiedThatUnitsOfProductWereAddedToCartInsteadOf(
-        string ... $products
-    ) : void {
+        string ...$products
+    ): void {
         $this->assertFlashMessageWithTextExists(sprintf(
             'Following items: %s are not available in expected quantity, which have affected order total.',
             $this->reorderEligibilityConstraintMessageFormatter->format($products)
@@ -124,7 +124,7 @@ final class ReorderContext implements Context
      */
     public function iShouldSeeExactlyNotifications(int $count): void
     {
-         assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === $count);
+        assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === $count);
     }
 
     /**
@@ -156,7 +156,6 @@ final class ReorderContext implements Context
      */
     public function iShouldHaveTheAddressSectionFilledWithAddress(AddressInterface $address): void
     {
-
     }
 
     /**
@@ -164,7 +163,6 @@ final class ReorderContext implements Context
      */
     public function iShouldNotHaveTheShippingMethodSectionFilledWithInformationTakenFromOrder(string $orderNumber): void
     {
-
     }
 
     /**
@@ -172,7 +170,6 @@ final class ReorderContext implements Context
      */
     public function iShouldNotHaveThePaymentMethodSectionFilledWithInformationTakenFromOrder(string $orderNumber): void
     {
-
     }
 
     /**
@@ -188,7 +185,6 @@ final class ReorderContext implements Context
      */
     public function iProceedToTheShippingStep(): void
     {
-
     }
 
     /**
@@ -196,7 +192,6 @@ final class ReorderContext implements Context
      */
     public function iProceedToThePaymentStep(): void
     {
-
     }
 
     private function assertFlashMessageWithTextExists(string $text)

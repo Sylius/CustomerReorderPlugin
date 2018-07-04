@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Sylius\Bundle\CoreBundle\Application\Kernel;
-use Sylius\CustomerReorderPlugin\DependencyInjection\Compiler\RegisterEligibilityCheckerResponseProcessorsPass;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 final class AppKernel extends Kernel

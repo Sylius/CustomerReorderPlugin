@@ -32,7 +32,7 @@ final class TotalReorderAmountEligibilityChecker implements ReorderEligibilityCh
 
         $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::TOTAL_AMOUNT_CHANGED);
         $eligibilityCheckerResponse->setParameters([
-            '%order_total%' => $formattedTotal
+            '%order_total%' => $formattedTotal,
         ]);
 
         return [$eligibilityCheckerResponse];

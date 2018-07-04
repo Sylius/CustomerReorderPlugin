@@ -16,14 +16,17 @@ class ReorderEligibilityCheckerResponse
     {
         return $this->message;
     }
+
     public function setMessage(string $message): void
     {
         $this->message = $message;
     }
+
     public function getParameters(): array
     {
         return $this->parameters;
     }
+
     public function setParameters(array $parameters): void
     {
         $this->parameters = $parameters;

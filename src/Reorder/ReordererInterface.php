@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sylius\CustomerReorderPlugin\Reorder;
 
 use Sylius\Component\Core\Model\ChannelInterface;

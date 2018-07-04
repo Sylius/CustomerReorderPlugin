@@ -40,7 +40,7 @@ final class ReorderPromotionsEligibilityChecker implements ReorderEligibilityChe
 
         $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::REORDER_PROMOTIONS_CHANGED);
         $eligibilityCheckerResponse->setParameters([
-            '%promotion_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($disabledPromotions)
+            '%promotion_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($disabledPromotions),
         ]);
 
         return [$eligibilityCheckerResponse];

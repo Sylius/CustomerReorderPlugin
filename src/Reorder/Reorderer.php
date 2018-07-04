@@ -52,8 +52,8 @@ final class Reorderer implements ReordererInterface
         $this->orderProcessor = $orderProcessor;
         $this->moneyFormatter = $moneyFormatter;
         $this->session = $session;
-        $this->reorderEligibilityChecker= $reorderEligibilityChecker;
-        $this->reorderEligibilityCheckerResponseProcessor= $reorderEligibilityCheckerResponseProcessor;
+        $this->reorderEligibilityChecker = $reorderEligibilityChecker;
+        $this->reorderEligibilityCheckerResponseProcessor = $reorderEligibilityCheckerResponseProcessor;
     }
 
     public function reorder(OrderInterface $order, ChannelInterface $channel): OrderInterface

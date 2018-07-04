@@ -73,6 +73,7 @@ final class CustomerReorderAction
             $reorder = $this->reorderer->reorder($order, $channel);
         } catch (InvalidStateException $exception) {
             $this->session->getFlashBag()->add('info', $exception->getMessage());
+
             return new RedirectResponse($this->urlGenerator->generate('sylius_shop_account_order_index'));
         }
 

@@ -6,7 +6,6 @@ namespace Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing;
 
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Zend\Stdlib\PriorityQueue;
 
 final class ReorderEligibilityCheckerResponseProcessor implements ReorderEligibilityCheckerResponseProcessorInterface
 {
@@ -24,7 +23,7 @@ final class ReorderEligibilityCheckerResponseProcessor implements ReorderEligibi
         foreach ($responses as $response) {
             $this->session->getFlashBag()->add('info', [
                 'message' => $response->getMessage(),
-                'parameters' => $response->getParameters()
+                'parameters' => $response->getParameters(),
             ]);
         }
     }

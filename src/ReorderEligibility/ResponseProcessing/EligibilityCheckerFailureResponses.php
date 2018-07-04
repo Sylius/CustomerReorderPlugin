@@ -12,5 +12,7 @@ final class EligibilityCheckerFailureResponses
     public const REORDER_PROMOTIONS_CHANGED = 'sylius.reorder.promotion_not_enabled';
     public const TOTAL_AMOUNT_CHANGED = 'sylius.reorder.previous_order_total';
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 }

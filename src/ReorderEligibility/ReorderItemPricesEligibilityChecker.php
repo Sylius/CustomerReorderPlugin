@@ -54,7 +54,7 @@ final class ReorderItemPricesEligibilityChecker implements ReorderEligibilityChe
 
         $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
         $eligibilityCheckerResponse->setParameters([
-            '%product_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($orderItemsWithChangedPrice)
+            '%product_names%' => $this->reorderEligibilityConstraintMessageFormatter->format($orderItemsWithChangedPrice),
         ]);
 
         return [$eligibilityCheckerResponse];

@@ -45,7 +45,7 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
 
         $eligibilityCheckerResponse->setMessage(EligibilityCheckerFailureResponses::ITEMS_OUT_OF_STOCK);
         $eligibilityCheckerResponse->setParameters([
-            '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($productsOutOfStock)
+            '%order_items%' => $this->reorderEligibilityConstraintMessageFormatter->format($productsOutOfStock),
         ]);
 
         return [$eligibilityCheckerResponse];

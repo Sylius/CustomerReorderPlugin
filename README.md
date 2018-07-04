@@ -8,6 +8,8 @@
 
 <p align="center">This plugin allows customers to reorder a previously placed order.</p>
 
+![Screenshot showing the customer's orders page with reorder buttons](docs/screenshot.png)
+
 ## Installation
 
 1. Require plugin with composer:

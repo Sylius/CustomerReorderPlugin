@@ -27,7 +27,7 @@ final class ReorderContext implements Context
     }
 
     /**
-     * @Then I should see reorder button next to the order :orderNumber
+     * @Then I should be able to reorder the order :orderNumber
      */
     public function iShouldSeeReorderButtonNextToTheOrder(string $orderNumber): void
     {
@@ -37,15 +37,15 @@ final class ReorderContext implements Context
             throw new \Exception(sprintf('There is no order %s on the orders list', $orderNumber));
         }
 
-        $actionButtonsText = $orderData->find('css', 'td:last-child')->getText();
+        $reorderButton = $orderData->find('css', sprintf('td button:contains("%s")', 'Reorder'));
 
-        if (!strpos($actionButtonsText, 'Reorder')) {
+        if (null === $reorderButton) {
             throw new \Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
         }
     }
 
     /**
-     * @When I click reorder button next to the order :orderNumber
+     * @When I reorder the order :orderNumber
      */
     public function iClickReorderButtonNextToTheOrder(string $orderNumber): void
     {
@@ -55,9 +55,9 @@ final class ReorderContext implements Context
             throw new \Exception(sprintf('There is no order %s on the orders list', $orderNumber));
         }
 
-        $reorderButton = $orderData->find('css', 'td:last-child')->find('css', 'button');
+        $reorderButton = $orderData->find('css', sprintf('td button:contains("%s")', 'Reorder'));
 
-        if (null === $reorderButton || $reorderButton->getText() != 'Reorder') {
+        if (null === $reorderButton) {
             throw new \Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
         }
 

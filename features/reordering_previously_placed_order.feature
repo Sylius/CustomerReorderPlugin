@@ -23,7 +23,7 @@ Feature: Reordering previously placed order
     @ui
     Scenario: Reordering previously placed order
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         Then I should be on my cart summary page
         And I should see "Angel T-Shirt" with quantity 1 in my cart
         And my cart total should be "$19.00"
@@ -32,7 +32,7 @@ Feature: Reordering previously placed order
     @ui
     Scenario: Having order's promotion applied when it's still enabled
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         Then I should be on my cart summary page
         And my discount should be "-$20.00"
         And I should not see any notifications
@@ -40,27 +40,27 @@ Feature: Reordering previously placed order
     @ui
     Scenario: Having billing address section filled with address information taken from previously placed order
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         And I proceed to the addressing step
         Then address "Mazikeen Lilim", "Pacific Coast Hwy", "90806", "Los Angeles", "United States", "Arkansas" should be filled as billing address
 
     @ui
     Scenario: Having shipping address section filled with address information taken from previously placed order
         When I browse my orders
-        And I click reorder button next to the order "#00000666"
+        And I reorder the order "#00000666"
         And I proceed to the addressing step
         Then address "Lucifer Morningstar", "Seaside Fwy", "90802", "Los Angeles", "United States", "Arkansas" should be filled as shipping address
 
     @todo
     Scenario: Having shipping method not filled with shipping information taken from previously placed order
         Given I browse my orders
-        When I click reorder button next to the order "#00000666"
+        When I reorder the order "#00000666"
         And I proceed to the shipping step
         Then I should not have the shipping method section copied from order "#00000666"
 
     @todo
     Scenario: Having payment method not filled with payment information taken from previously placed order
         Given I browse my orders
-        When I click reorder button next to the order "#00000666"
+        When I reorder the order "#00000666"
         And I proceed to the payment step
         Then I should not have the payment method section copied from order "#00000666"

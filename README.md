@@ -1,46 +1,55 @@
-# CustomerReorderPlugin
+<p align="center">
+    <a href="https://sylius.com" target="_blank">
+        <img src="https://demo.sylius.com/assets/shop/img/logo.png" />
+    </a>
+</p>
 
-SyliusCustomerReorderPlugin allows customer to reorder previously placed order.
+<h1 align="center">Customer Reorder Plugin</h1>
+
+<p align="center">This plugin allows customers to reorder a previously placed order.</p>
+
+![Screenshot showing the customer's orders page with reorder buttons](docs/screenshot.png)
 
 ## Installation
 
-Require plugin with composer:
+1. Require plugin with composer:
 
-```bash
-composer require sylius/customer-reorder-plugin
-```
+    ```bash
+    composer require sylius/customer-reorder-plugin
+    ```
 
-Import configuration:
+2. Import configuration:
 
-```yaml
-imports:
-    - { resource: "@SyliusCustomerReorderPlugin/Resources/config/config.yml" }
-```
+    ```yaml
+    imports:
+        - { resource: "@SyliusCustomerReorderPlugin/Resources/config/config.yml" }
+    ```
 
-Import routing:
+3. Import routing:
 
-````yaml
-sylius_customer_reorder:
-    resource: "@SyliusCustomerReorderPlugin/Resources/config/app/reorder_routing.yml"
-````
+    ```yaml
+    sylius_customer_reorder:
+        resource: "@SyliusCustomerReorderPlugin/Resources/config/app/reorder_routing.yml"
+    ```
 
-Add plugin class to your `AppKernel`:
+4. Add plugin class to your `AppKernel`:
 
-```php
-$bundles = [
-    new \Sylius\CustomerReorderPlugin\SyliusCustomerReorderPlugin(),
-];
-```
+    ```php
+    $bundles = [
+        new \Sylius\CustomerReorderPlugin\SyliusCustomerReorderPlugin(),
+    ];
+    ```
 
-Clear cache:
+5. Clear cache:
 
-```bash
-bin/console cache:clear
-```
+    ```bash
+    bin/console cache:clear
+    ```
 
 ## Extension points
 
 Customer Reorder plugin is based on two processes:
+
 * reorder processing
 * reorder eligibility checking
 

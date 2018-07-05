@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
 
 use Behat\Behat\Context\Context;
-use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
-use Sylius\Component\Core\Model\AddressInterface;
+use Sylius\Behat\Page\Shop\Checkout\AddressPageInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
+use Tests\Sylius\CustomerReorderPlugin\Behat\Page\Cart\SummaryPageInterface;
+use Tests\Sylius\CustomerReorderPlugin\Behat\Page\Checkout\SelectPaymentPageInterface;
+use Tests\Sylius\CustomerReorderPlugin\Behat\Page\Checkout\SelectShippingPageInterface;
+use Tests\Sylius\CustomerReorderPlugin\Behat\Page\Order\IndexPageInterface;
+use Webmozart\Assert\Assert;
 
 final class ReorderContext implements Context
 {
@@ -18,12 +22,37 @@ final class ReorderContext implements Context
     /** @var ReorderEligibilityConstraintMessageFormatterInterface */
     private $reorderEligibilityConstraintMessageFormatter;
 
+    /** @var SelectShippingPageInterface */
+    private $selectShippingPage;
+
+    /** @var SelectPaymentPageInterface */
+    private $selectPaymentPage;
+
+    /** @var AddressPageInterface */
+    private $addressPage;
+
+    /** @var SummaryPageInterface */
+    private $summaryPage;
+
+    /** @var IndexPageInterface */
+    private $orderIndexPage;
+
     public function __construct(
         Session $session,
-        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter,
+        SelectShippingPageInterface $selectShippingPage,
+        SelectPaymentPageInterface $selectPaymentPage,
+        AddressPageInterface $addressPage,
+        SummaryPageInterface $summaryPage,
+        IndexPageInterface $orderIndexPage
     ) {
         $this->session = $session;
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
+        $this->selectShippingPage = $selectShippingPage;
+        $this->selectPaymentPage = $selectPaymentPage;
+        $this->addressPage = $addressPage;
+        $this->summaryPage = $summaryPage;
+        $this->orderIndexPage = $orderIndexPage;
     }
 
     /**
@@ -31,17 +60,7 @@ final class ReorderContext implements Context
      */
     public function iShouldSeeReorderButtonNextToTheOrder(string $orderNumber): void
     {
-        $orderData = $this->session->getPage()->find('css', sprintf('tr:contains("%s")', $orderNumber));
-
-        if (null === $orderData) {
-            throw new \Exception(sprintf('There is no order %s on the orders list', $orderNumber));
-        }
-
-        $reorderButton = $orderData->find('css', sprintf('td button:contains("%s")', 'Reorder'));
-
-        if (null === $reorderButton) {
-            throw new \Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
-        }
+        Assert::true($this->orderIndexPage->isReorderButtonVisibleNextToTheOrder($orderNumber));
     }
 
     /**
@@ -49,19 +68,7 @@ final class ReorderContext implements Context
      */
     public function iClickReorderButtonNextToTheOrder(string $orderNumber): void
     {
-        $orderData = $this->session->getPage()->find('css', sprintf('tr:contains("%s")', $orderNumber));
-
-        if (null === $orderData) {
-            throw new \Exception(sprintf('There is no order %s on the orders list', $orderNumber));
-        }
-
-        $reorderButton = $orderData->find('css', sprintf('td button:contains("%s")', 'Reorder'));
-
-        if (null === $reorderButton) {
-            throw new \Exception(sprintf('There is no reorder button next to order %s', $orderNumber));
-        }
-
-        $reorderButton->click();
+        $this->orderIndexPage->clickReorderButtonNextToTheOrder($orderNumber);
     }
 
     /**
@@ -70,7 +77,7 @@ final class ReorderContext implements Context
      */
     public function iShouldBeNotifiedThatProductIsOutOfStock(string ...$products): void
     {
-        $this->assertFlashMessageWithTextExists(sprintf(
+        $this->summaryPage->doesFlashMessageWithTextExists(sprintf(
             'Following items: %s are out of stock, which have affected order total.',
             $this->reorderEligibilityConstraintMessageFormatter->format($products))
         );
@@ -83,7 +90,7 @@ final class ReorderContext implements Context
     public function iShouldBeNotifiedThatUnitsOfProductWereAddedToCartInsteadOf(
         string ...$products
     ): void {
-        $this->assertFlashMessageWithTextExists(sprintf(
+        $this->summaryPage->doesFlashMessageWithTextExists(sprintf(
             'Following items: %s are not available in expected quantity, which have affected order total.',
             $this->reorderEligibilityConstraintMessageFormatter->format($products)
         ));
@@ -94,7 +101,7 @@ final class ReorderContext implements Context
      */
     public function iShouldBeNotifiedThatOrderItemsPriceHasChanged(string $orderItemName): void
     {
-        $this->assertFlashMessageWithTextExists(sprintf(
+        $this->summaryPage->doesFlashMessageWithTextExists(sprintf(
             'Prices of products: %s have changed, which have affected order total.',
             $orderItemName)
         );
@@ -105,7 +112,7 @@ final class ReorderContext implements Context
      */
     public function iShouldBeNotifiedThatTotalPriceDiffersFromPreviouslyPlacedOrder(string $orderTotal): void
     {
-        $this->assertFlashMessageWithTextExists(sprintf('Previous order total: %s', $orderTotal));
+        $this->summaryPage->doesFlashMessageWithTextExists(sprintf('Previous order total: %s', $orderTotal));
     }
 
     /**
@@ -113,7 +120,7 @@ final class ReorderContext implements Context
      */
     public function iShouldBeNotifiedThatPromotionIsNoLongerEnabled(string $promotionName): void
     {
-        $this->assertFlashMessageWithTextExists(sprintf(
+        $this->summaryPage->doesFlashMessageWithTextExists(sprintf(
             'Following promotions: %s are no longer enabled, which have affected order total.',
             $promotionName)
         );
@@ -121,18 +128,11 @@ final class ReorderContext implements Context
 
     /**
      * @Then I should see exactly :count notification(s)
-     */
-    public function iShouldSeeExactlyNotifications(int $count): void
-    {
-        assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === $count);
-    }
-
-    /**
      * @Then I should not see any notifications
      */
-    public function iShouldNotSeeAnyNotifications(): void
+    public function iShouldSeeExactlyNotifications(int $count = 0): void
     {
-        assert(count($this->session->getPage()->findAll('css', '.sylius-flash-message')) === 0);
+        Assert::eq($this->summaryPage->countFlashMessages(), $count);
     }
 
     /**
@@ -140,7 +140,7 @@ final class ReorderContext implements Context
      */
     public function iShouldNotProceedToMyCartSummaryPage(): void
     {
-        assert(strpos($this->session->getCurrentUrl(), '/cart') === false);
+        Assert::false($this->summaryPage->isOpen());
     }
 
     /**
@@ -148,28 +148,23 @@ final class ReorderContext implements Context
      */
     public function iShouldBeNotifiedThatNoneOfItemsFromPreviouslyPlacedOrderIsAvailable(): void
     {
-        $this->assertFlashMessageWithTextExists('None of items from previously placed order is available. Unable to place reorder.');
+        $this->summaryPage->doesFlashMessageWithTextExists('None of items from previously placed order is available. Unable to place reorder.');
     }
 
     /**
-     * @Then /^I should have shipping address filled with (address "[^"]+", "[^"]+", "[^"]+", "[^"]+" for "[^"]+")$/
+     * @Then :shippingMethod shipping method should not be selected
      */
-    public function iShouldHaveTheAddressSectionFilledWithAddress(AddressInterface $address): void
+    public function shippingMethodShouldNotBeSelected(string $shippingMethod): void
     {
+        Assert::false($this->selectShippingPage->isShippingMethodSelected($shippingMethod));
     }
 
     /**
-     * @Then I should not have the shipping method section copied from order :orderNumber
+     * @Then :paymentMethod payment method should not be selected
      */
-    public function iShouldNotHaveTheShippingMethodSectionFilledWithInformationTakenFromOrder(string $orderNumber): void
+    public function paymentMethodShouldNotBeSelected(string $paymentMethod): void
     {
-    }
-
-    /**
-     * @Then I should not have the payment method section copied from order :orderNumber
-     */
-    public function iShouldNotHaveThePaymentMethodSectionFilledWithInformationTakenFromOrder(string $orderNumber): void
-    {
+        Assert::false($this->selectPaymentPage->isPaymentMethodSelected($paymentMethod));
     }
 
     /**
@@ -177,7 +172,7 @@ final class ReorderContext implements Context
      */
     public function iProceedToTheAddressingStep(): void
     {
-        $this->session->getPage()->clickLink('Checkout');
+        $this->summaryPage->checkout();
     }
 
     /**
@@ -185,6 +180,7 @@ final class ReorderContext implements Context
      */
     public function iProceedToTheShippingStep(): void
     {
+        $this->addressPage->nextStep();
     }
 
     /**
@@ -192,25 +188,6 @@ final class ReorderContext implements Context
      */
     public function iProceedToThePaymentStep(): void
     {
-    }
-
-    private function assertFlashMessageWithTextExists(string $text)
-    {
-        $notifications = $this->session->getPage()->findAll('css', '.sylius-flash-message');
-
-        if (null === $notifications) {
-            throw new \Exception('There is no notification on current page.');
-        }
-
-        /** @var NodeElement $notification */
-        foreach ($notifications as $notification) {
-            $message = $notification->getText();
-
-            if (strpos($message, $text)) {
-                return;
-            }
-        }
-
-        throw new \Exception(sprintf('Flash message with text %s not found', $text));
+        $this->selectShippingPage->nextStep();
     }
 }

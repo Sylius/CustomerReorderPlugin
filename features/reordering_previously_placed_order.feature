@@ -10,7 +10,11 @@ Feature: Reordering previously placed order
         And there are 25 units of product "Angel T-Shirt" available in the inventory
         And this product is tracked by the inventory
         And the store ships everywhere for free
+        And the store also allows shipping with "Post Pigeon"
+        And the store also allows shipping with "Hedwig Owl"
         And the store allows paying with "Cash on Delivery"
+        And the store allows paying with "Paypal"
+        And the store allows paying with "Offline Bank Transfer"
         And I am a logged in customer
         And there is a promotion "Order's Extravaganza"
         And this promotion gives "$20.00" discount to every order
@@ -18,7 +22,7 @@ Feature: Reordering previously placed order
         And I bought a single "Angel T-Shirt"
         And I addressed it to "Lucifer Morningstar", "Seaside Fwy", "90802" "Los Angeles" in the "United States", "Arkansas"
         And for the billing address of "Mazikeen Lilim" in the "Pacific Coast Hwy", "90806" "Los Angeles", "United States", "Arkansas"
-        And I chose "Free" shipping method with "Cash on Delivery" payment
+        And I chose "Post Pigeon" shipping method with "Paypal" payment
 
     @ui
     Scenario: Reordering previously placed order
@@ -51,16 +55,19 @@ Feature: Reordering previously placed order
         And I proceed to the addressing step
         Then address "Lucifer Morningstar", "Seaside Fwy", "90802", "Los Angeles", "United States", "Arkansas" should be filled as shipping address
 
-    @todo
+    @ui
     Scenario: Having shipping method not filled with shipping information taken from previously placed order
         Given I browse my orders
         When I reorder the order "#00000666"
+        And I proceed to the addressing step
         And I proceed to the shipping step
-        Then I should not have the shipping method section copied from order "#00000666"
+        Then "Post Pigeon" shipping method should not be selected
 
-    @todo
+    @ui
     Scenario: Having payment method not filled with payment information taken from previously placed order
         Given I browse my orders
         When I reorder the order "#00000666"
+        And I proceed to the addressing step
+        And I proceed to the shipping step
         And I proceed to the payment step
-        Then I should not have the payment method section copied from order "#00000666"
+        Then "Paypal" payment method should not be selected

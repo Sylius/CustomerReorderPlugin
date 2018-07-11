@@ -1,0 +1,3 @@
+sylius_customer_reorder_plugin:
+    ui:
+        reorder: Reorder

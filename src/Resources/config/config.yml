@@ -8,7 +8,7 @@ sylius_grid:
                 item:
                     reorder:
                         type: reorder
-                        label: Reorder
+                        label: sylius_customer_reorder_plugin.ui.reorder
                         options:
                             link:
                                 route: sylius_reorder_plugin_reorder

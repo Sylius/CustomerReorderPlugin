@@ -10,6 +10,8 @@
             <argument type="service" id="sylius.behat.page.shop.checkout.address"/>
             <argument type="service" id="sylius_customer_reorder.behat.page.shop.checkout"/>
             <argument type="service" id="sylius_customer_reorder.behat.page.shop.account.order.index" />
+            <argument type="service" id="__symfony__.sylius.product_variant_resolver.default" />
+            <argument type="service" id="__symfony__.doctrine.orm.entity_manager" />
             <tag name="fob.context_service" />
         </service>
         <service id="sylius_customer_reorder.behat.page.shop.checkout.select_shipping" class="Tests\Sylius\CustomerReorderPlugin\Behat\Page\Checkout\SelectShippingPage" parent="sylius.behat.page.shop.checkout.select_shipping" public="false" />

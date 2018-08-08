@@ -10,6 +10,7 @@ use Prophecy\Argument;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
+use Sylius\Component\Inventory\Checker\AvailabilityCheckerInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
@@ -19,9 +20,10 @@ use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\Eligibili
 final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
 {
     function let(
-        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter,
+        AvailabilityCheckerInterface $availabilityChecker
     ): void {
-        $this->beConstructedWith($reorderEligibilityConstraintMessageFormatter);
+        $this->beConstructedWith($reorderEligibilityConstraintMessageFormatter, $availabilityChecker);
     }
 
     function it_is_initializable(): void
@@ -40,7 +42,8 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         OrderItemInterface $firstOrderItem,
         OrderItemInterface $secondOrderItem,
         ProductVariantInterface $firstProductVariant,
-        ProductVariantInterface $secondProductVariant
+        ProductVariantInterface $secondProductVariant,
+        AvailabilityCheckerInterface $availabilityChecker
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
@@ -50,11 +53,8 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         $firstOrderItem->getVariant()->willReturn($firstProductVariant);
         $secondOrderItem->getVariant()->willReturn($secondProductVariant);
 
-        $firstProductVariant->isInStock()->willReturn(true);
-        $firstProductVariant->isTracked()->willReturn(true);
-
-        $secondProductVariant->isInStock()->willReturn(true);
-        $secondProductVariant->isTracked()->willReturn(true);
+        $availabilityChecker->isStockAvailable($firstProductVariant)->willReturn(true);
+        $availabilityChecker->isStockAvailable($secondProductVariant)->willReturn(true);
 
         $response = $this->check($order, $reorder);
         $response->shouldBeEqualTo([]);
@@ -67,7 +67,8 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         OrderItemInterface $secondOrderItem,
         ProductVariantInterface $firstProductVariant,
         ProductVariantInterface $secondProductVariant,
-        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter,
+        AvailabilityCheckerInterface $availabilityChecker
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
@@ -79,11 +80,8 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
         $secondOrderItem->getVariant()->willReturn($secondProductVariant);
         $secondOrderItem->getProductName()->willReturn('test_name_02');
 
-        $firstProductVariant->isInStock()->willReturn(false);
-        $firstProductVariant->isTracked()->willReturn(true);
-
-        $secondProductVariant->isInStock()->willReturn(false);
-        $secondProductVariant->isTracked()->willReturn(true);
+        $availabilityChecker->isStockAvailable($firstProductVariant)->willReturn(false);
+        $availabilityChecker->isStockAvailable($secondProductVariant)->willReturn(false);
 
         $reorderEligibilityConstraintMessageFormatter->format([
             'test_name_01',

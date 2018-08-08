@@ -33,6 +33,7 @@
         </service>
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ItemsOutOfStockEligibilityChecker">
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatter" />
+            <argument type="service" id="sylius.availability_checker.default" />
             <tag name="sylius_customer_reorder_plugin.eligibility_checker" priority="30" />
         </service>
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderItemPricesEligibilityChecker">

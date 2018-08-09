@@ -6,7 +6,11 @@ namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Session;
+use Doctrine\Common\Persistence\ObjectManager;
 use Sylius\Behat\Page\Shop\Checkout\AddressPageInterface;
+use Sylius\Component\Core\Model\ProductInterface;
+use Sylius\Component\Core\Model\ProductVariantInterface;
+use Sylius\Component\Product\Resolver\ProductVariantResolverInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityConstraintMessageFormatterInterface;
 use Tests\Sylius\CustomerReorderPlugin\Behat\Page\Cart\SummaryPageInterface;
 use Tests\Sylius\CustomerReorderPlugin\Behat\Page\Checkout\SelectPaymentPageInterface;
@@ -37,6 +41,12 @@ final class ReorderContext implements Context
     /** @var IndexPageInterface */
     private $orderIndexPage;
 
+    /** @var ProductVariantResolverInterface */
+    private $defaultVariantResolver;
+
+    /** @var ObjectManager */
+    private $objectManager;
+
     public function __construct(
         Session $session,
         ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter,
@@ -44,7 +54,9 @@ final class ReorderContext implements Context
         SelectPaymentPageInterface $selectPaymentPage,
         AddressPageInterface $addressPage,
         SummaryPageInterface $summaryPage,
-        IndexPageInterface $orderIndexPage
+        IndexPageInterface $orderIndexPage,
+        ProductVariantResolverInterface $productVariantResolver,
+        ObjectManager $objectManager
     ) {
         $this->session = $session;
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
@@ -53,6 +65,21 @@ final class ReorderContext implements Context
         $this->addressPage = $addressPage;
         $this->summaryPage = $summaryPage;
         $this->orderIndexPage = $orderIndexPage;
+        $this->defaultVariantResolver = $productVariantResolver;
+        $this->objectManager = $objectManager;
+    }
+
+    /**
+     * @Given :count items of product :product are on hold
+     */
+    public function allItemsOfProductAreOnHold(int $count, ProductInterface $product): void
+    {
+        /** @var ProductVariantInterface $productVariant */
+        $productVariant = $this->defaultVariantResolver->getVariant($product);
+        $productVariant->setTracked(true);
+        $productVariant->setOnHold($count);
+
+        $this->objectManager->flush();
     }
 
     /**

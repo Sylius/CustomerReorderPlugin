@@ -7,6 +7,7 @@ namespace Sylius\CustomerReorderPlugin\ReorderEligibility;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
+use Sylius\Component\Inventory\Checker\AvailabilityCheckerInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 
 final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityChecker
@@ -14,10 +15,15 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
     /** @var ReorderEligibilityConstraintMessageFormatterInterface */
     private $reorderEligibilityConstraintMessageFormatter;
 
+    /** @var AvailabilityCheckerInterface */
+    private $availabilityChecker;
+
     public function __construct(
-        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter
+        ReorderEligibilityConstraintMessageFormatterInterface $reorderEligibilityConstraintMessageFormatter,
+        AvailabilityCheckerInterface $availabilityChecker
     ) {
         $this->reorderEligibilityConstraintMessageFormatter = $reorderEligibilityConstraintMessageFormatter;
+        $this->availabilityChecker = $availabilityChecker;
     }
 
     public function check(OrderInterface $order, OrderInterface $reorder): array
@@ -32,7 +38,7 @@ final class ItemsOutOfStockEligibilityChecker implements ReorderEligibilityCheck
 
             /** @var ProductVariantInterface $productVariant */
             $productVariant = $orderItem->getVariant();
-            if ($productVariant->isTracked() && !$productVariant->isInStock()) {
+            if (!$this->availabilityChecker->isStockAvailable($productVariant)) {
                 $productsOutOfStock[] = $orderItem->getProductName();
             }
         }

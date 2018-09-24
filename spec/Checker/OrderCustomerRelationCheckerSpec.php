@@ -37,6 +37,6 @@ final class OrderCustomerRelationCheckerSpec extends ObjectBehavior
 
         $order->getCustomer()->willReturn($secondCustomer);
 
-       $this->wasOrderPlacedByCustomer($order, $firstCustomer)->shouldReturn(false);
+        $this->wasOrderPlacedByCustomer($order, $firstCustomer)->shouldReturn(false);
    }
 }

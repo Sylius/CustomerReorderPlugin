@@ -8,17 +8,16 @@ use Nette\InvalidStateException;
 use Sylius\Bundle\CoreBundle\Storage\CartSessionStorage;
 use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Sylius\Component\Customer\Context\CustomerContextInterface;
 use Sylius\Component\Order\Context\CartContextInterface;
-use Sylius\CustomerReorderPlugin\Checker\OrderCustomerRelationCheckerInterface;
 use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class CustomerReorderAction
@@ -75,6 +74,7 @@ final class CustomerReorderAction
         $channel = $this->channelContext->getChannel();
         assert($channel instanceof ChannelInterface);
 
+        /** @var CustomerInterface $customer */
         $customer = $this->customerContext->getCustomer();
 
         $reorder = null;

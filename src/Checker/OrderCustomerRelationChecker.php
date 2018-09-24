@@ -11,10 +11,13 @@ final class OrderCustomerRelationChecker implements OrderCustomerRelationChecker
 {
     public function wasOrderPlacedByCustomer(OrderInterface $order, CustomerInterface $customer): bool
     {
+        /** @var CustomerInterface $orderCustomer */
+        $orderCustomer = $order->getCustomer();
+
         return
-            null !== $customer &&
-            null !== $order->getCustomer() &&
-            $order->getCustomer()->getId() === $customer->getId()
+            null != $customer &&
+            null != $orderCustomer &&
+            $orderCustomer->getId() === $customer->getId()
         ;
     }
 }

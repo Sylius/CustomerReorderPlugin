@@ -293,12 +293,15 @@ final class ReordererSpec extends ObjectBehavior
         OrderInterface $order,
         ChannelInterface $channel,
         CustomerInterface $firstCustomer,
-        CustomerInterface $secondCustomer
+        CustomerInterface $secondCustomer,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker
     ): void {
         $firstCustomer->getId()->willReturn('1');
         $secondCustomer->getId()->willReturn('2');
 
         $order->getCustomer()->willReturn($firstCustomer);
+
+        $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $secondCustomer)->shouldBeCalled();
 
         $this
             ->shouldThrow(InvalidStateException::class)

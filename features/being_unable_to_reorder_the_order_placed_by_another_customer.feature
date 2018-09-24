@@ -10,7 +10,10 @@ Feature: Being unable to reorder the order placed by another customer
         And the store ships everywhere for free
         And the store allows paying with "Cash on Delivery"
         And there is a customer "Rick Sanchez" identified by an email "rick.sanchez@wubba-lubba-dub-dub.com" and a password "Morty"
-        And there is another customer "Morty Smith" that placed an order "#00000666"
+        And there is a customer "Morty Smith" identified by an email "morty.smith@wubba-lubba-dub-dub.com" and a password "Rick"
+        And a customer "Morty Smith" placed an order "#00000666"
+        And the customer bought a single "Angel T-Shirt"
+        And the customer chose "Free" shipping method to "United States" with "Cash on Delivery" payment
 
     @application
     Scenario: Being unable to reorder the order placed by another customer

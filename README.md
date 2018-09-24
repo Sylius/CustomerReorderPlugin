@@ -13,11 +13,11 @@
 ## Business value
 
 The plugin allows Customer to reorder any Order that has already been placed. Once a Reorder button is clicked, a new cart 
-filled with items taken from previously placed order is created. If for some reason Reorder can't be fulfilled completely,
-the Customer is informed about every circumstances that have affected the Order (i. e. promotion being no longer available
+filled with items taken from a previously placed order is created. If for some reason Reorder can't be fulfilled completely,
+the Customer is informed about every circumstance that have affected the Order (i. e. promotion being no longer available
 or differences in item's prices).
 
-Once Reorder process is completed, the newly created Order is listed in the history just like any other Orders.
+Once the Reorder process is completed, the newly created Order is listed in the history just like any other Orders.
 
 ## Installation
 

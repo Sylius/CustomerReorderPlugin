@@ -4,26 +4,16 @@ declare(strict_types=1);
 
 namespace Sylius\CustomerReorderPlugin\Checker;
 
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
-use Sylius\Component\Customer\Context\CustomerContextInterface;
 
 final class OrderCustomerRelationChecker implements OrderCustomerRelationCheckerInterface
 {
-    /** @var CustomerContextInterface */
-    private $customerContext;
-
-    public function __construct(CustomerContextInterface $customerContext)
+    public function wasOrderPlacedByCustomer(OrderInterface $order, CustomerInterface $customer): bool
     {
-        $this->customerContext = $customerContext;
-    }
-
-    public function wasOrderPlacedByCurrentCustomer(OrderInterface $order): bool
-    {
-        $customer = $this->customerContext->getCustomer();
-
         return
             null !== $customer &&
-            null !g== $order->getCustomer() &&
+            null !== $order->getCustomer() &&
             $order->getCustomer()->getId() === $customer->getId()
         ;
     }

@@ -8,6 +8,7 @@
             <argument type="service" id="sylius.storage.cart_session" />
             <argument type="service" id="sylius.context.channel" />
             <argument type="service" id="sylius.context.cart" />
+            <argument type="service" id="sylius.context.customer" />
             <argument type="service" id="sylius.repository.order" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\Reorder\Reorderer" />
             <argument type="service" id="router" />
@@ -21,6 +22,7 @@
             <argument type="service" id="session" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor" />
+            <argument type="service" id="Sylius\CustomerReorderPlugin\Checker\OrderCustomerRelationChecker" />
         </service>
         <service id="Sylius\CustomerReorderPlugin\Factory\OrderFactory">
             <argument type="service" id="sylius.factory.order" />
@@ -65,6 +67,8 @@
         <service id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor">
             <argument type="service" id="session"/>
         </service>
+
+        <service id="Sylius\CustomerReorderPlugin\Checker\OrderCustomerRelationChecker" />
 
     </services>
 </container>

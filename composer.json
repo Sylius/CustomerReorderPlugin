@@ -1,6 +1,6 @@
 {
     "name": "sylius/customer-reorder-plugin",
-    "type": "symfony-bundle",
+    "type": "sylius-plugin",
     "keywords": ["sylius", "sylius-plugin", "symfony", "e-commerce", "customer reorder"],
     "description": "Sylius plugin that enables order reordering for a customer",
     "license": "MIT",

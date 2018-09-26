@@ -12,6 +12,7 @@
             <argument type="service" id="Sylius\CustomerReorderPlugin\Reorder\Reorderer" />
             <argument type="service" id="router" />
             <argument type="service" id="session" />
+            <argument type="expression">service('sylius.context.customer').getCustomer()</argument>
         </service>
         <service id="Sylius\CustomerReorderPlugin\Reorder\Reorderer">
             <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" />

@@ -10,12 +10,14 @@ use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
+use Sylius\Component\Customer\Model\CustomerInterface;
 use Sylius\Component\Order\Context\CartContextInterface;
 use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class CustomerReorderAction
@@ -41,6 +43,9 @@ final class CustomerReorderAction
     /** @var Session */
     private $session;
 
+    /** @var CustomerInterface */
+    private $customer;
+
     public function __construct(
         CartSessionStorage $cartSessionStorage,
         ChannelContextInterface $channelContext,
@@ -48,7 +53,8 @@ final class CustomerReorderAction
         OrderRepositoryInterface $orderRepository,
         ReordererInterface $reorderService,
         UrlGeneratorInterface $urlGenerator,
-        Session $session
+        Session $session,
+        CustomerInterface $customer
     ) {
         $this->cartSessionStorage = $cartSessionStorage;
         $this->channelContext = $channelContext;
@@ -57,12 +63,17 @@ final class CustomerReorderAction
         $this->reorderer = $reorderService;
         $this->urlGenerator = $urlGenerator;
         $this->session = $session;
+        $this->customer = $customer;
     }
 
     public function __invoke(Request $request): Response
     {
         /** @var OrderInterface $order */
         $order = $this->orderRepository->find($request->attributes->get('id'));
+
+        if (null === $this->customer || null === $order->getCustomer() || $order->getCustomer()->getId() !== $this->customer->getId()) {
+            throw new BadRequestHttpException("The customer is not the order's owner.");
+        }
 
         $channel = $this->channelContext->getChannel();
         assert($channel instanceof ChannelInterface);

@@ -6,14 +6,17 @@ namespace spec\Sylius\CustomerReorderPlugin\Reorder;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Nette\InvalidStateException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 use Sylius\Component\Core\Model\PromotionInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
+use Sylius\CustomerReorderPlugin\Checker\OrderCustomerRelationCheckerInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 use Sylius\CustomerReorderPlugin\Reorder\Reorderer;
 use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
@@ -32,7 +35,8 @@ final class ReordererSpec extends ObjectBehavior
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
         ReorderEligibilityChecker $reorderEligibilityChecker,
-        ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor
+        ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker
     ): void {
         $this->beConstructedWith(
             $orderFactory,
@@ -41,7 +45,8 @@ final class ReordererSpec extends ObjectBehavior
             $moneyFormatter,
             $session,
             $reorderEligibilityChecker,
-            $reorderEligibilityCheckerResponseProcessor
+            $reorderEligibilityCheckerResponseProcessor,
+            $orderCustomerRelationChecker
         );
     }
 
@@ -59,7 +64,9 @@ final class ReordererSpec extends ObjectBehavior
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         ReorderEligibilityChecker $reorderEligibilityChecker,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker,
         ChannelInterface $channel,
+        CustomerInterface $customer,
         OrderInterface $order,
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
@@ -67,6 +74,8 @@ final class ReordererSpec extends ObjectBehavior
     ): void {
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
+
+        $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $customer)->willReturn(true);
 
         $reorder->getTotal()->willReturn(100);
 
@@ -81,14 +90,16 @@ final class ReordererSpec extends ObjectBehavior
             $secondOrderItem->getWrappedObject()
         ]));
 
-        $this->reorder($order, $channel);
+        $this->reorder($order, $channel, $customer);
     }
 
     function it_checks_if_orders_totals_differ(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         ReorderEligibilityChecker $reorderEligibilityChecker,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker,
         ChannelInterface $channel,
+        CustomerInterface $customer,
         OrderInterface $order,
         OrderInterface $reorder,
         MoneyFormatterInterface $moneyFormatter,
@@ -100,6 +111,8 @@ final class ReordererSpec extends ObjectBehavior
         $order->getTotal()->willReturn(100);
         $order->getCurrencyCode()->willReturn('USD');
         $order->getPromotions()->willReturn($promotions);
+
+        $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $customer)->willReturn(true);
 
         $reorder->getTotal()->willReturn(150);
         $reorder->getPromotions()->willReturn($promotions);
@@ -122,14 +135,16 @@ final class ReordererSpec extends ObjectBehavior
         $entityManager->persist($reorder)->shouldBeCalled();
         $entityManager->flush()->shouldBeCalled();
 
-        $this->reorder($order, $channel);
+        $this->reorder($order, $channel, $customer);
     }
 
     function it_checks_if_promotion_is_no_longer_available(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         ReorderEligibilityChecker $reorderEligibilityChecker,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker,
         ChannelInterface $channel,
+        CustomerInterface $customer,
         OrderInterface $order,
         OrderInterface $reorder,
         MoneyFormatterInterface $moneyFormatter,
@@ -143,6 +158,8 @@ final class ReordererSpec extends ObjectBehavior
             $firstPromotion->getWrappedObject(),
             $secondPromotion->getWrappedObject()
         ]));
+
+        $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $customer)->willReturn(true);
 
         $firstPromotion->getName()->willReturn('test_promotion_01');
         $secondPromotion->getName()->willReturn('test_promotion_02');
@@ -169,14 +186,16 @@ final class ReordererSpec extends ObjectBehavior
         $entityManager->persist($reorder)->shouldBeCalled();
         $entityManager->flush()->shouldBeCalled();
 
-        $this->reorder($order, $channel);
+        $this->reorder($order, $channel, $customer);
     }
 
     function it_checks_if_price_of_any_item_has_changed(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         ReorderEligibilityChecker $reorderEligibilityChecker,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker,
         ChannelInterface $channel,
+        CustomerInterface $customer,
         OrderInterface $order,
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
@@ -193,6 +212,8 @@ final class ReordererSpec extends ObjectBehavior
             $firstOrderItem->getWrappedObject(),
             $secondOrderItem->getWrappedObject()
         ]));
+
+        $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $customer)->willReturn(true);
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
@@ -213,14 +234,16 @@ final class ReordererSpec extends ObjectBehavior
         $entityManager->persist($reorder)->shouldBeCalled();
         $entityManager->flush()->shouldBeCalled();
 
-        $this->reorder($order, $channel);
+        $this->reorder($order, $channel, $customer);
     }
 
     function it_checks_if_any_item_is_out_of_stock(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         ReorderEligibilityChecker $reorderEligibilityChecker,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker,
         ChannelInterface $channel,
+        CustomerInterface $customer,
         OrderInterface $order,
         OrderInterface $reorder,
         OrderItemInterface $firstOrderItem,
@@ -244,6 +267,8 @@ final class ReordererSpec extends ObjectBehavior
             $secondOrderItem->getWrappedObject()
         ]));
 
+        $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $customer)->willReturn(true);
+
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject()
         ]));
@@ -261,6 +286,26 @@ final class ReordererSpec extends ObjectBehavior
         $entityManager->persist($reorder)->shouldBeCalled();
         $entityManager->flush()->shouldBeCalled();
 
-        $this->reorder($order, $channel);
+        $this->reorder($order, $channel, $customer);
+    }
+
+    function it_does_not_create_reorder_when_order_does_not_belong_to_given_customer(
+        OrderInterface $order,
+        ChannelInterface $channel,
+        CustomerInterface $firstCustomer,
+        CustomerInterface $secondCustomer,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker
+    ): void {
+        $firstCustomer->getId()->willReturn('1');
+        $secondCustomer->getId()->willReturn('2');
+
+        $order->getCustomer()->willReturn($firstCustomer);
+
+        $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $secondCustomer)->shouldBeCalled();
+
+        $this
+            ->shouldThrow(InvalidStateException::class)
+            ->during('reorder', [$order, $channel, $secondCustomer])
+        ;
     }
 }

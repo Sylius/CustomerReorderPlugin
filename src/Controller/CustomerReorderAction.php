@@ -8,8 +8,10 @@ use Nette\InvalidStateException;
 use Sylius\Bundle\CoreBundle\Storage\CartSessionStorage;
 use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
+use Sylius\Component\Customer\Context\CustomerContextInterface;
 use Sylius\Component\Order\Context\CartContextInterface;
 use Sylius\CustomerReorderPlugin\Reorder\ReordererInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,6 +31,9 @@ final class CustomerReorderAction
     /** @var CartContextInterface */
     private $cartContext;
 
+    /** @var CustomerContextInterface */
+    private $customerContext;
+
     /** @var OrderRepositoryInterface */
     private $orderRepository;
 
@@ -45,6 +50,7 @@ final class CustomerReorderAction
         CartSessionStorage $cartSessionStorage,
         ChannelContextInterface $channelContext,
         CartContextInterface $cartContext,
+        CustomerContextInterface $customerContext,
         OrderRepositoryInterface $orderRepository,
         ReordererInterface $reorderService,
         UrlGeneratorInterface $urlGenerator,
@@ -53,6 +59,7 @@ final class CustomerReorderAction
         $this->cartSessionStorage = $cartSessionStorage;
         $this->channelContext = $channelContext;
         $this->cartContext = $cartContext;
+        $this->customerContext = $customerContext;
         $this->orderRepository = $orderRepository;
         $this->reorderer = $reorderService;
         $this->urlGenerator = $urlGenerator;
@@ -67,10 +74,13 @@ final class CustomerReorderAction
         $channel = $this->channelContext->getChannel();
         assert($channel instanceof ChannelInterface);
 
+        /** @var CustomerInterface $customer */
+        $customer = $this->customerContext->getCustomer();
+
         $reorder = null;
 
         try {
-            $reorder = $this->reorderer->reorder($order, $channel);
+            $reorder = $this->reorderer->reorder($order, $channel, $customer);
         } catch (InvalidStateException $exception) {
             $this->session->getFlashBag()->add('info', $exception->getMessage());
 

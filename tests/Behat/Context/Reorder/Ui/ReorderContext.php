@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder;
+namespace Tests\Sylius\CustomerReorderPlugin\Behat\Context\Reorder\Ui;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Session;

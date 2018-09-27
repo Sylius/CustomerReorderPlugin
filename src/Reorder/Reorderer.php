@@ -8,8 +8,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Nette\InvalidStateException;
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Order\Processor\OrderProcessorInterface;
+use Sylius\CustomerReorderPlugin\Checker\OrderCustomerRelationCheckerInterface;
 use Sylius\CustomerReorderPlugin\Factory\OrderFactoryInterface;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessorInterface;
@@ -38,6 +40,9 @@ final class Reorderer implements ReordererInterface
     /** @var ReorderEligibilityCheckerResponseProcessorInterface */
     private $reorderEligibilityCheckerResponseProcessor;
 
+    /** @var OrderCustomerRelationCheckerInterface */
+    private $orderCustomerRelationCheckerInterface;
+
     public function __construct(
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
@@ -45,7 +50,8 @@ final class Reorderer implements ReordererInterface
         MoneyFormatterInterface $moneyFormatter,
         Session $session,
         ReorderEligibilityChecker $reorderEligibilityChecker,
-        ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor
+        ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor,
+        OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker
     ) {
         $this->orderFactory = $orderFactory;
         $this->entityManager = $entityManager;
@@ -54,10 +60,18 @@ final class Reorderer implements ReordererInterface
         $this->session = $session;
         $this->reorderEligibilityChecker = $reorderEligibilityChecker;
         $this->reorderEligibilityCheckerResponseProcessor = $reorderEligibilityCheckerResponseProcessor;
+        $this->orderCustomerRelationCheckerInterface = $orderCustomerRelationChecker;
     }
 
-    public function reorder(OrderInterface $order, ChannelInterface $channel): OrderInterface
-    {
+    public function reorder(
+        OrderInterface $order,
+        ChannelInterface $channel,
+        CustomerInterface $customer
+    ): OrderInterface {
+        if (!$this->orderCustomerRelationCheckerInterface->wasOrderPlacedByCustomer($order, $customer)) {
+            throw new InvalidStateException("The customer is not the order's owner.");
+        }
+
         $reorder = $this->orderFactory->createFromExistingOrder($order, $channel);
         assert($reorder instanceof OrderInterface);
 

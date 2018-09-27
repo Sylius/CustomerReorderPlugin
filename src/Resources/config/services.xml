@@ -69,6 +69,5 @@
         </service>
 
         <service id="Sylius\CustomerReorderPlugin\Checker\OrderCustomerRelationChecker" />
-
     </services>
 </container>

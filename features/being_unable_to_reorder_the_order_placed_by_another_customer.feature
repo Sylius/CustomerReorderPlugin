@@ -18,4 +18,4 @@ Feature: Being unable to reorder the order placed by another customer
     @application
     Scenario: Being unable to reorder the order placed by another customer
         When the customer "rick.sanchez@wubba-lubba-dub-dub.com" tries to reorder the order "#00000666"
-        Then the order "#000001" should not be reordered
+        Then the order "#00000666" should not be reordered

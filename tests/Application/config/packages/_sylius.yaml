@@ -1,0 +1,33 @@
+imports:
+    - { resource: "@SyliusCoreBundle/Resources/config/app/config.yml" }
+
+    - { resource: "@SyliusAdminBundle/Resources/config/app/config.yml" }
+    - { resource: "@SyliusAdminApiBundle/Resources/config/app/config.yml" }
+
+    - { resource: "@SyliusShopBundle/Resources/config/app/config.yml" }
+
+    - { resource: "@SyliusCustomerReorderPlugin/Resources/config/services.xml" }
+
+parameters:
+    sylius_core.public_dir: '%kernel.project_dir%/public'
+
+sylius_shop:
+    product_grid:
+        include_all_descendants: true
+
+sylius_grid:
+    grids:
+        sylius_shop_account_order:
+            actions:
+                item:
+                    reorder:
+                        type: reorder
+                        label: sylius_customer_reorder_plugin.ui.reorder
+                        options:
+                            link:
+                                route: sylius_reorder_plugin_reorder
+                                parameters:
+                                    id: resource.id
+    templates:
+        action:
+            reorder: "@SyliusCustomerReorderPlugin/reorder.html.twig"

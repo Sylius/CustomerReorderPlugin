@@ -21,39 +21,19 @@ Once the Reorder process is completed, the newly created Order is listed in the 
 
 ## Installation
 
-1. Require plugin with composer:
+#### Beware!
 
-    ```bash
-    composer require sylius/customer-reorder-plugin
-    ```
+> This installation instruction assumes that you're using Symfony Flex. If you don't, take a look at the
+[legacy installation instruction](docs/legacy_installation.md). However, we strongly encourage you to use
+Symfony Flex, it's much quicker! :)
 
-2. Import configuration:
+To install plugin, just require it with composer:
 
-    ```yaml
-    imports:
-        - { resource: "@SyliusCustomerReorderPlugin/Resources/config/config.yml" }
-    ```
+```bash
+composer require sylius/customer-reorder-plugin
+```
 
-3. Import routing:
-
-    ```yaml
-    sylius_customer_reorder:
-        resource: "@SyliusCustomerReorderPlugin/Resources/config/app/reorder_routing.yml"
-    ```
-
-4. Add plugin class to your `AppKernel`:
-
-    ```php
-    $bundles = [
-        new \Sylius\CustomerReorderPlugin\SyliusCustomerReorderPlugin(),
-    ];
-    ```
-
-5. Clear cache:
-
-    ```bash
-    bin/console cache:clear
-    ```
+> Remember to allow community recipes with `composer config extra.symfony.allow-contrib true` or during plugin installation process
 
 ## Extension points
 

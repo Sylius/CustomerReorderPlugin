@@ -61,3 +61,8 @@ Adding `Reorder` action required extending order-related behaviours in `config.y
 
 You can read much more about Resources here:
 <http://docs.sylius.com/en/1.2/components_and_bundles/bundles/SyliusResourceBundle/index.html> 
+
+## Security issues
+
+If you think that you have found a security issue, please do not use the issue tracker and do not post it publicly. 
+Instead, all security issues must be sent to `security@sylius.com`.

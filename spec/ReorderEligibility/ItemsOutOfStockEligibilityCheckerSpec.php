@@ -6,7 +6,6 @@ namespace spec\Sylius\CustomerReorderPlugin\ReorderEligibility;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
@@ -47,7 +46,7 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $firstOrderItem->getVariant()->willReturn($firstProductVariant);
@@ -72,7 +71,7 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $firstOrderItem->getVariant()->willReturn($firstProductVariant);
@@ -85,7 +84,7 @@ final class ItemsOutOfStockEligibilityCheckerSpec extends ObjectBehavior
 
         $reorderEligibilityConstraintMessageFormatter->format([
             'test_name_01',
-            'test_name_02'
+            'test_name_02',
         ])->willReturn('test_name_01, test_name_02');
 
         $response = new ReorderEligibilityCheckerResponse();

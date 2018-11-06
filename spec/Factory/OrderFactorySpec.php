@@ -36,11 +36,11 @@ final class OrderFactorySpec extends ObjectBehavior
         OrderInterface $reorder,
         ChannelInterface $channel
     ): void {
-      $baseOrderFactory->createNew()->willReturn($reorder);
-      $reorder->setChannel($channel)->shouldBeCalled();
+        $baseOrderFactory->createNew()->willReturn($reorder);
+        $reorder->setChannel($channel)->shouldBeCalled();
 
-      $reorderProcessor->process($order, $reorder)->shouldBeCalled();
+        $reorderProcessor->process($order, $reorder)->shouldBeCalled();
 
-      $this->createFromExistingOrder($order, $channel);
+        $this->createFromExistingOrder($order, $channel);
     }
 }

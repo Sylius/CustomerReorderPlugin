@@ -11,12 +11,12 @@ use Sylius\CustomerReorderPlugin\Checker\OrderCustomerRelationCheckerInterface;
 
 final class OrderCustomerRelationCheckerSpec extends ObjectBehavior
 {
-   function it_implements_order_customer_relation_checker_interface(): void
-   {
-       $this->shouldImplement(OrderCustomerRelationCheckerInterface::class);
-   }
+    function it_implements_order_customer_relation_checker_interface(): void
+    {
+        $this->shouldImplement(OrderCustomerRelationCheckerInterface::class);
+    }
 
-   function it_returns_true_when_order_was_placed_by_customer(
+    function it_returns_true_when_order_was_placed_by_customer(
        CustomerInterface $orderCustomer,
        CustomerInterface $customer,
        OrderInterface $order
@@ -27,9 +27,9 @@ final class OrderCustomerRelationCheckerSpec extends ObjectBehavior
         $order->getCustomer()->willReturn($orderCustomer);
 
         $this->wasOrderPlacedByCustomer($order, $customer)->shouldReturn(true);
-   }
+    }
 
-   function it_returns_false_when_order_was_not_placed_by_customer(
+    function it_returns_false_when_order_was_not_placed_by_customer(
        CustomerInterface $orderCustomer,
        CustomerInterface $customer,
        OrderInterface $order
@@ -40,14 +40,14 @@ final class OrderCustomerRelationCheckerSpec extends ObjectBehavior
         $order->getCustomer()->willReturn($orderCustomer);
 
         $this->wasOrderPlacedByCustomer($order, $customer)->shouldReturn(false);
-   }
+    }
 
-   function it_returns_false_when_order_has_no_customer_assigned(
+    function it_returns_false_when_order_has_no_customer_assigned(
        CustomerInterface $customer,
        OrderInterface $order
    ): void {
-       $order->getCustomer()->willReturn(null);
+        $order->getCustomer()->willReturn(null);
 
-       $this->wasOrderPlacedByCustomer($order, $customer)->shouldReturn(false);
-   }
+        $this->wasOrderPlacedByCustomer($order, $customer)->shouldReturn(false);
+    }
 }

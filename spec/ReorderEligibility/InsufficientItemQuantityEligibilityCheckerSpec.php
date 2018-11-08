@@ -40,12 +40,12 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $firstOrderItem->getProductName()->willReturn('test_product_name_01');
@@ -66,7 +66,7 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $reorder->getItems()->willReturn(new ArrayCollection([]));
@@ -90,12 +90,12 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $firstOrderItem->getProductName()->willReturn('test_product_name_01');
@@ -110,7 +110,7 @@ final class InsufficientItemQuantityEligibilityCheckerSpec extends ObjectBehavio
         $response = new ReorderEligibilityCheckerResponse();
         $response->setMessage(EligibilityCheckerFailureResponses::INSUFFICIENT_ITEM_QUANTITY);
         $response->setParameters([
-            '%order_items%' => 'test_product_name_01, test_product_name_02'
+            '%order_items%' => 'test_product_name_01, test_product_name_02',
         ]);
 
         $this->check($order, $reorder)->shouldBeLike([$response]);

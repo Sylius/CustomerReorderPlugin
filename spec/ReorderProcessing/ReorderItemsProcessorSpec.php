@@ -53,7 +53,7 @@ final class ReorderItemsProcessorSpec extends ObjectBehavior
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $firstOrderItem->getUnitPrice()->willReturn(10);

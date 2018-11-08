@@ -18,8 +18,6 @@
             <argument type="service" id="Sylius\CustomerReorderPlugin\Factory\OrderFactory" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="sylius.order_processing.order_processor" />
-            <argument type="service" id="sylius.money_formatter" />
-            <argument type="service" id="session" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\CompositeReorderEligibilityChecker" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessor" />
             <argument type="service" id="Sylius\CustomerReorderPlugin\Checker\OrderCustomerRelationChecker" />

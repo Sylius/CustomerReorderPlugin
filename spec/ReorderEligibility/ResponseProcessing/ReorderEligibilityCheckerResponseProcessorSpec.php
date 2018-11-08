@@ -50,22 +50,22 @@ final class ReorderEligibilityCheckerResponseProcessorSpec extends ObjectBehavio
         $flashBag->add('info', [
             'message' => EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED,
             'parameters' => [
-                '%product_names%' => 'test_product_01'
-            ]
+                '%product_names%' => 'test_product_01',
+            ],
         ])->shouldBeCalled();
 
         $flashBag->add('info', [
             'message' => EligibilityCheckerFailureResponses::ITEMS_OUT_OF_STOCK,
             'parameters' => [
-                '%order_items%' => 'test_item_01'
-            ]
+                '%order_items%' => 'test_item_01',
+            ],
         ])->shouldBeCalled();
 
         $flashBag->add('info', [
             'message' => EligibilityCheckerFailureResponses::TOTAL_AMOUNT_CHANGED,
             'parameters' => [
-                '%order_total%' => '$100.00'
-            ]
+                '%order_total%' => '$100.00',
+            ],
         ])->shouldBeCalled();
 
         $this->process([$firstResponse, $secondResponse, $thirdResponse]);

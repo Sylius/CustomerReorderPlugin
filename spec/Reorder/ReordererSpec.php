@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Nette\InvalidStateException;
 use PhpSpec\ObjectBehavior;
-use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
@@ -24,7 +23,6 @@ use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityChecker;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ReorderEligibilityCheckerResponse;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\EligibilityCheckerFailureResponses;
 use Sylius\CustomerReorderPlugin\ReorderEligibility\ResponseProcessing\ReorderEligibilityCheckerResponseProcessorInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 final class ReordererSpec extends ObjectBehavior
 {
@@ -32,8 +30,6 @@ final class ReordererSpec extends ObjectBehavior
         OrderFactoryInterface $orderFactory,
         EntityManagerInterface $entityManager,
         OrderProcessorInterface $orderProcessor,
-        MoneyFormatterInterface $moneyFormatter,
-        Session $session,
         ReorderEligibilityChecker $reorderEligibilityChecker,
         ReorderEligibilityCheckerResponseProcessorInterface $reorderEligibilityCheckerResponseProcessor,
         OrderCustomerRelationCheckerInterface $orderCustomerRelationChecker
@@ -42,8 +38,6 @@ final class ReordererSpec extends ObjectBehavior
             $orderFactory,
             $entityManager,
             $orderProcessor,
-            $moneyFormatter,
-            $session,
             $reorderEligibilityChecker,
             $reorderEligibilityCheckerResponseProcessor,
             $orderCustomerRelationChecker
@@ -87,7 +81,7 @@ final class ReordererSpec extends ObjectBehavior
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $this->reorder($order, $channel, $customer);
@@ -102,7 +96,6 @@ final class ReordererSpec extends ObjectBehavior
         CustomerInterface $customer,
         OrderInterface $order,
         OrderInterface $reorder,
-        MoneyFormatterInterface $moneyFormatter,
         ArrayCollection $promotions,
         ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse,
         OrderItemInterface $firstOrderItem,
@@ -119,10 +112,8 @@ final class ReordererSpec extends ObjectBehavior
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
-
-        $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
 
         $reorderEligibilityCheckerResponse->getMessage()->willReturn(
             EligibilityCheckerFailureResponses::TOTAL_AMOUNT_CHANGED
@@ -147,7 +138,6 @@ final class ReordererSpec extends ObjectBehavior
         CustomerInterface $customer,
         OrderInterface $order,
         OrderInterface $reorder,
-        MoneyFormatterInterface $moneyFormatter,
         PromotionInterface $firstPromotion,
         PromotionInterface $secondPromotion,
         ReorderEligibilityCheckerResponse $reorderEligibilityCheckerResponse,
@@ -156,7 +146,7 @@ final class ReordererSpec extends ObjectBehavior
     ): void {
         $order->getPromotions()->willReturn(new ArrayCollection([
             $firstPromotion->getWrappedObject(),
-            $secondPromotion->getWrappedObject()
+            $secondPromotion->getWrappedObject(),
         ]));
 
         $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $customer)->willReturn(true);
@@ -168,16 +158,14 @@ final class ReordererSpec extends ObjectBehavior
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
-
-        $moneyFormatter->format(100, 'USD')->willReturn('$1.00');
 
         $reorderEligibilityCheckerResponse->getMessage()->willReturn(
             EligibilityCheckerFailureResponses::REORDER_PROMOTIONS_CHANGED
         );
         $reorderEligibilityCheckerResponse->getParameters()->willReturn([
-            '%promotion_names%' => 'test_promotion_01, test_promotion_02'
+            '%promotion_names%' => 'test_promotion_01, test_promotion_02',
         ]);
 
         $reorderEligibilityChecker->check($order, $reorder)->willReturn([$reorderEligibilityCheckerResponse]);
@@ -210,14 +198,14 @@ final class ReordererSpec extends ObjectBehavior
 
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $customer)->willReturn(true);
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $reorderEligibilityCheckerResponse->getMessage()->willReturn(
@@ -225,7 +213,7 @@ final class ReordererSpec extends ObjectBehavior
         );
 
         $reorderEligibilityCheckerResponse->getParameters()->willReturn([
-            '%product_names%' => 'variant_name_02'
+            '%product_names%' => 'variant_name_02',
         ]);
 
         $reorderEligibilityChecker->check($order, $reorder)->willReturn([$reorderEligibilityCheckerResponse]);
@@ -264,20 +252,20 @@ final class ReordererSpec extends ObjectBehavior
 
         $order->getItems()->willReturn(new ArrayCollection([
             $firstProductVariant->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $orderCustomerRelationChecker->wasOrderPlacedByCustomer($order, $customer)->willReturn(true);
 
         $reorder->getItems()->willReturn(new ArrayCollection([
-            $firstOrderItem->getWrappedObject()
+            $firstOrderItem->getWrappedObject(),
         ]));
 
         $reorderEligibilityCheckerResponse->getMessage()->willReturn(
             EligibilityCheckerFailureResponses::ITEMS_OUT_OF_STOCK
         );
         $reorderEligibilityCheckerResponse->getParameters()->willReturn([
-            '%order_items%' => 'product_variant_02'
+            '%order_items%' => 'product_variant_02',
         ]);
 
         $reorderEligibilityChecker->check($order, $reorder)->willReturn([$reorderEligibilityCheckerResponse]);

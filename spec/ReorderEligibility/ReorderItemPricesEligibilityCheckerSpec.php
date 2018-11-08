@@ -39,12 +39,12 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $firstOrderItem->getProductName()->willReturn('test_product_name_01');
@@ -66,12 +66,12 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
     ): void {
         $order->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $reorder->getItems()->willReturn(new ArrayCollection([
             $firstOrderItem->getWrappedObject(),
-            $secondOrderItem->getWrappedObject()
+            $secondOrderItem->getWrappedObject(),
         ]));
 
         $firstOrderItem->getProductName()->willReturn('test_product_name_01');
@@ -82,13 +82,13 @@ final class ReorderItemPricesEligibilityCheckerSpec extends ObjectBehavior
 
         $reorderEligibilityConstraintMessageFormatter->format([
             'test_product_name_01',
-            'test_product_name_02'
+            'test_product_name_02',
         ])->willReturn('test_product_name_01, test_product_name_02');
 
         $response = new ReorderEligibilityCheckerResponse();
         $response->setMessage(EligibilityCheckerFailureResponses::REORDER_ITEMS_PRICES_CHANGED);
         $response->setParameters([
-            '%product_names%' => 'test_product_name_01, test_product_name_02'
+            '%product_names%' => 'test_product_name_01, test_product_name_02',
         ]);
 
         $this->check($order, $reorder)->shouldBeLike([$response]);

@@ -1,5 +1,0 @@
-sylius:
-    resource: "../../../../vendor/sylius/sylius/app/config/routing.yml"
-
-sylius_reorder_plugin:
-    resource: "@SyliusCustomerReorderPlugin/Resources/config/app/reorder_routing.yml"

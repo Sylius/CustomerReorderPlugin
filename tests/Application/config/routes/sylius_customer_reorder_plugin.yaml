@@ -1,0 +1,2 @@
+sylius_customer_reorder_plugin:
+    resource: "@SyliusCustomerReorderPlugin/Resources/config/app/reorder_routing.yml"

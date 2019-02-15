@@ -9,9 +9,7 @@ use Zend\Stdlib\PriorityQueue;
 
 final class CompositeReorderEligibilityChecker implements ReorderEligibilityChecker
 {
-    /**
-     * @var PriorityQueue|ReorderEligibilityChecker[]
-     */
+    /** @var PriorityQueue|ReorderEligibilityChecker[] */
     private $eligibilityCheckers;
 
     public function __construct()

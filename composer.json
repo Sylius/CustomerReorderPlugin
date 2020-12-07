@@ -46,8 +46,12 @@
     },
     "scripts": {
         "analyse": [
+            "@composer validate --strict",
             "vendor/bin/phpstan.phar analyse -c phpstan.neon -l max src/",
             "vendor/bin/ecs check src/ spec/"
+        ],
+        "fix": [
+            "vendor/bin/ecs check --ansi --no-progress-bar spec src tests/Controller tests/DataFixtures tests/Request --fix"
         ]
     },
     "extra": {
